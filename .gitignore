@@ -1,0 +1,9 @@
+# Chart dependencies
+/charts/*/charts
+Chart.lock
+.idea
+.vscode
+.DS_Store
+
+# ignore secrets for git security - never commit secrets to git
+secret-values.yaml
