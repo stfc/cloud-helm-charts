@@ -1,0 +1,26 @@
+apiVersion: v1
+entries:
+  opensearch:
+  - apiVersion: v2
+    created: "2025-01-06T14:21:52.247014697Z"
+    dependencies:
+    - name: opensearch-operator
+      repository: https://opensearch-project.github.io/opensearch-k8s-operator/
+      version: 2.6.1
+    digest: dad090276b4c01a3620e8db0c3c8e28d53978bf66b2f046a0928cbc988d0cdb6
+    name: opensearch
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/opensearch-1.0.0/opensearch-1.0.0.tgz
+    version: 1.0.0
+  rabbit-consumer-chart:
+  - apiVersion: v2
+    appVersion: v2.3.7
+    created: "2025-01-06T14:21:52.439823924Z"
+    description: A Helm chart for Rabbit Consumers
+    digest: 8b2691b98232408ab0fa2b86822ad9193273f3f0a124c22cf89b3fb2c57199ca
+    name: rabbit-consumer-chart
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/rabbit-consumer-chart-1.6.1/rabbit-consumer-chart-1.6.1.tgz
+    version: 1.6.1
+generated: "2025-01-06T14:21:52.439834934Z"
