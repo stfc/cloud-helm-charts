@@ -7,3 +7,4 @@ Chart.lock
 
 # ignore secrets for git security - never commit secrets to git
 secret-values.yaml
+clouds.yaml
