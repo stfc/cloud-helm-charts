@@ -4,12 +4,12 @@ This Chart deploys code to monitor rabbit and automatically register machines in
 
 See rabbit-consumer container and source code here - https://github.com/stfc/cloud-docker-images/
 
-## Prerequisits
+# Prerequisites
 
-### Storage
+## Storage
 This application does not require persistent storage and is completely standalone.
 
-### Setup Secrets
+## Setup Secrets
 
 - Install secret from an existing krb5.keytab, this should match the principle used in the values.yaml file:
 
@@ -48,7 +48,7 @@ stringData:
   RABBIT_PASSWORD:
 ```
 
-### Choose Environment Values File
+## Choose Environment Values File
 
 Multiple values files are provided to target various environments:
 
@@ -57,13 +57,13 @@ Multiple values files are provided to target various environments:
 - `prod-values.yaml`: Attributes for production. This does not include the tag, instead relying on the app version in Chart.yaml
 - `staging-values.yaml`: Targets the dev Openstack environment, but pulls the latest build from the most recent PR. (Typically used to test before merging)
 
-# First Deployment
+# Installation
 
 The correct template needs to be selected from above, where `<template.yaml>` is the placeholder:
 
 ```bash
-helm repo add scd-utils https://stfc.github.io/SCD-OpenStack-Utils
-helm upgrade --install rabbit-consumer scd-utils/rabbit-consumer-chart -f values.yaml -f <template.yaml>
+helm repo add cloud-charts https://stfc.github.io/cloud-helm-charts
+helm upgrade --install rabbit-consumer cloud-charts/rabbit-consumer-chart -f values.yaml -f <template.yaml>
 ```
 
 # Upgrades
@@ -71,13 +71,13 @@ helm upgrade --install rabbit-consumer scd-utils/rabbit-consumer-chart -f values
 Upgrades are similarly handled:
 
 ```bash
-helm upgrade rabbit-consumer scd-utils/rabbit-consumer-chart  -f values.yaml -f <template.yaml>
+helm upgrade rabbit-consumer cloud-charts/rabbit-consumer-chart  -f values.yaml -f <template.yaml>
 ```
 
 If required a version can be specified:
 
 ```bash
-helm upgrade rabbit-consumer scd-utils/rabbit-consumer-chart  -f values.yaml -f <template.yaml> --version <version>
+helm upgrade rabbit-consumer cloud-charts/rabbit-consumer-chart  -f values.yaml -f <template.yaml> --version <version>
 ```
 
 # Startup

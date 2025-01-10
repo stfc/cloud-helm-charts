@@ -9,19 +9,53 @@ This chart adds some slight modifications so that we can define security config 
 
 We also setup IRIS-IAM authentication for opensearch dashboards.
 
-## Prerequisites
+# Prerequisites
 
-### Storage
+## Storage
 We've tested OpenSearch using `longhorn` as default storage - for quick install, ensure longhorn is deployed and available to use. Other storage classes are available and should work - but these haven't been tested
 
-### Ingress
+## Ingress
 For Opensearch and Opensearch Dashboards to be accessible outside the cluster - we recommend using nginx ingress. Make sure its enabled on your cluster
+
+
+# Installation
+
+
+## Setup Secrets
+
+To use this chart, you need to provide secret values. Follow these steps:
+
+1. Copy the template file:
+   ```bash
+   cp secret-values.yaml.template /tmp/secret-values.yaml
+  chmod 600 /tmp/secret-values.yaml
+   ```
+
+2. Edit secret-values.yaml with your actual secret values
+
+Note: secret-values.yaml is git-ignored for security. Never commit actual secrets.
+
+## 2. (Optional) Setup IRIS IAM
+
+If you are using IRIS IAM authentication (`openid.enabled=true`)
+You'll need to configure an IRIS-IAM application and set the secret/id in your `secret-values.yaml` 
+
+## Deployment 
+
+```bash
+cd charts/opensearch
+helm dependency upgrade .
+helm install my-opensearch . -n opensearch-system  --create-namespace -f /tmp/secret-templates.yaml
+```
+
+
+# Configuration
 
 ## Defining action_groups, tenants, users, roles and role-mappings
 
 You can setup action_groups, tenants, users, roles and role-mappings using this helm chart. This chart automatically builds the YAML configuration files that OpenSearch security plugin uses. See chart values.yaml for examples
 
-## Configuring DNS + cert
+## DNS + cert
 
 To configure DNS name for OpenSearch + OpenSearch Dashboards you can add cluster-specific ingress specification. See below for example
 
@@ -57,34 +91,4 @@ ingress:
     - secretName: opensearch-tls
       hosts:
         - nodes.dev.nubes.stfc.ac.uk
-```
-
-## Pre-deployment steps
-
-
-### 1. Setup Secrets
-
-To use this chart, you need to provide secret values. Follow these steps:
-
-1. Copy the template file:
-   ```bash
-   cp secret-values.yaml.template /tmp/secret-values.yaml
-  chmod 600 /tmp/secret-values.yaml
-   ```
-
-2. Edit secret-values.yaml with your actual secret values
-
-Note: secret-values.yaml is git-ignored for security. Never commit actual secrets.
-
-### 2. (Optional) Setup IRIS IAM
-
-If you are using IRIS IAM authentication (`openid.enabled=true`)
-You'll need to configure an IRIS-IAM application and set the secret/id in your `secret-values.yaml` 
-
-## Deployment 
-
-```bash
-cd charts/opensearch
-helm dependency upgrade .
-helm install my-opensearch . -n opensearch-system  --create-namespace -f /tmp/secret-templates.yaml
 ```
