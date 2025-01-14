@@ -8,14 +8,16 @@ This chart deploys a Cluster-API (CAPI) K8s Cluster intended to be run on the ST
 - A dedicated floating IP on the project
 - An ubuntu VM 
 
-1. Setup an application credential and download clouds.yaml 
+1. Setup an application credential and download clouds.yaml - place it in this folder 
+- make sure it's named "clouds.yaml" otherwise it won't work
 
 2. SSH into your ubuntu VM
 
-3. Run Bootstrap script
+3. Run bootstrap script. Specify the floating-ip created. It will used for accessing the cluster's kube API and needs to be manually allocated. 
+Documentation on obtaining an app cred can be found [here](https://openstack.stfc.ac.uk/project/floating_ips/) 
 ```bash
 # in repo root
-./scripts/bootstrap-capi-cluster.sh --floating-ip 130.x.x.x --app-cred-fp /path/to/clouds.yaml
+./scripts/bootstrap-capi-cluster.sh 130.x.x.x 
 ``` 
 This will create a `/tmp/capi/secret-values.yaml` file with your cluster secrets 
 
