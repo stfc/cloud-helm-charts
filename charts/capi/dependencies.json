@@ -1,3 +1,4 @@
 {
-    "capo-provider-version": "v0.10.5"
+    "capo-provider-version": "v0.10.5",
+    "cluster-ctl-version": "v1.8.1"
 }

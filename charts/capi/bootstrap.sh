@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # Check if correct number of arguments provided
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <ip-address> <clouds-yaml-filepath>"
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <ip-address>"
     exit 1
 fi
 
@@ -37,11 +37,10 @@ set_env_vars() {
 set_env_vars "dependencies.json"
 
 IP_ADDRESS=$1
-CREDS_FILE=$2:./clouds.yaml
 
 # Check a clouds.yaml filepath exists (by default checks if in same directory)
-if [ ! -f "$CREDS_FILE" ]; then
-    echo "Error: clouds.yaml file $CREDS_FILE does not exist"
+if [ ! -f "clouds.yaml" ]; then
+    echo "Error: clouds.yaml file does not exist"
     exit 1
 fi
 
@@ -64,27 +63,28 @@ sudo mv clusterctl /usr/local/bin/clusterctl
 
 # Check that application_credential_id existing in clouds.yaml
 # This has to be done after yq is installed
-if [ "$(yq -r '.clouds.openstack.auth.application_credential_id' $CREDS_FILE)" == "null" ]; then
+if [ "$(yq -r '.clouds.openstack.auth.application_credential_id' clouds.yaml)" == "null" ]; then
     # Enforce the use of app creds
     echo "Error: An app cred clouds.yaml file is required in the clouds.yaml file, normal creds (i.e. those with passwords) are not supported"
     exit 1
 fi
 
-if [ "$(yq -r '.clouds.openstack.auth.project_id' $CREDS_FILE)" == "null" ]; then
+if [ "$(yq -r '.clouds.openstack.auth.project_id' clouds.yaml)" == "null" ]; then
     echo "Looking up project_id for clouds.yaml..."
-    APP_CRED_ID=$(yq -r '.clouds.openstack.auth.application_credential_id' $CREDS_FILE)
+    APP_CRED_ID=$(yq -r '.clouds.openstack.auth.application_credential_id' clouds.yaml)
     PROJECT_ID=$(openstack --os-cloud openstack application credential show ${APP_CRED_ID} -c project_id -f value)
     echo "Injecting project ID: '${PROJECT_ID}' into clouds.yaml..."
-    injected_id=$PROJECT_ID yq e '.clouds.openstack.auth.project_id = env(injected_id)' -i $CREDS_FILE
+    injected_id=$PROJECT_ID yq e '.clouds.openstack.auth.project_id = env(injected_id)' -i clouds.yaml
 fi
 
 # Setup Secrets file
 # Read the entire clouds section from the credentials file and combine with IP
+mkdir -p /tmp/capi
 cat > /tmp/capi/secret-values.yaml << EOF
 openstack-cluster:
   apiServer: 
     floatingIP: $IP_ADDRESS
-  $(yq '.clouds' "$CREDS_FILE" | sed 's/^/  /')
+$(yq '.' "clouds.yaml" | sed 's/^/  /')
 EOF
 echo "created secrets file in /tmp/capi/secret-values.yaml"
 
