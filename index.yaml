@@ -1,5 +1,26 @@
 apiVersion: v1
 entries:
+  materials-galaxy:
+  - apiVersion: v2
+    created: "2025-01-14T14:32:23.708908524Z"
+    dependencies:
+    - name: galaxy
+      repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
+      version: 5.17.0
+    - name: oauth2-proxy
+      repository: https://oauth2-proxy.github.io/manifests
+      version: 7.7.22
+    - name: postgres-operator
+      repository: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+      version: 1.13.0
+    - name: rabbitmq-cluster-operator
+      repository: https://charts.bitnami.com/bitnami
+      version: 4.3.24
+    digest: a553df4beb76dca6a2a0c8e154cc09461dc53a886f3ae9303d1aad4f15e1309b
+    name: materials-galaxy
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/materials-galaxy-1.0.0/materials-galaxy-1.0.0.tgz
+    version: 1.0.0
   opensearch:
   - apiVersion: v2
     created: "2025-01-06T14:21:52.247014697Z"
@@ -23,4 +44,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/rabbit-consumer-chart-1.6.1/rabbit-consumer-chart-1.6.1.tgz
     version: 1.6.1
-generated: "2025-01-06T14:21:52.439834934Z"
+generated: "2025-01-14T14:32:23.708918723Z"
