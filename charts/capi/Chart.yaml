@@ -2,9 +2,6 @@ apiVersion: v2
 name: capi
 version: 1.3.0
 dependencies:
-  - repository: https://azimuth-cloud.github.io/cluster-api-addon-provider
-    name: cluster-api-addon-provider
-    version: 0.7.2
   - repository: https://azimuth-cloud.github.io/capi-helm-charts
     name: openstack-cluster
-    version: 0.12.2
+    version: 0.13.0
