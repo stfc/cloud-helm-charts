@@ -35,6 +35,16 @@ entries:
     version: 1.0.0
   rabbit-consumer-chart:
   - apiVersion: v2
+    appVersion: v3.1.0
+    created: "2025-01-16T17:58:09.987764888Z"
+    description: A Helm chart for Rabbit Consumers
+    digest: 27e5cec8323d5a2652262cabff7a9622bf1d30ae381ec08f3e5aa1385cc5ebec
+    name: rabbit-consumer-chart
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/rabbit-consumer-chart-1.8.0/rabbit-consumer-chart-1.8.0.tgz
+    version: 1.8.0
+  - apiVersion: v2
     appVersion: v2.3.7
     created: "2025-01-06T14:21:52.439823924Z"
     description: A Helm chart for Rabbit Consumers
@@ -44,4 +54,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/rabbit-consumer-chart-1.6.1/rabbit-consumer-chart-1.6.1.tgz
     version: 1.6.1
-generated: "2025-01-14T14:32:23.708918723Z"
+generated: "2025-01-16T17:58:09.987773394Z"
