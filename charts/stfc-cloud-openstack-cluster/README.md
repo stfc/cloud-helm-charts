@@ -1,6 +1,6 @@
-# STFC Cloud CAPI Chart
+# STFC Cloud Openstack Cluster Chart
 
-This chart deploys a Cluster-API (CAPI) K8s Cluster intended to be run on the STFC Cloud. 
+This chart deploys a Cluster-API (CAPI) K8s Cluster intended to be run on the STFC Cloud (Openstack). 
 
 # Requirements 
 
@@ -25,7 +25,7 @@ This will create a `/tmp/capi/secret-values.yaml` file with your cluster secrets
 
 ```bash
 export CLUSTER_NAME="demo-cluster"  # or your cluster name
-helm upgrade $CLUSTER_NAME cloud-charts/openstack-cluster --install -f values.yaml -f user-values.yaml -f flavors.yaml -f /tmp/capi/secret-values -n clusters 
+helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --install -f values.yaml -f user-values.yaml -f flavors.yaml -f /tmp/capi/secret-values -n clusters 
 ```
 5. Perform move to self-managed cluster 
 
