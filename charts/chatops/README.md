@@ -1,6 +1,6 @@
 # ChatOps
 
-A helm chart for sending slack reminders of open PRs to cloud team
+A helm chart for sending Slack messages of open GitHub pull requests to a Slack workspace.
  
 # Installation
 
