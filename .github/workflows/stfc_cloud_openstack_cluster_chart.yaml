@@ -1,0 +1,23 @@
+name: lint stfc-cloud-openstack-cluster Chart
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - ".github/workflows/stfc_cloud_openstack_cluster_chart.yaml"
+      - "charts/stfc-cloud-openstack-cluster/**"
+
+jobs:
+  helm-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+      - name: Lint Helm Chart
+        # Note --strict=true != --strict with the former being stricter
+        run: |
+          cp charts/stfc-cloud-openstack-cluster/secret-values.yaml.template /tmp/secret-values.yaml
+          helm dependency update charts/stfc-cloud-openstack-cluster/.
+          helm lint charts/stfc-cloud-openstack-cluster --values charts/stfc-cloud-openstack-cluster/values.yaml --values /tmp/secret-values.yaml --values charts/stfc-cloud-openstack-cluster/flavors.yaml --values charts/stfc-cloud-openstack-cluster/user-values.yaml --strict=true
