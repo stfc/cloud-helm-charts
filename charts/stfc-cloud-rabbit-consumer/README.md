@@ -63,7 +63,7 @@ The correct template needs to be selected from above, where `<template.yaml>` is
 
 ```bash
 helm repo add cloud-charts https://stfc.github.io/cloud-helm-charts
-helm upgrade --install rabbit-consumer cloud-charts/rabbit-consumer-chart -f values.yaml -f <template.yaml>
+helm upgrade --install rabbit-consumer cloud-charts/stfc-cloud-rabbit-consumer -f values.yaml -f <template.yaml>
 ```
 
 # Upgrades
@@ -71,13 +71,13 @@ helm upgrade --install rabbit-consumer cloud-charts/rabbit-consumer-chart -f val
 Upgrades are similarly handled:
 
 ```bash
-helm upgrade rabbit-consumer cloud-charts/rabbit-consumer-chart  -f values.yaml -f <template.yaml>
+helm upgrade rabbit-consumer cloud-charts/stfc-cloud-rabbit-consumer  -f values.yaml -f <template.yaml>
 ```
 
 If required a version can be specified:
 
 ```bash
-helm upgrade rabbit-consumer cloud-charts/rabbit-consumer-chart  -f values.yaml -f <template.yaml> --version <version>
+helm upgrade rabbit-consumer cloud-charts/stfc-cloud-rabbit-consumer  -f values.yaml -f <template.yaml> --version <version>
 ```
 
 # Startup

@@ -1,6 +1,6 @@
 apiVersion: v2
-name: rabbit-consumer-chart
-description: A Helm chart for Rabbit Consumers
+name: stfc-cloud-rabbit-consumer
+description: A Helm chart for STFC Cloud Rabbit Consumers
 type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
