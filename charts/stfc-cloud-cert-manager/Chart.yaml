@@ -6,6 +6,6 @@ type: application
 
 dependencies:
 # https://github.com/cert-manager/cert-manager/releases
-  - name: stfc-cloud-cert-manager
+  - name: cert-manager
     version: 1.15.3
     repository: https://charts.jetstack.io
