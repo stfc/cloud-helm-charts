@@ -9,7 +9,7 @@ Our chart configures cert-manager (as subchart) and includes pre-configured issu
 ```bash
 helm repo add cloud-charts https://stfc.github.io/cloud-helm-charts/
 helm repo update
-helm install cert-manager cloud-charts/cert-manager -n cert-manager --create-namespace
+helm install cert-manager cloud-charts/stfc-cloud-cert-manager -n cert-manager --create-namespace
 ```
 
 # Configuration

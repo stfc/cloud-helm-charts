@@ -1,5 +1,5 @@
 apiVersion: v2
-name: manila-csi
+name: stfc-cloud-manila-csi
 version: 1.0.0
 dependencies:
 # https://github.com/kubernetes/cloud-provider-openstack/tree/master/charts/cinder-csi-plugin

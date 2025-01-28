@@ -1,16 +1,17 @@
-{{- if index .Values "cert-manager" "le-staging" "enabled" -}}
+{{- if index .Values "cert-manager" "le-prod" "enabled" -}}
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-staging
+  name: letsencrypt-prod
+  namespace: {{ .Release.Namespace }}
 spec:
   acme:
     # Let's Encrypt will use this to contact you about expiring
     # certificates, and issues related to your account.
-    # For staging we explicitly leave this blank, as we don't need renewal emails...etc.
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: cloud-support@stfc.ac.uk
+    server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: le-staging-account-key
+      name: le-prod-account-key
     solvers:
     - http01:
         ingress:
