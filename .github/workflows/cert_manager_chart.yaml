@@ -1,12 +1,12 @@
-name: lint rabbit consumer chart
+name: lint chatops Chart
 on:
   push:
     branches:
       - main
   pull_request:
     paths:
-      - ".github/workflows/rabbit_consumer_chart.yaml"
-      - "charts/stfc-cloud-rabbit-consumer/**"
+      - ".github/workflows/cert_manager_chart.yaml"
+      - "charts/stfc-cloud-cert-manager/**"
 
 jobs:
   helm-lint:
@@ -18,4 +18,5 @@ jobs:
       - name: Lint Helm Chart
         # Note --strict=true != --strict with the former being stricter
         run: |
-          helm lint charts/stfc-cloud-rabbit-consumer --values charts/stfc-cloud-rabbit-consumer/values.yaml --values charts/stfc-cloud-rabbit-consumer/dev-values.yaml --strict=true
+          helm dependency update charts/stfc-cloud-cert-manager/.
+          helm lint charts/stfc-cloud-cert-manager --values charts/stfc-cloud-cert-manager/values.yaml --strict=true
