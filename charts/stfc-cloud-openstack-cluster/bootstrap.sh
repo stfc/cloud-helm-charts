@@ -84,7 +84,7 @@ cat > /tmp/capi/secret-values.yaml << EOF
 openstack-cluster:
   apiServer: 
     floatingIP: $IP_ADDRESS
-$(yq '.' "clouds.yaml" | sed 's/^/  /')
+$(grep -v '^#' clouds.yaml | yq '.' | sed 's/^/  /')
 EOF
 echo "created secrets file in /tmp/capi/secret-values.yaml"
 
