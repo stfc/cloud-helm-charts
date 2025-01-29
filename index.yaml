@@ -67,6 +67,20 @@ entries:
     version: 1.6.1
   stfc-cloud-cert-manager:
   - apiVersion: v2
+    created: "2025-01-29T21:16:06.172778831Z"
+    dependencies:
+    - name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.15.3
+    description: A Helm chart to deploy opinionated instance of cert-manager for the
+      STFC Cloud
+    digest: b6dab56f36c9d3dbb587d50607aa9892b7f28b186481f39a27c3010fb4464ee1
+    name: stfc-cloud-cert-manager
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-cert-manager-1.2.0/stfc-cloud-cert-manager-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v2
     created: "2025-01-29T09:42:17.5555378Z"
     dependencies:
     - name: cert-manager
@@ -80,7 +94,32 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-cert-manager-1.1.0/stfc-cloud-cert-manager-1.1.0.tgz
     version: 1.1.0
+  stfc-cloud-chatops:
+  - apiVersion: v2
+    appVersion: 5.0.0
+    created: "2025-01-29T21:16:06.308939991Z"
+    description: A Helm chart to deploy STFC Cloud ChatOps tools
+    digest: ad4d674fda97ccc02b99c34dfd4f6d1ebe1969783d24c5a6d6cda41f32756b1e
+    name: stfc-cloud-chatops
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-chatops-0.1.0/stfc-cloud-chatops-0.1.0.tgz
+    version: 0.1.0
   stfc-cloud-manila-csi:
+  - apiVersion: v2
+    created: "2025-01-29T21:16:06.39652904Z"
+    dependencies:
+    - name: openstack-manila-csi
+      repository: https://kubernetes.github.io/cloud-provider-openstack
+      version: 2.31.0
+    - name: ceph-csi-cephfs
+      repository: https://ceph.github.io/csi-charts
+      version: 3.11.0
+    digest: f8e12ee0f4861e289ebd5e259dd8ba98882b92c1372cbdbd07ef73d216b86899
+    name: stfc-cloud-manila-csi
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-manila-csi-1.1.0/stfc-cloud-manila-csi-1.1.0.tgz
+    version: 1.1.0
   - apiVersion: v2
     created: "2025-01-29T09:42:17.715462782Z"
     dependencies:
@@ -95,6 +134,21 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-manila-csi-1.0.0/stfc-cloud-manila-csi-1.0.0.tgz
     version: 1.0.0
+  stfc-cloud-opensearch:
+  - apiVersion: v2
+    created: "2025-01-29T21:16:06.491631809Z"
+    dependencies:
+    - name: opensearch-operator
+      repository: https://opensearch-project.github.io/opensearch-k8s-operator/
+      version: 2.6.1
+    description: A Helm chart to deploy an opinionated opensearch cluster with IRIS-IAM
+      integration
+    digest: ebaef53ff8325d85aab48eb4f3e8ff368c3bbd66f3db234f4f3ad6abf1ed49cd
+    name: stfc-cloud-opensearch
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-opensearch-1.0.0/stfc-cloud-opensearch-1.0.0.tgz
+    version: 1.0.0
   stfc-cloud-openstack-cluster:
   - apiVersion: v2
     created: "2025-01-27T09:55:11.838181485Z"
@@ -107,4 +161,15 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-openstack-cluster-1.3.0/stfc-cloud-openstack-cluster-1.3.0.tgz
     version: 1.3.0
-generated: "2025-01-29T09:42:17.715476388Z"
+  stfc-cloud-rabbit-consumer:
+  - apiVersion: v2
+    appVersion: v3.1.0
+    created: "2025-01-29T21:16:06.679511232Z"
+    description: A Helm chart for STFC Cloud Rabbit Consumers
+    digest: a68e0974bf057c65536d12cec08af0d8c1c965377ab6b773e0ae68e86fdba9de
+    name: stfc-cloud-rabbit-consumer
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-rabbit-consumer-1.8.0/stfc-cloud-rabbit-consumer-1.8.0.tgz
+    version: 1.8.0
+generated: "2025-01-29T21:16:06.679531931Z"
