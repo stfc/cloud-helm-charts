@@ -45,7 +45,7 @@ You'll need to configure an IRIS-IAM application and set the secret/id in your `
 ```bash
 helm repo add cloud-charts https://stfc.github.io/cloud-helm-charts/
 helm repo update
-helm install chatops cloud-charts/stfc-cloud-opensearch -n opensearch-system --create-namespace -f secret-values.yaml
+helm install opensearch cloud-charts/stfc-cloud-opensearch -n opensearch-system --create-namespace -f secret-values.yaml
 ```
 
 
