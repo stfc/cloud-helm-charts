@@ -5,9 +5,9 @@ openstack-cluster:
   # This should match the version of kubelet and kubeadm in the image
   # and will be automatically updated by us
   # we aim to keep n-1 of latest K8s version
-  kubernetesVersion: "1.30.6"
+  kubernetesVersion: "1.31.4"
   # The name of the image to use for cluster machines
-  machineImage: "capi-ubuntu-2204-kube-v1.30.6-2024-11-15"
+  machineImage: "capi-ubuntu-2204-kube-v1.31.4-2025-01-24"
 
   # The worker node groups for the cluster
   nodeGroups:
