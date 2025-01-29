@@ -1,4 +1,4 @@
-name: lint chatops Chart
+name: lint stfc-cloud-chatops chart
 on:
   push:
     branches:
@@ -6,7 +6,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/chatops_chart.yaml"
-      - "charts/chatops/**"
+      - "charts/stfc-cloud-chatops/**"
 
 jobs:
   helm-lint:
@@ -18,6 +18,6 @@ jobs:
       - name: Lint Helm Chart
         # Note --strict=true != --strict with the former being stricter
         run: |
-          cp charts/chatops/secret-values.yaml.template /tmp/secret-values.yaml
-          helm dependency update charts/chatops/.
-          helm lint charts/chatops --values charts/chatops/values.yaml --values /tmp/secret-values.yaml --strict=true
+          cp charts/stfc-cloud-chatops/secret-values.yaml.template /tmp/secret-values.yaml
+          helm dependency update charts/stfc-cloud-chatops/.
+          helm lint charts/stfc-cloud-chatops --values charts/stfc-cloud-chatops/values.yaml --values /tmp/secret-values.yaml --strict=true

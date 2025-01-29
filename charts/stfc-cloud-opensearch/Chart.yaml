@@ -1,5 +1,7 @@
 apiVersion: v2
-name: opensearch
+name: stfc-cloud-opensearch
+description: A Helm chart to deploy an opinionated opensearch cluster with IRIS-IAM integration
+type: application
 version: 1.0.0
 dependencies:
   - repository: https://opensearch-project.github.io/opensearch-k8s-operator/
