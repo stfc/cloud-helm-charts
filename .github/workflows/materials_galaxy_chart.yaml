@@ -1,4 +1,4 @@
-name: lint opensearch chart
+name: lint materials-galaxy chart
 on:
   push:
     branches:

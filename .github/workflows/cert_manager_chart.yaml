@@ -1,4 +1,4 @@
-name: lint chatops Chart
+name: lint stfc-cloud-cert-manager chart
 on:
   push:
     branches:

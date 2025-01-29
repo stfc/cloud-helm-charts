@@ -1,4 +1,4 @@
-name: lint chatops Chart
+name: lint stfc-cloud-chatops chart
 on:
   push:
     branches:

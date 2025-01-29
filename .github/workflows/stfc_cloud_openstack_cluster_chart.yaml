@@ -1,4 +1,4 @@
-name: lint stfc-cloud-openstack-cluster Chart
+name: lint stfc-cloud-openstack-cluster chart
 on:
   push:
     branches:

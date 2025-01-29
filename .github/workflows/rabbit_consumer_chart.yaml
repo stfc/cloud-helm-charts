@@ -1,4 +1,4 @@
-name: lint rabbit consumer chart
+name: lint stfc-cloud-rabbit-consumer chart
 on:
   push:
     branches:

@@ -1,4 +1,4 @@
-name: lint opensearch chart
+name: lint manila-csi chart
 on:
   push:
     branches:

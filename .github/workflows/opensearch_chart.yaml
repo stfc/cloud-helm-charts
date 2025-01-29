@@ -1,4 +1,4 @@
-name: lint opensearch chart
+name: lint stfc-cloud-opensearch chart
 on:
   push:
     branches:
