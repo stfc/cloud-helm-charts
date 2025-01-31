@@ -72,7 +72,7 @@ fi
 if [ "$(yq -r '.clouds.openstack.auth.project_id' clouds.yaml)" == "null" ]; then
     echo "Looking up project_id for clouds.yaml..."
     APP_CRED_ID=$(yq -r '.clouds.openstack.auth.application_credential_id' clouds.yaml)
-    PROJECT_ID=$(openstack --os-cloud openstack application credential show ${APP_CRED_ID} -c project_id -f value)
+    PROJECT_ID=$(openstack --os-cloud openstack application credential show "${APP_CRED_ID}" -c project_id -f value)
     echo "Injecting project ID: '${PROJECT_ID}' into clouds.yaml..."
     injected_id=$PROJECT_ID yq e '.clouds.openstack.auth.project_id = env(injected_id)' -i clouds.yaml
 fi
@@ -84,7 +84,7 @@ cat > /tmp/capi/secret-values.yaml << EOF
 openstack-cluster:
   apiServer: 
     floatingIP: $IP_ADDRESS
-$(yq '.' "clouds.yaml" | sed 's/^/  /')
+$(grep -v '^#' clouds.yaml | yq '.' | sed 's/^/  /')
 EOF
 echo "created secrets file in /tmp/capi/secret-values.yaml"
 
@@ -95,15 +95,17 @@ sudo microk8s status --wait-ready
 
 echo "Exporting the kubeconfig file..."
 mkdir -p ~/.kube/
-sudo microk8s.config  > ~/.kube/config
-sudo chown $USER ~/.kube/config
+echo "Backing up existing kubeconfig if it exists..."
+[ -f "$HOME/.kube/config" ] || mv -v "$HOME/.kube/config" "$HOME/.kube/config.bak"
+sudo microk8s.config | tee ~/.kube/config > /dev/null
+sudo chown "$USER" ~/.kube/config
 sudo chmod 600 ~/.kube/config
 sudo microk8s enable dns
 
 
 echo "Initialising cluster-api OpenStack provider..."
 echo "If this fails you may need a GITHUB_TOKEN, see https://stfc.atlassian.net/wiki/spaces/CLOUDKB/pages/211878034/Cluster+API+Setup for details"
-clusterctl init --infrastructure=openstack:${CAPO_PROVIDER_VERSION}
+clusterctl init --infrastructure=openstack:"${CAPO_PROVIDER_VERSION}"
 
 echo "Importing required helm repos and packages"
 helm repo add cloud-charts https://stfc.github.io/cloud-helm-charts/
