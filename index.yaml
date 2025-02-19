@@ -151,6 +151,20 @@ entries:
     version: 1.0.0
   stfc-cloud-openstack-cluster:
   - apiVersion: v2
+    created: "2025-02-19T10:28:59.010385764Z"
+    dependencies:
+    - name: openstack-cluster
+      repository: https://azimuth-cloud.github.io/capi-helm-charts
+      version: 0.13.0
+    description: A Helm chart to deploy a compliant K8s cluster (using CAPI) on the
+      STFC Cloud
+    digest: afe484e4f745541ed3de73d8dc781424ce3fe9ffda9e7049bfccf989228ecc79
+    name: stfc-cloud-openstack-cluster
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-openstack-cluster-1.4.0/stfc-cloud-openstack-cluster-1.4.0.tgz
+    version: 1.4.0
+  - apiVersion: v2
     created: "2025-01-27T09:55:11.838181485Z"
     dependencies:
     - name: openstack-cluster
@@ -172,4 +186,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-rabbit-consumer-1.8.0/stfc-cloud-rabbit-consumer-1.8.0.tgz
     version: 1.8.0
-generated: "2025-01-29T21:16:06.679531931Z"
+generated: "2025-02-19T10:28:59.010408997Z"
