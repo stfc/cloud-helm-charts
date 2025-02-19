@@ -9,3 +9,7 @@ openstack-manila-csi:
     fwdNodePluginEndpoint:
       dir: /var/lib/kubelet/plugins/cephfs.csi.ceph.com
       sockFile: csi.sock
+
+ceph-csi-cephfs:
+  readAffinity: 
+    enabled: false

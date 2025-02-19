@@ -1,4 +1,4 @@
-name: lint stfc-cloud-openstack-cluster Chart
+name: lint stfc-cloud-openstack-cluster chart
 on:
   push:
     branches:
@@ -15,6 +15,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: Set up Helm
         uses: azure/setup-helm@v3
+      - name: Lint bootstrap script
+        uses: azohra/shell-linter@latest
+        with:
+          path: "charts/stfc-cloud-openstack-cluster/bootstrap.sh"
       - name: Lint Helm Chart
         # Note --strict=true != --strict with the former being stricter
         run: |
