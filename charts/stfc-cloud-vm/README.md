@@ -14,4 +14,5 @@ helm install stfc-cloud-vm cloud-charts/stfc-cloud-vm -n victoria-metrics --crea
 
 # Configuration
 
-TODO: docs to configure victoria-metrics ingress/storage etc
+> [!NOTE] 
+> Docs to configure victoria-metrics ingress and storage are a work in progress and will be added in the future

@@ -27,7 +27,13 @@ If not, you want to label your worker nodes, the default label is - `longhorn.st
 kubectl label node my-worker-node longhorn.store.nodeselect/longhorn-storage-node="true" -n clusters
 ```
 
-If you want to change the label you can change this in the cluster-specific values like so. Not recommended unless you know what you are doing. If you're using stfc-cloud-openstack-cluster chart - you must also change the worker node labels. 
+If you want to change the label you can change this in the cluster-specific values like so. 
+
+> [!WARNING]
+> Not recommended unless you know what you are doing. 
+
+> [!NOTE]
+> If you're using stfc-cloud-openstack-cluster chart - you must also change the worker node labels. 
 
 ```yaml
 longhorn:	
