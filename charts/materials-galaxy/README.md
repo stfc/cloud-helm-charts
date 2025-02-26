@@ -82,7 +82,42 @@ Then edit `galaxy.configs.tool_conf.xml` to make it available to users - add a x
  ```xml
  <tool file="{{.Values.persistence.mountPath}}/my-tools/my-tool-1/my-tool-1.xml>
 ``` 
-where `file` is a filepath to the galaxy tool config you want to make available
+where `file` is a filepath to the galaxy tool config you want to make available 
+
+### Private repos
+
+To deploy tools from a private repo - you need to create a git deploy key for that repo so that we can access it
+more about deploy keys here - https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys#deploy-keys
+Deploy keys are useful as they only grant access to a single repository, limiting attack vectors, additionally, we can set them to be read-only which is recommended for this use-case.
+
+Once you create a deploy key, you need to add it to the secrets file under - be careful not to publish this as plaintext
+```
+gitRepos:
+  - name: repo-name
+    deployKey: |-
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    ... private key content for repo1 ...
+    -----END OPENSSH PRIVATE KEY-----
+```
+
+then you'll need to create a container image to install from private repo like so:
+```
+- name: repo-name-tools
+  applyToJob: false
+  applyToWeb: true
+  applyToWorkflow: false
+  image: "alpine/git:latest"
+  env:
+  - name: SSH_PRIVATE_KEY
+    valueFrom:
+      secretKeyRef:
+        name: git-deploy-keys
+        key: repo-name
+  command: ['sh', '-c', 'mkdir -p /root/.ssh && echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_rsa && chmod 600 /root/.ssh/id_rsa && ssh-keyscan github.com >> /root/.ssh/known_hosts && git clone git@github.com:my-org/my-repo.git --depth 1 --branch main {{.Values.persistence.mountPath}}/my-repo-tools || true']
+  volumeMounts:
+    - name: galaxy-data
+      mountPath: "{{.Values.persistence.mountPath}}"
+```
 
 ## Configuring main page
 
