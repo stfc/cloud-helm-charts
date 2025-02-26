@@ -1,25 +1,25 @@
-
 openstack-cluster:
   # List of comma separated additional packages to install on cluster nodes
   additionalPackages: []
-
-  controlPlane:
-    # The number of control plane machines to deploy
-    # For high-availability, this should be greater than 1
-    # For etcd quorum, it should be odd - usually 3, or 5 for very large clusters
-    machineCount: 5
-    # The flavor to use for control plane machines
-    machineFlavor: l3.nano
-
-    # defaults cause OutofSync issues in argocd
-    remediationStrategy:
-      retryPeriod: 20m0s
-      minHealthyPeriod: 1h0m0s
-
+  
   addons:
     # Monitoring sets up kube-prometheus-stack and loki-stack.
+    # For configuration values 
     monitoring:
       enabled: false
+      
+      loki-stack:
+        enabled: false
+        release:
+          values:
+            # for values see - https://github.com/grafana/helm-charts/tree/main/charts/loki-stack
+      
+      kubePrometheusStack:
+        enabled: false
+        release:
+           values:
+            # for values see - https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+
 
     # Ingress is preferred, as it allows you to use DNS to locate multiple
     # services behind a single FIP, and makes TLS trivial
