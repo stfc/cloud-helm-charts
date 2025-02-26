@@ -1,4 +1,4 @@
-name: publish charts
+name: Publish Release-Ready Charts from Main
 on:
   push:
     branches:
@@ -7,7 +7,6 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
