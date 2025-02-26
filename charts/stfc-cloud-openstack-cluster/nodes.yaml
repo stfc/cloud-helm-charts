@@ -1,0 +1,31 @@
+openstack-cluster:
+  # The control plane for the cluster
+  controlPlane:
+    # The number of control plane machines to deploy
+    # For high-availability, this should be greater than 1
+    # For etcd quorum, it should be odd - usually 3, or 5 for very large clusters
+    machineCount: 5
+    # The flavor to use for control plane machines
+    machineFlavor: l3.nano
+
+    # for configuration values see here 
+    # https://github.com/azimuth-cloud/capi-helm-charts/blob/main/charts/openstack-cluster/values.yaml#L217
+
+  # The worker node groups for the cluster
+  nodeGroups:
+    # This group uses details found in nodeGroupDefault below
+    # and is enabled by default
+    - name: default-md-0
+      # The number of machines in the node group if autoscale is false
+      machineCount: 2
+
+    # The following node groups are optional and can be enabled by uncommenting them
+    # For values you can configure separately for each set of nodegroups can be seen here
+    # https://github.com/azimuth-cloud/capi-helm-charts/blob/main/charts/openstack-cluster/values.yaml#L357
+  
+    # - name: md-l3-small
+    #   machineFlavor: l3.small
+    #   machineCount: 1
+    # - name: md-rtx4000
+    #   machineFlavor: g-rtx4000.x1
+    #   machineCount: 1

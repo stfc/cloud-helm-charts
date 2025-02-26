@@ -24,4 +24,4 @@ jobs:
         run: |
           cp charts/stfc-cloud-openstack-cluster/secret-values.yaml.template /tmp/secret-values.yaml
           helm dependency update charts/stfc-cloud-openstack-cluster/.
-          helm lint charts/stfc-cloud-openstack-cluster --values charts/stfc-cloud-openstack-cluster/values.yaml --values /tmp/secret-values.yaml --values charts/stfc-cloud-openstack-cluster/flavors.yaml --values charts/stfc-cloud-openstack-cluster/user-values.yaml --strict=true
+          helm lint charts/stfc-cloud-openstack-cluster --values charts/stfc-cloud-openstack-cluster/values.yaml --values /tmp/secret-values.yaml --values charts/stfc-cloud-openstack-cluster/nodes.yaml --values charts/stfc-cloud-openstack-cluster/addons.yaml --strict=true
