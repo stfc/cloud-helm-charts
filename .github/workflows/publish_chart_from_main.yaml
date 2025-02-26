@@ -1,4 +1,4 @@
-name: publish charts
+name: Publish Release-Ready Charts from Main
 on:
   push:
     branches:
@@ -7,7 +7,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    # Run on main branch pushes OR pull requests OR manual triggers
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
