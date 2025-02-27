@@ -1,0 +1,22 @@
+name: lint victoria-metrics chart
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - ".github/workflows/vm_chart.yaml"
+      - "charts/stfc-cloud-vm/**"
+
+jobs:
+  helm-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+      - name: Lint Helm Chart
+        # Note --strict=true != --strict with the former being stricter
+        run: |
+          helm dependency update charts/stfc-cloud-vm/.
+          helm lint charts/stfc-cloud-vm --values charts/stfc-cloud-vm/values.yaml --strict=true
