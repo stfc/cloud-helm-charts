@@ -1,8 +1,7 @@
 apiVersion: v2
-name: stfc-cloud-vm
-version: 1.0.0
 dependencies:
-  # https://github.com/VictoriaMetrics/helm-charts/releases?q=cluster&expanded=true
-  - repository: https://victoriametrics.github.io/helm-charts/
-    name: victoria-metrics-cluster
-    version: 0.11.18
+  - name: victoria-metrics-cluster
+    repository: https://victoriametrics.github.io/helm-charts/
+    version: 0.11.23
+name: stfc-cloud-vm
+version: 1.0.1
