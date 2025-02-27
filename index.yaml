@@ -11,6 +11,18 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/cloud-chatops-0.1.0/cloud-chatops-0.1.0.tgz
     version: 0.1.0
+  longhorn:
+  - apiVersion: v2
+    created: "2025-02-27T10:57:39.148923505Z"
+    dependencies:
+    - name: longhorn
+      repository: https://charts.longhorn.io
+      version: 1.7.1
+    digest: 8e75895afaedceaaa917dfb29793ae5bbda0643c66ce01522fc0915df2540272
+    name: longhorn
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/longhorn-1.0.0/longhorn-1.0.0.tgz
+    version: 1.0.0
   materials-galaxy:
   - apiVersion: v2
     created: "2025-01-14T14:32:23.708908524Z"
@@ -186,4 +198,16 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-rabbit-consumer-1.8.0/stfc-cloud-rabbit-consumer-1.8.0.tgz
     version: 1.8.0
-generated: "2025-02-19T10:28:59.010408997Z"
+  stfc-cloud-vm:
+  - apiVersion: v2
+    created: "2025-02-27T10:57:39.235220911Z"
+    dependencies:
+    - name: victoria-metrics-cluster
+      repository: https://victoriametrics.github.io/helm-charts/
+      version: 0.11.18
+    digest: 5dfdbca8e2653d94b02669e6fd64dfa66b620742b9c60140fa1e6cddcbda6ccd
+    name: stfc-cloud-vm
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
+    version: 1.0.0
+generated: "2025-02-27T10:57:39.23524138Z"
