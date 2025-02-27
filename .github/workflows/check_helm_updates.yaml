@@ -21,12 +21,12 @@ on:
         required: false
         default: ""
       excluded-dependencies:
-        description: "Comma-separated list of dependencies to exclude from the update (i.e. 'dependency1,dependency2,dependency3')"
+        description: "(Optional) Comma-separated list of dependencies to exclude from the update (i.e. 'dependency1,dependency2,dependency3')"
         type: string
         required: false
         default: ""
       dry-run:
-        description: "Activate dry-run mode"
+        description: "(Optional) Activate dry-run mode"
         type: boolean
         required: false
         default: true
