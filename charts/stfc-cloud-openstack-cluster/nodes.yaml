@@ -29,3 +29,14 @@ openstack-cluster:
     # - name: md-rtx4000
     #   machineFlavor: g-rtx4000.x1
     #   machineCount: 1
+
+  # Settings for node-level registry auth if using a private registry
+  registryAuth:
+    {}
+    # registry-1.docker.io:
+    #   username: "<username>"
+    #   password: "<password>"
+
+  # The name of the SSH key to inject into cluster machines, this can be
+  # left blank if a user does not require SSH access to the machines
+  machineSSHKeyName:

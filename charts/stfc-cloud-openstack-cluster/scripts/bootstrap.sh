@@ -70,5 +70,4 @@ helm repo update
 helm upgrade cluster-api-addon-provider capi-addons/cluster-api-addon-provider --create-namespace --install --wait -n clusters --version "${AZIMUTH_CAPO_ADDON_VERSION}"
 
 
-echo "You are now ready to create a cluster following the remaining instructions..."
-echo "https://stfc.atlassian.net/wiki/spaces/CLOUDKB/pages/211878034/Cluster+API+Setup"
+echo "You are now ready to create a cluster - see README.md"
