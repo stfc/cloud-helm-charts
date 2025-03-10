@@ -1,0 +1,40 @@
+openstack-cluster:
+  # List of comma separated additional packages to install on cluster nodes
+  additionalPackages: []
+  
+  addons:
+    # Monitoring sets up kube-prometheus-stack and loki-stack.
+    # For configuration values 
+    monitoring:
+      enabled: false
+      
+      # for setting up out-of-the-box lgging
+      loki-stack:
+        # set to true to install
+        enabled: false 
+        release:
+          values:
+            # for values see - https://github.com/grafana/helm-charts/tree/main/charts/loki-stack
+      
+
+      kubePrometheusStack:
+        # set to true to install
+        enabled: false
+        release:
+           values:
+            # for values see - https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+
+
+    # Ingress is preferred, as it allows you to use DNS to locate multiple
+    # services behind a single FIP, and makes TLS trivial
+    # see https://stfc.atlassian.net/wiki/spaces/CLOUDKB/pages/309854262/CAPI+Ingress
+    ingress:
+      # set to true to install
+      enabled: false
+      nginx:
+        release:
+          values:
+            controller:
+              service:
+                loadBalancerIP: # "130.x.y.z"
+            # for other values see - https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml

@@ -18,10 +18,33 @@ jobs:
       - name: Lint bootstrap script
         uses: azohra/shell-linter@latest
         with:
-          path: "charts/stfc-cloud-openstack-cluster/bootstrap.sh"
+          path: "charts/stfc-cloud-openstack-cluster/script/bootstrap.sh"
+      - name: Lint set-project-id script
+        uses: azohra/shell-linter@latest
+        with:
+          path: "charts/stfc-cloud-openstack-cluster/script/set-project-id.sh"
+      - name: Create fake clouds.yaml file
+        run: |
+          cat > clouds.yaml << 'EOF'
+          clouds:
+            openstack:
+              auth:
+                auth_url: example.com
+                application_credential_id: foo
+                application_credential_secret: bar
+              region_name: region
+              interface: interface
+              identity_api_version: v3
+              auth_type: app-cred
+          EOF
       - name: Lint Helm Chart
         # Note --strict=true != --strict with the former being stricter
         run: |
-          cp charts/stfc-cloud-openstack-cluster/secret-values.yaml.template /tmp/secret-values.yaml
           helm dependency update charts/stfc-cloud-openstack-cluster/.
-          helm lint charts/stfc-cloud-openstack-cluster --values charts/stfc-cloud-openstack-cluster/values.yaml --values /tmp/secret-values.yaml --values charts/stfc-cloud-openstack-cluster/flavors.yaml --values charts/stfc-cloud-openstack-cluster/user-values.yaml --strict=true
+          helm lint charts/stfc-cloud-openstack-cluster \
+            --values charts/stfc-cloud-openstack-cluster/values.yaml \
+            --values charts/stfc-cloud-openstack-cluster/nodes.yaml \
+            --values charts/stfc-cloud-openstack-cluster/addons.yaml \
+            --values clouds.yaml \
+            --set openstack-cluster.apiServer.floatingIP=127.0.0.1 \
+            --strict=true
