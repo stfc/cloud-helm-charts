@@ -70,6 +70,9 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "bump chart ${{matrix.chart}} to version: ${{ steps.bump-version.outputs.version }}"
+          branch: ${{matrix.chart}}-v${{ steps.bump-version.outputs.version }}
+          tagging_message: ${{matrix.chart}}-v${{ steps.bump-version.outputs.version }}
+          create_branch: true
 
   publish:
     needs: bump-charts
