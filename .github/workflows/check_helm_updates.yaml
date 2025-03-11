@@ -29,7 +29,7 @@ on:
         description: "(Optional) Activate dry-run mode"
         type: boolean
         required: false
-        default: true
+        default: false
 
 env:
   author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
