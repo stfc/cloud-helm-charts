@@ -10,6 +10,8 @@ on:
 jobs:
   bump-charts:
     runs-on: ubuntu-latest
+    outputs: 
+      alpha-version: ${{steps.bump-version.outputs.version}}
 
     # Run on main branch pushes OR pull requests OR manual triggers
     steps:
@@ -59,7 +61,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{github.event.inputs.chart}}-v${{ steps.bump-version.outputs.version }}
+          ref: ${{github.event.inputs.chart}}-v${{ needs.bump-charts.outputs.alpha-version }}
 
       - name: Configure Git
         run: |
