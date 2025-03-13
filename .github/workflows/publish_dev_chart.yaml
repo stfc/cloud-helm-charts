@@ -1,0 +1,79 @@
+name: Publish a dev chart
+on:
+  workflow_dispatch:
+    inputs:
+      chart:
+        description: "Chart to release dev chart of"
+        type: string
+        required: true
+
+jobs:
+  bump-charts:
+    runs-on: ubuntu-latest
+
+    # Run on main branch pushes OR pull requests OR manual triggers
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+      
+      - name: "Set alpha chart version"
+        id: bump-version
+        run: |
+          CHART_YAML="charts/${{github.event.inputs.chart}}/Chart.yaml"
+          # Get current version
+          CURRENT_VERSION=$(yq e '.version' "$CHART_YAML")
+          # Split version into major, minor, patch, and ignore any extra parts
+          IFS='.' read -r major minor patch _ <<< "$CURRENT_VERSION"
+          
+          # Get the latest commit short hash
+          GIT_COMMIT_TAG=$(git rev-parse --short HEAD)
+          
+          # Update Chart.yaml with new version
+          # Adding alpha.<github commit tag> to set it as alpha chart
+          VERSION=${major}.${minor}.$((patch))-alpha.${GIT_COMMIT_TAG}
+          yq e -i ".version = \"$VERSION\"" "$CHART_YAML"
+          echo version=$VERSION >> $GITHUB_OUTPUT
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "bump chart ${{github.event.inputs.chart}} to version: ${{ steps.bump-version.outputs.version }}"
+          branch: ${{github.event.inputs.chart}}-v${{ steps.bump-version.outputs.version }}
+          create_branch: true
+
+  publish:
+    needs: bump-charts
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{github.event.inputs.chart}}-v${{ steps.bump-version.outputs.version }}
+
+      - name: Configure Git
+        run: |
+          # pull latest changes 
+          git pull
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        with:
+          skip_existing: true
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
