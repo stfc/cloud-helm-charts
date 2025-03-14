@@ -1,9 +1,9 @@
 apiVersion: v2
-name: stfc-cloud-openstack-cluster
-version: 1.4.0
-description: A Helm chart to deploy a compliant K8s cluster (using CAPI) on the STFC Cloud
-type: application
 dependencies:
-  - repository: https://azimuth-cloud.github.io/capi-helm-charts
-    name: openstack-cluster
-    version: 0.13.0
+  - name: openstack-cluster
+    repository: https://azimuth-cloud.github.io/capi-helm-charts
+    version: 0.14.0
+description: A Helm chart to deploy a compliant K8s cluster (using CAPI) on the STFC Cloud
+name: stfc-cloud-openstack-cluster
+type: application
+version: 1.4.1

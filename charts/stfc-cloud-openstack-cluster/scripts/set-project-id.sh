@@ -38,9 +38,6 @@ if [ "$(yq -r '.clouds.openstack.auth.project_id' "$CLOUDS_FILE")" == "null" ]; 
     APP_CRED_SECRET=$(yq -r '.clouds.openstack.auth.application_credential_secret' "$CLOUDS_FILE")
     APP_CRED_AUTH_URL=$(yq -r '.clouds.openstack.auth.auth_url' "$CLOUDS_FILE")
 
-
-    echo "${APP_CRED_ID}, ${APP_CRED_SECRET}"
-
     # specifying all this allows clouds.yaml to be outside scripts directory
     PROJECT_ID=$(openstack \
         --os-auth-url "${APP_CRED_AUTH_URL}" \
