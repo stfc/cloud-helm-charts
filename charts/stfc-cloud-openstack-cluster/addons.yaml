@@ -13,7 +13,7 @@ openstack-cluster:
         # set to true to install
         enabled: false 
         release:
-          values:
+          values: {}
             # for values see - https://github.com/grafana/helm-charts/tree/main/charts/loki-stack
       
 
@@ -21,7 +21,7 @@ openstack-cluster:
         # set to true to install
         enabled: false
         release:
-           values:
+          values: {}
             # for values see - https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
 
 

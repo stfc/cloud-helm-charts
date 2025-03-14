@@ -53,7 +53,9 @@ sudo microk8s status --wait-ready
 echo "Exporting the kubeconfig file..."
 mkdir -p ~/.kube/
 echo "Backing up existing kubeconfig if it exists..."
-[ -f "$HOME/.kube/config" ] || mv -v "$HOME/.kube/config" "$HOME/.kube/config.bak"
+if [ -f "$HOME/.kube/config" ]; then 
+    mv -v "$HOME/.kube/config" "$HOME/.kube/config.bak"
+fi
 sudo microk8s.config | tee ~/.kube/config > /dev/null
 sudo chown "$USER" ~/.kube/config
 sudo chmod 600 ~/.kube/config
