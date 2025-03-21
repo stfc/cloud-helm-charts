@@ -50,6 +50,11 @@ openstack-cluster:
     # The flavor to use for control plane machines
     machineFlavor: l3.nano
 
+    # chart defaults cause OutofSync issues in argocd as it doesn't include "0m0s"
+    remediationStrategy:
+      retryPeriod: 20m0s
+      minHealthyPeriod: 1h0m0s
+
   # Defaults for node groups
   nodeGroupDefaults:
     # Indicates if the node group should be autoscaled
@@ -96,6 +101,10 @@ openstack-cluster:
     # and includes Loki which is required for central logging as per UKRI policy
     monitoring:
       enabled: true
+      # disable loki-stack by default 
+      # we'll setup our own log collection
+      lokiStack:
+        enabled: false
     # set availabilty zone as upstream uses nova by default
     openstack:
       csiCinder:
