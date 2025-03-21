@@ -50,25 +50,34 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "bump chart ${{github.event.inputs.chart}} to version: ${{ steps.bump-version.outputs.version }}"
-          branch: ${{github.event.inputs.chart}}-v${{ steps.bump-version.outputs.version }}
+          branch: br-${{github.event.inputs.chart}}-v${{ steps.bump-version.outputs.version }}
+          tagging_message: ${{github.event.inputs.chart}}-v${{ steps.bump-version.outputs.version }}
           create_branch: true
-
+  
   publish:
     needs: bump-charts
     runs-on: ubuntu-latest
     steps:
-
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{github.event.inputs.chart}}-v${{ needs.bump-charts.outputs.alpha-version }}
+          ref: br-${{github.event.inputs.chart}}-v${{ needs.bump-charts.outputs.alpha-version }}
 
       - name: Configure Git
         run: |
-          # pull latest changes 
           git pull
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Update Readme alpha chart warning
+        run: |
+          sed -i '0,/^#/ s/^#.*$/&\n\nThis is an alpha version of this chart/' charts/${{github.event.inputs.chart}}/README.md
+      
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "update readme"
+          branch: br-${{github.event.inputs.chart}}-v${{ needs.bump-charts.outputs.alpha-version }}
 
       - name: Install Helm
         uses: azure/setup-helm@v3
