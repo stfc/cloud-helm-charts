@@ -52,6 +52,7 @@ jobs:
           commit_message: "bump chart ${{github.event.inputs.chart}} to version: ${{ steps.bump-version.outputs.version }}"
           branch: ${{github.event.inputs.chart}}-v${{ steps.bump-version.outputs.version }}
           create_branch: true
+          tagging_message: ${{github.event.inputs.chart}}-v${{ steps.bump-version.outputs.version }}
 
   publish:
     needs: bump-charts
@@ -60,8 +61,6 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{github.event.inputs.chart}}-v${{ needs.bump-charts.outputs.alpha-version }}
 
       - name: Configure Git
         run: |
