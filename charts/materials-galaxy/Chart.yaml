@@ -13,4 +13,4 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     version: 4.4.6
 name: materials-galaxy
-version: 1.0.1
+version: 1.0.1-alpha.9514e9f
