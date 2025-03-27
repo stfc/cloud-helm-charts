@@ -1,5 +1,7 @@
 # Galaxy
 
+This is an alpha version of this chart
+
 Galaxy is a web-based platform for data analytics. 
 See [Galaxy Docs](https://docs.galaxyproject.org/en/master/) 
 
