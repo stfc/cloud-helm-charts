@@ -1,5 +1,7 @@
 # STFC Cloud Openstack Cluster Chart
 
+This is an alpha version of this chart
+
 This chart deploys a Cluster-API (CAPI) K8s Cluster intended to be run on the STFC Cloud (Openstack). 
 
 # Requirements 
