@@ -25,6 +25,26 @@ entries:
     version: 1.0.0
   materials-galaxy:
   - apiVersion: v2
+    created: "2025-03-27T10:45:58.175391235Z"
+    dependencies:
+    - name: galaxy
+      repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
+      version: 6.1.0
+    - name: oauth2-proxy
+      repository: https://oauth2-proxy.github.io/manifests
+      version: 7.12.7
+    - name: postgres-operator
+      repository: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+      version: 1.14.0
+    - name: rabbitmq-cluster-operator
+      repository: https://charts.bitnami.com/bitnami
+      version: 4.4.6
+    digest: f98b60417a4c9961d39d2d7f78b8b327283f2f1ca31bfa89f92144ffd74a5c72
+    name: materials-galaxy
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/materials-galaxy-1.1.0-alpha.103bb16/materials-galaxy-1.1.0-alpha.103bb16.tgz
+    version: 1.1.0-alpha.103bb16
+  - apiVersion: v2
     created: "2025-01-14T14:32:23.708908524Z"
     dependencies:
     - name: galaxy
@@ -238,4 +258,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2025-03-21T14:43:28.741073638Z"
+generated: "2025-03-27T10:45:58.175408858Z"
