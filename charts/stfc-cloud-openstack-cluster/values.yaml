@@ -3,7 +3,7 @@ openstack-cluster:
   # The name of the cloud to use from the specified clouds.yaml
   cloudName: openstack
 
-  cloudCredentialsSecretName: stfc-cloud-capi-credentials
+  cloudCredentialsSecretName: cloud-credentials
   # The Kubernetes version of the cluster
   # This should match the version of kubelet and kubeadm in the image
   # and will be automatically updated by us

@@ -49,7 +49,7 @@ You can copy and edit the file locally and use it as another source of helm valu
 
 ```bash
 export CLUSTER_NAME="demo-cluster"  # or your cluster name
-helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --install -f values.yaml -f addons.yaml -f nodes.yaml -f /path/to/clouds.yaml --set openstack-cluster.apiServer.floatingIP=130.246.xxx.xxx
+helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --install -f values.yaml -f addons.yaml -f nodes.yaml -f /path/to/clouds.yaml --set openstack-cluster.apiServer.floatingIP=130.246.xxx.xxx --set openstack-cluster.cloudCredentialsSecretName=${CLUSTER_NAME}-cloud-credentials -n ${CLUSTER_NAME}
 ```
 
 4. Check the cluster status
@@ -57,7 +57,7 @@ helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --install -
 When the deployment is complete clusterctl will report the cluster as Ready: True
 
 ```bash
-clusterctl describe cluster $CLUSTER_NAME -n clusters
+clusterctl describe cluster $CLUSTER_NAME -n ${CLUSTER_NAME}
 ```
 
 Progress can be monitored with the following command in a separate terminal:
@@ -69,7 +69,7 @@ kubectl logs deploy/capo-controller-manager -n capo-system -f
 Once this is deployed you can get the kubeconfig like so:
 
 ```bash
-clusterctl get kubeconfig $CLUSTER_NAME -n clusters > $CLUSTER_NAME.kubeconfig
+clusterctl get kubeconfig $CLUSTER_NAME -n ${CLUSTER_NAME} > $CLUSTER_NAME.kubeconfig
 ```
 
 you should be able to run commands on your cluster like this:
@@ -85,13 +85,13 @@ KUBECONFIG=$CLUSTER_NAME.kubeconfig kubectl get nodes
 Install clusterctl into the new cluster and move the control plane
 ```bash
 clusterctl init --infrastructure=openstack:v0.10.5 --kubeconfig=$CLUSTER_NAME.kubeconfig
-clusterctl move --to-kubeconfig $CLUSTER_NAME.kubeconfig -n clusters
+clusterctl move --to-kubeconfig $CLUSTER_NAME.kubeconfig -n ${CLUSTER_NAME}
 ```
  
 Ensure the control plane is now running on the new cluster:
 
 ```bash
-kubectl get kubeadmcontrolplane --kubeconfig=$CLUSTER_NAME.kubeconfig -n clusters
+kubectl get kubeadmcontrolplane --kubeconfig=$CLUSTER_NAME.kubeconfig -n ${CLUSTER_NAME}
 ```
 
 Using the new control plane by default, 
@@ -110,6 +110,6 @@ kubectl get nodes
 Run the install step again on the new cluster - to self manage the cluster
 ```bash
 # Update the cluster to ensure everything lines up with your helm chart
-helm upgrade cluster-api-addon-provider capi-addons/cluster-api-addon-provider --install --wait --version 0.7.0 -n clusters
-helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --install -f values.yaml -f addons.yaml -f nodes.yaml -f /path/to/clouds.yaml --set openstack-cluster.apiServer.floatingIP=130.246.xxx.xxx
+helm upgrade --create-namespace cluster-api-addon-provider capi-addons/cluster-api-addon-provider --install --wait --version 0.7.0 -n capi-addon-system
+helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --install -f values.yaml -f addons.yaml -f nodes.yaml -f /path/to/clouds.yaml --set openstack-cluster.apiServer.floatingIP=130.246.xxx.xxx --set openstack-cluster.cloudCredentialsSecretName=${CLUSTER_NAME}-cloud-credentials -n ${CLUSTER_NAME}3
 ```
