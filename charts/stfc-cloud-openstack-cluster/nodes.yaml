@@ -15,7 +15,7 @@ openstack-cluster:
   nodeGroups:
     # This group uses details found in nodeGroupDefault below
     # and is enabled by default
-    - name: default-md-0
+    - name: md-0
       # The number of machines in the node group if autoscale is false
       machineCount: 2
 
