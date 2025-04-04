@@ -137,6 +137,18 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-chatops-0.1.0/stfc-cloud-chatops-0.1.0.tgz
     version: 0.1.0
+  stfc-cloud-longhorn:
+  - apiVersion: v2
+    created: "2025-04-04T17:41:51.766597517Z"
+    dependencies:
+    - name: longhorn
+      repository: https://charts.longhorn.io
+      version: 1.8.1
+    digest: ba458c2ed8d6a4590c383c07901af2ad8f5c48f9ad2f0d2e4d6d4b5c3dc0aea7
+    name: stfc-cloud-longhorn
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-longhorn-1.0.1-alpha.470ee9a/stfc-cloud-longhorn-1.0.1-alpha.470ee9a.tgz
+    version: 1.0.1-alpha.470ee9a
   stfc-cloud-manila-csi:
   - apiVersion: v2
     created: "2025-01-29T21:16:06.39652904Z"
@@ -306,4 +318,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2025-04-01T15:41:26.631934306Z"
+generated: "2025-04-04T17:41:51.76663151Z"
