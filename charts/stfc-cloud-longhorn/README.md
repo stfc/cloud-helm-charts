@@ -1,5 +1,7 @@
 # Longhorn Chart
 
+This is an alpha version of this chart
+
 This chart provides an opinionated deployment of Longhorn for the STFC Cloud
 Longhorn is a Cloud Native application for presistent block storage.  See [Longhorn docs](https://longhorn.io/docs/latest/). It utilises the local storage available on worker nodes, creating and managing replicas of container volumes to keep data persistent 
 
