@@ -1,3 +1,19 @@
+galaxy-deps:
+  postgresql:
+    #- Whether to deploy the postgresl operator.
+    #- In general, we recommend installing the operator globally in production.
+    deploy: true
+
+  #- Configuration block if `cvmfs` is used as `refdata.type`
+  cvmfs:
+    deploy: false
+  
+  s3csi:
+    deploy: false
+
+  rabbitmq:
+    deploy: true
+
 galaxy:
   # RBAC is defined by admins once service is up
   rbac:
@@ -71,12 +87,6 @@ galaxy:
       cpu: 3
       memory: 7G
       ephemeral-storage: 10Gi
-
-  # standalone db to reduce galaxy memory footprint
-  postgresql:
-    enabled: true
-
-    deploy: false
 
   # do not mount cloud-hosted Galaxy reference data and tools
   refdata:
@@ -325,26 +335,27 @@ galaxy:
   # disable influxdb database - used by metrics scraper tool
   influxdb:
     enabled: false
+  
+  # standalone db to reduce galaxy memory footprint
+  postgresql:
+    enabled: true
+    deploy: false
+    persistence: 
+      enabled: true
+      storageClassName: longhorn
+  
+  cvmfs:
+    deploy: false
 
   # turn off file transfering for now
   tusd:
     enabled: false
-
-  # we need a message queue so galaxy components can talk to each other
+  
   rabbitmq:
-    enabled: true
-    deploy: false
     persistence:
       storageClassName: longhorn
-
-  # don't need cvmfs since its only needed to copy in default galaxy tools/reference data
-  cvmfs:
-    deploy: false
-
-  # don't need s3 since we don't use that to copy in galaxy tools/reference data
-  s3csi:
-    deploy: false
-
+      storage: 10Gi
+  
 oauth2-proxy:
   # Oauth client configuration specifics
   extraArgs:
