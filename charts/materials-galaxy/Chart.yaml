@@ -1,8 +1,8 @@
 apiVersion: v2
 name: materials-galaxy
-version: 2.0.0
+version: 2.0.0-alpha.28d2b7a
 dependencies:
-# https://github.com/galaxyproject/galaxy-helm
+  # https://github.com/galaxyproject/galaxy-helm
   - repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
     name: galaxy
     version: 6.1.0
