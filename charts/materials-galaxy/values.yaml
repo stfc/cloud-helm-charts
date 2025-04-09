@@ -1,3 +1,19 @@
+galaxy-deps:
+  postgresql:
+    #- Whether to deploy the postgresl operator.
+    #- In general, we recommend installing the operator globally in production.
+    deploy: true
+
+  #- Configuration block if `cvmfs` is used as `refdata.type`
+  cvmfs:
+    deploy: false
+  
+  s3csi:
+    deploy: false
+
+  rabbitmq:
+    deploy: true
+
 galaxy:
   # RBAC is defined by admins once service is up
   rbac:
@@ -28,19 +44,25 @@ galaxy:
       applyToWeb: true
       applyToWorkflow: false
       image: "alpine/git:latest"
-      command: ['sh', '-c', 'git clone https://github.com/muon-spectroscopy-computational-project/muon-galaxy-tools.git --depth 1 --branch main {{.Values.persistence.mountPath}}/muon-galaxy-tools || true']
+      command: ['sh', '-c', 'git clone https://github.com/muon-spectroscopy-computational-project/muon-galaxy-tools.git --depth 1 --branch main {{.Values.persistence.mountPath}}/tool-data/muon-galaxy-tools || true']
       volumeMounts:
         - name: galaxy-data
           mountPath: "{{.Values.persistence.mountPath}}"
+      securityContext:
+        runAsGroup: 0
+        runAsUser: 0
     - name: clone-larch-tools
       applyToJob: false
       applyToWeb: true
       applyToWorkflow: false
       image: "alpine/git:latest"
-      command: ['sh', '-c', 'git clone https://github.com/MaterialsGalaxy/larch-tools.git --depth 1 --branch main {{.Values.persistence.mountPath}}/larch-tools || true']
+      command: ['sh', '-c', 'git clone https://github.com/MaterialsGalaxy/larch-tools.git --depth 1 --branch main {{.Values.persistence.mountPath}}/tool-data/larch-tools || true']
       volumeMounts:
         - name: galaxy-data
           mountPath: "{{.Values.persistence.mountPath}}"
+      securityContext:
+        runAsGroup: 0
+        runAsUser: 0
 
   ingress:
     # used in galaxy configuration
@@ -71,12 +93,6 @@ galaxy:
       cpu: 3
       memory: 7G
       ephemeral-storage: 10Gi
-
-  # standalone db to reduce galaxy memory footprint
-  postgresql:
-    enabled: true
-
-    deploy: false
 
   # do not mount cloud-hosted Galaxy reference data and tools
   refdata:
@@ -139,47 +155,47 @@ galaxy:
         </section>
         <label id="muon_label" text="Muons" />
         <section id="muspinsim" name="MuSpinSim">
-          <tool file="{{.Values.persistence.mountPath}}/muon-galaxy-tools/muspinsim_combine/muspinsim_combine.xml"/>
-          <tool file="{{.Values.persistence.mountPath}}/muon-galaxy-tools/muspinsim_config/muspinsim_config.xml"/>
-          <tool file="{{.Values.persistence.mountPath}}/muon-galaxy-tools/muspinsim_plot/muspinsim_plot.xml"/>
-          <tool file="{{.Values.persistence.mountPath}}/muon-galaxy-tools/muspinsim/muspinsim.xml"/>
+          <tool file="{{.Values.persistence.mountPath}}/tool-data/muon-galaxy-tools/muspinsim_combine/muspinsim_combine.xml"/>
+          <tool file="{{.Values.persistence.mountPath}}/tool-data/muon-galaxy-tools/muspinsim_config/muspinsim_config.xml"/>
+          <tool file="{{.Values.persistence.mountPath}}/tool-data/muon-galaxy-tools/muspinsim_plot/muspinsim_plot.xml"/>
+          <tool file="{{.Values.persistence.mountPath}}/tool-data/muon-galaxy-tools/muspinsim/muspinsim.xml"/>
         </section>
         <section id="muon_stopping_sites" name="Muon Stopping Sites">
-          <tool file="{{.Values.persistence.mountPath}}/muon-galaxy-tools/pm_muairss_read/pm_muairss_read.xml"/>
-          <tool file="{{.Values.persistence.mountPath}}/muon-galaxy-tools/pm_uep_opt/pm_uep_opt.xml"/>
-          <tool file="{{.Values.persistence.mountPath}}/muon-galaxy-tools/pm_symmetry/pm_symmetry.xml"/>
+          <tool file="{{.Values.persistence.mountPath}}/tool-data/muon-galaxy-tools/pm_muairss_read/pm_muairss_read.xml"/>
+          <tool file="{{.Values.persistence.mountPath}}/tool-data/muon-galaxy-tools/pm_uep_opt/pm_uep_opt.xml"/>
+          <tool file="{{.Values.persistence.mountPath}}/tool-data/muon-galaxy-tools/pm_symmetry/pm_symmetry.xml"/>
         </section>
         <section id="muon_other" name="Other Muon Tools">
-          <tool file="{{.Values.persistence.mountPath}}/muon-galaxy-tools/mudirac/mudirac.xml"/>
-          <tool file="{{.Values.persistence.mountPath}}/muon-galaxy-tools/pm_asephonons/pm_asephonons.xml"/>
-          <tool file="{{.Values.persistence.mountPath}}/muon-galaxy-tools/pm_nq/pm_nq.xml"/>
+          <tool file="{{.Values.persistence.mountPath}}/tool-data/muon-galaxy-tools/mudirac/mudirac.xml"/>
+          <tool file="{{.Values.persistence.mountPath}}/tool-data/muon-galaxy-tools/pm_asephonons/pm_asephonons.xml"/>
+          <tool file="{{.Values.persistence.mountPath}}/tool-data/muon-galaxy-tools/pm_nq/pm_nq.xml"/>
         </section>
         <label id="xas_label" text="xas" />
-        <tool file="{{.Values.persistence.mountPath}}/larch-tools/larch_select_paths/larch_select_paths.xml" />
-        <tool file="{{.Values.persistence.mountPath}}/larch-tools/larch_plot/larch_plot.xml" />
-        <tool file="{{.Values.persistence.mountPath}}/larch-tools/larch_athena/larch_athena.xml" />
-        <tool file="{{.Values.persistence.mountPath}}/larch-tools/larch_artemis/larch_artemis.xml" />
-        <tool file="{{.Values.persistence.mountPath}}/larch-tools/larch_feff/larch_feff.xml" />
-        <tool file="{{.Values.persistence.mountPath}}/larch-tools/larch_lcf/larch_lcf.xml" />
-        <tool file="{{.Values.persistence.mountPath}}/larch-tools/larch_criteria_report/larch_criteria_report.xml" />
+        <tool file="{{.Values.persistence.mountPath}}/tool-data/larch-tools/larch_select_paths/larch_select_paths.xml" />
+        <tool file="{{.Values.persistence.mountPath}}/tool-data/larch-tools/larch_plot/larch_plot.xml" />
+        <tool file="{{.Values.persistence.mountPath}}/tool-data/larch-tools/larch_athena/larch_athena.xml" />
+        <tool file="{{.Values.persistence.mountPath}}/tool-data/larch-tools/larch_artemis/larch_artemis.xml" />
+        <tool file="{{.Values.persistence.mountPath}}/tool-data/larch-tools/larch_feff/larch_feff.xml" />
+        <tool file="{{.Values.persistence.mountPath}}/tool-data/larch-tools/larch_lcf/larch_lcf.xml" />
+        <tool file="{{.Values.persistence.mountPath}}/tool-data/larch-tools/larch_criteria_report/larch_criteria_report.xml" />
         <label id="other_tools" text="Other Tools" />
         <section id="file_conversion" name="File Conversion">
-          <tool file="{{.Values.persistence.mountPath}}/muon-galaxy-tools/cif2cell/cif2cell.xml" />
+          <tool file="{{.Values.persistence.mountPath}}/tool-data/muon-galaxy-tools/cif2cell/cif2cell.xml" />
         </section>
         <section id="collection_operations" name="Collection Operations">
-          <tool file="${model_tools_path}/unzip_collection.xml" />
-          <tool file="${model_tools_path}/zip_collection.xml" />
-          <tool file="${model_tools_path}/filter_failed_collection.xml" />
-          <tool file="${model_tools_path}/filter_empty_collection.xml" />
-          <tool file="${model_tools_path}/flatten_collection.xml" />
-          <tool file="${model_tools_path}/merge_collection.xml" />
-          <tool file="${model_tools_path}/relabel_from_file.xml" />
-          <tool file="${model_tools_path}/filter_from_file.xml" />
-          <tool file="${model_tools_path}/sort_collection_list.xml" />
-          <tool file="${model_tools_path}/tag_collection_from_file.xml" />
-          <tool file="${model_tools_path}/apply_rules.xml" />
-          <tool file="${model_tools_path}/build_list.xml" />
-          <tool file="${model_tools_path}/extract_dataset.xml" />
+          <tool file="${model_tools_path}/tool-data/unzip_collection.xml" />
+          <tool file="${model_tools_path}/tool-data/zip_collection.xml" />
+          <tool file="${model_tools_path}/tool-data/filter_failed_collection.xml" />
+          <tool file="${model_tools_path}/tool-data/filter_empty_collection.xml" />
+          <tool file="${model_tools_path}/tool-data/flatten_collection.xml" />
+          <tool file="${model_tools_path}/tool-data/merge_collection.xml" />
+          <tool file="${model_tools_path}/tool-data/relabel_from_file.xml" />
+          <tool file="${model_tools_path}/tool-data/filter_from_file.xml" />
+          <tool file="${model_tools_path}/tool-data/sort_collection_list.xml" />
+          <tool file="${model_tools_path}/tool-data/tag_collection_from_file.xml" />
+          <tool file="${model_tools_path}/tool-data/apply_rules.xml" />
+          <tool file="${model_tools_path}/tool-data/build_list.xml" />
+          <tool file="${model_tools_path}/tool-data/extract_dataset.xml" />
         </section>
       </toolbox>
 
@@ -325,26 +341,27 @@ galaxy:
   # disable influxdb database - used by metrics scraper tool
   influxdb:
     enabled: false
+  
+  # standalone db to reduce galaxy memory footprint
+  postgresql:
+    enabled: true
+    deploy: false
+    persistence: 
+      enabled: true
+      storageClassName: longhorn
+  
+  cvmfs:
+    deploy: false
 
   # turn off file transfering for now
   tusd:
     enabled: false
-
-  # we need a message queue so galaxy components can talk to each other
+  
   rabbitmq:
-    enabled: true
-    deploy: false
     persistence:
       storageClassName: longhorn
-
-  # don't need cvmfs since its only needed to copy in default galaxy tools/reference data
-  cvmfs:
-    deploy: false
-
-  # don't need s3 since we don't use that to copy in galaxy tools/reference data
-  s3csi:
-    deploy: false
-
+      storage: 10Gi
+  
 oauth2-proxy:
   # Oauth client configuration specifics
   extraArgs:
