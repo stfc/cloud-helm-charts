@@ -48,6 +48,9 @@ galaxy:
       volumeMounts:
         - name: galaxy-data
           mountPath: "{{.Values.persistence.mountPath}}"
+      securityContext:
+        runAsGroup: 0
+        runAsUser: 0
     - name: clone-larch-tools
       applyToJob: false
       applyToWeb: true
@@ -57,6 +60,9 @@ galaxy:
       volumeMounts:
         - name: galaxy-data
           mountPath: "{{.Values.persistence.mountPath}}"
+      securityContext:
+        runAsGroup: 0
+        runAsUser: 0
 
   ingress:
     # used in galaxy configuration
