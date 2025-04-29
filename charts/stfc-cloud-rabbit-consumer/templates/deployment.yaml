@@ -67,7 +67,7 @@ spec:
               readOnly: true
         
         {{- range $i := .Values.consumer.queues }}
-        - name: consumer-{{ $i }}
+        - name: consumer-{{ $i  | replace "." "-" }}
           image: "{{ $.Values.consumer.image.repository }}:{{ default $.Chart.AppVersion $.Values.consumer.image.tag }}"
           imagePullPolicy: {{ $.Values.consumer.image.pullPolicy }}
           env:
