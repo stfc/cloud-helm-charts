@@ -68,20 +68,20 @@ spec:
         
         {{- range $i := .Values.consumer.queues }}
         - name: consumer-{{ $i }}
-          image: "{{ .Values.consumer.image.repository }}:{{ default .Chart.AppVersion .Values.consumer.image.tag }}"
-          imagePullPolicy: {{ .Values.consumer.image.pullPolicy }}
+          image: "{{ $.Values.consumer.image.repository }}:{{ default $.Chart.AppVersion $.Values.consumer.image.tag }}"
+          imagePullPolicy: {{ $.Values.consumer.image.pullPolicy }}
           env:
           - name: "CONSUMER_QUEUE"
             value: {{ $i }}
           envFrom:
             - configMapRef:
-                name: {{ .Release.Name }}-consumer-env
+                name: {{ $.Release.Name }}-consumer-env
             - configMapRef:
-                name: {{ .Release.Name }}-kerberos-env
+                name: {{ $.Release.Name }}-kerberos-env
             - secretRef:
-                name: {{ .Values.consumer.rabbitmq.secretRef }}
+                name: {{ $.Values.consumer.rabbitmq.secretRef }}
             - secretRef:
-                name: {{ .Values.consumer.openstack.secretRef }}
+                name: {{ $.Values.consumer.openstack.secretRef }}
 
           volumeMounts:
             - name: shared
