@@ -5,7 +5,8 @@ consumer:
   logLevel: INFO
 
   image:
-    repository: harbor.stfc.ac.uk/stfc-cloud/openstack-rabbit-consumer
+    repository: harbor.stfc.ac.uk/stfc-cloud-staging/openstack-rabbit-consumer
+    tag: ff3f8df
     pullPolicy: IfNotPresent
 
   aquilon:
