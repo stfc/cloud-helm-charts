@@ -66,9 +66,13 @@ spec:
               subPath: krb5.keytab
               readOnly: true
         
-        - name: consumer
+        {{- range $i := .Values.consumer.queues }}
+        - name: consumer-{{ $i }}
           image: "{{ .Values.consumer.image.repository }}:{{ default .Chart.AppVersion .Values.consumer.image.tag }}"
           imagePullPolicy: {{ .Values.consumer.image.pullPolicy }}
+          env:
+          - name: "CONSUMER_QUEUE"
+            value: {{ $i }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-consumer-env
@@ -87,6 +91,7 @@ spec:
               subPath: krb5.conf
             - name: trusted-certs
               mountPath: /etc/grid-security/certificates
+        {{- end }}
 
       hostAliases:
       # Logon 04
