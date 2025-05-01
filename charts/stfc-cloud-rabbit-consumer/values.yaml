@@ -8,6 +8,9 @@ consumer:
     repository: harbor.stfc.ac.uk/stfc-cloud/openstack-rabbit-consumer
     pullPolicy: IfNotPresent
 
+  queues:
+    - "ral.info"
+
   aquilon:
     defaultArchetype: cloud
     defaultDomain: prod_cloud
