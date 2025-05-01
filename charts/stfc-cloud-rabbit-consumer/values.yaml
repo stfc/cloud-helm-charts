@@ -5,9 +5,8 @@ consumer:
   logLevel: INFO
 
   image:
-    repository: harbor.stfc.ac.uk/stfc-cloud-staging/openstack-rabbit-consumer
+    repository: harbor.stfc.ac.uk/stfc-cloud/openstack-rabbit-consumer
     pullPolicy: IfNotPresent
-    tag: 68e73a9
 
   queues:
     - "ral.info"
