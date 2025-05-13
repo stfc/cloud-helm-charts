@@ -42,23 +42,6 @@ entries:
     - https://github.com/stfc/cloud-helm-charts/releases/download/materials-galaxy-2.0.0/materials-galaxy-2.0.0.tgz
     version: 2.0.0
   - apiVersion: v2
-    created: "2025-04-04T18:10:41.882708964Z"
-    dependencies:
-    - name: galaxy
-      repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
-      version: 6.1.0
-    - name: galaxy-deps
-      repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
-      version: 1.0.0
-    - name: oauth2-proxy
-      repository: https://oauth2-proxy.github.io/manifests
-      version: 7.12.8
-    digest: d79384779846aa33ba98b61fdd06aaa6454fcdff8d5e7ea8388e7894f3f1669a
-    name: materials-galaxy
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/materials-galaxy-2.0.0-alpha.db635e1/materials-galaxy-2.0.0-alpha.db635e1.tgz
-    version: 2.0.0-alpha.db635e1
-  - apiVersion: v2
     created: "2025-05-13T08:21:09.847812652Z"
     dependencies:
     - name: galaxy
@@ -75,43 +58,6 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/materials-galaxy-2.0.0-alpha.87e961e/materials-galaxy-2.0.0-alpha.87e961e.tgz
     version: 2.0.0-alpha.87e961e
-  - apiVersion: v2
-    created: "2025-04-09T12:43:15.351587713Z"
-    dependencies:
-    - name: galaxy
-      repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
-      version: 6.1.0
-    - name: galaxy-deps
-      repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
-      version: 1.0.0
-    - name: oauth2-proxy
-      repository: https://oauth2-proxy.github.io/manifests
-      version: 7.12.8
-    digest: 6a17adc986750b948529df2519c25af6e30399a99eeb068930e2eea7458ad220
-    name: materials-galaxy
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/materials-galaxy-2.0.0-alpha.28d2b7a/materials-galaxy-2.0.0-alpha.28d2b7a.tgz
-    version: 2.0.0-alpha.28d2b7a
-  - apiVersion: v2
-    created: "2025-03-27T10:45:58.175391235Z"
-    dependencies:
-    - name: galaxy
-      repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
-      version: 6.1.0
-    - name: oauth2-proxy
-      repository: https://oauth2-proxy.github.io/manifests
-      version: 7.12.7
-    - name: postgres-operator
-      repository: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
-      version: 1.14.0
-    - name: rabbitmq-cluster-operator
-      repository: https://charts.bitnami.com/bitnami
-      version: 4.4.6
-    digest: f98b60417a4c9961d39d2d7f78b8b327283f2f1ca31bfa89f92144ffd74a5c72
-    name: materials-galaxy
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/materials-galaxy-1.1.0-alpha.103bb16/materials-galaxy-1.1.0-alpha.103bb16.tgz
-    version: 1.1.0-alpha.103bb16
   - apiVersion: v2
     created: "2025-01-14T14:32:23.708908524Z"
     dependencies:
@@ -231,17 +177,6 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-longhorn-1.0.1/stfc-cloud-longhorn-1.0.1.tgz
     version: 1.0.1
-  - apiVersion: v2
-    created: "2025-04-04T17:41:51.766597517Z"
-    dependencies:
-    - name: longhorn
-      repository: https://charts.longhorn.io
-      version: 1.8.1
-    digest: ba458c2ed8d6a4590c383c07901af2ad8f5c48f9ad2f0d2e4d6d4b5c3dc0aea7
-    name: stfc-cloud-longhorn
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-longhorn-1.0.1-alpha.470ee9a/stfc-cloud-longhorn-1.0.1-alpha.470ee9a.tgz
-    version: 1.0.1-alpha.470ee9a
   stfc-cloud-manila-csi:
   - apiVersion: v2
     created: "2025-01-29T21:16:06.39652904Z"
@@ -301,34 +236,6 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-openstack-cluster-1.4.3/stfc-cloud-openstack-cluster-1.4.3.tgz
     version: 1.4.3
-  - apiVersion: v2
-    created: "2025-03-27T15:24:01.596022496Z"
-    dependencies:
-    - name: openstack-cluster
-      repository: https://azimuth-cloud.github.io/capi-helm-charts
-      version: 0.14.1
-    description: A Helm chart to deploy a compliant K8s cluster (using CAPI) on the
-      STFC Cloud
-    digest: f877dd40a93a9c5cd65acf5d46d3a0cb1c48272254e6666e361915fa3f074014
-    name: stfc-cloud-openstack-cluster
-    type: application
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-openstack-cluster-1.4.3-alpha.4ebb22a/stfc-cloud-openstack-cluster-1.4.3-alpha.4ebb22a.tgz
-    version: 1.4.3-alpha.4ebb22a
-  - apiVersion: v2
-    created: "2025-03-28T14:02:15.112076622Z"
-    dependencies:
-    - name: openstack-cluster
-      repository: https://azimuth-cloud.github.io/capi-helm-charts
-      version: 0.14.1
-    description: A Helm chart to deploy a compliant K8s cluster (using CAPI) on the
-      STFC Cloud
-    digest: 906fb76bb47bf74f1640ce67b01b95ca2d8717ca5904904b931869d8a915417e
-    name: stfc-cloud-openstack-cluster
-    type: application
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-openstack-cluster-1.4.3-alpha.2670eb2/stfc-cloud-openstack-cluster-1.4.3-alpha.2670eb2.tgz
-    version: 1.4.3-alpha.2670eb2
   - apiVersion: v2
     created: "2025-03-21T14:43:28.741041288Z"
     dependencies:
@@ -395,36 +302,6 @@ entries:
     version: 1.9.0
   - apiVersion: v2
     appVersion: v3.1.0
-    created: "2025-04-29T15:34:45.123810808Z"
-    description: A Helm chart for STFC Cloud Rabbit Consumers
-    digest: a7429ba45d4d01863fa1a500a82f12f10fef2eab8b808bf26915cfd296e02be0
-    name: stfc-cloud-rabbit-consumer
-    type: application
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-rabbit-consumer-1.9.0-alpha.610b713/stfc-cloud-rabbit-consumer-1.9.0-alpha.610b713.tgz
-    version: 1.9.0-alpha.610b713
-  - apiVersion: v2
-    appVersion: v3.1.0
-    created: "2025-04-29T14:32:57.051459952Z"
-    description: A Helm chart for STFC Cloud Rabbit Consumers
-    digest: 4b02e0b2e04362b96990d5a714f9be34ed71786873826502dd3a60f1a4021279
-    name: stfc-cloud-rabbit-consumer
-    type: application
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-rabbit-consumer-1.9.0-alpha.2edb31a/stfc-cloud-rabbit-consumer-1.9.0-alpha.2edb31a.tgz
-    version: 1.9.0-alpha.2edb31a
-  - apiVersion: v2
-    appVersion: v3.1.2
-    created: "2025-04-01T15:41:26.631888731Z"
-    description: A Helm chart for STFC Cloud Rabbit Consumers
-    digest: d2c638e19a3621211ca98cd97a5861462a7bb476297602057632ea21bc9e458e
-    name: stfc-cloud-rabbit-consumer
-    type: application
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-rabbit-consumer-1.8.1-alpha.bf27244/stfc-cloud-rabbit-consumer-1.8.1-alpha.bf27244.tgz
-    version: 1.8.1-alpha.bf27244
-  - apiVersion: v2
-    appVersion: v3.1.0
     created: "2025-01-29T21:16:06.679511232Z"
     description: A Helm chart for STFC Cloud Rabbit Consumers
     digest: a68e0974bf057c65536d12cec08af0d8c1c965377ab6b773e0ae68e86fdba9de
@@ -433,36 +310,6 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-rabbit-consumer-1.8.0/stfc-cloud-rabbit-consumer-1.8.0.tgz
     version: 1.8.0
-  - apiVersion: v2
-    appVersion: v3.1.0
-    created: "2025-04-29T10:48:27.176122864Z"
-    description: A Helm chart for STFC Cloud Rabbit Consumers
-    digest: 2e77eb30633eb13cbd5ef819331c9b90da812a4fe0d9c62af7fe9366e3bb4a2d
-    name: stfc-cloud-rabbit-consumer
-    type: application
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-rabbit-consumer-1.8.0-alpha.b84a2e4/stfc-cloud-rabbit-consumer-1.8.0-alpha.b84a2e4.tgz
-    version: 1.8.0-alpha.b84a2e4
-  - apiVersion: v2
-    appVersion: v3.1.0
-    created: "2025-04-01T15:36:22.399875313Z"
-    description: A Helm chart for STFC Cloud Rabbit Consumers
-    digest: 8f09e9e54c21b7408190d6e4b72a645732fcf727dcca8538a84877d618e4f9ea
-    name: stfc-cloud-rabbit-consumer
-    type: application
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-rabbit-consumer-1.8.0-alpha.820d5f8/stfc-cloud-rabbit-consumer-1.8.0-alpha.820d5f8.tgz
-    version: 1.8.0-alpha.820d5f8
-  - apiVersion: v2
-    appVersion: v3.1.0
-    created: "2025-04-29T10:39:44.372529924Z"
-    description: A Helm chart for STFC Cloud Rabbit Consumers
-    digest: 81fb9148ba5eb719f9ca5ab3eddf0459ad29005d7d656573c5284b64f8d18926
-    name: stfc-cloud-rabbit-consumer
-    type: application
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-rabbit-consumer-1.8.0-alpha.316265f/stfc-cloud-rabbit-consumer-1.8.0-alpha.316265f.tgz
-    version: 1.8.0-alpha.316265f
   stfc-cloud-vm:
   - apiVersion: v2
     created: "2025-02-27T10:57:39.235220911Z"
