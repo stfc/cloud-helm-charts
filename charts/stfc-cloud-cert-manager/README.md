@@ -18,9 +18,7 @@ helm install cert-manager cloud-charts/stfc-cloud-cert-manager -n cert-manager -
 
 To enable letsecrypt issuers, you need to add:
 
-```yaml
-cert-manager:
-  
+```yaml  
   # for testing your networing - PLEASE USE THIS TO TEST FIRST! 
   # this will prevent the ENTIRE department getting rate-limited!
   le-staging:  
@@ -55,3 +53,8 @@ ingress:
         hosts:
           - myservice.example.com
 ```
+
+
+## Troubleshooting
+
+if you're having issues installing this chart, it may be because cert-manager is already installed onto the cluster (and is not helm managed) you can force helm to take ownership of existing cert-manager resources by passing `--take-ownwership` flag when running `helm install`

@@ -1,15 +1,15 @@
+# Various issuers which are available
+self-signed:
+  enabled: true
+
+le-staging:
+  enabled: false
+
+le-prod:
+  enabled: false
+  # Let's Encrypt will use this to contact you about expiring
+  # certificates, and issues related to your account.
+  email: "user@example.com"
+
 cert-manager:
-  # Various issuers which are available
-  self-signed:
-    enabled: true
-
-  le-staging:
-    enabled: false
-
-  le-prod:
-    enabled: false
-    # Let's Encrypt will use this to contact you about expiring
-    # certificates, and issues related to your account.
-    email: "user@example.com"
-
   installCRDs: true
