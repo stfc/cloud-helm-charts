@@ -165,6 +165,18 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-chatops-0.1.0/stfc-cloud-chatops-0.1.0.tgz
     version: 0.1.0
+  stfc-cloud-harbor:
+  - apiVersion: v2
+    created: "2025-05-13T09:34:13.610898918Z"
+    dependencies:
+    - name: harbor
+      repository: https://helm.goharbor.io
+      version: 1.16.1
+    digest: 3691fe64b3a371be272453aa95c862c4635d9c910299de41b05fdfe39cf7d93a
+    name: stfc-cloud-harbor
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-harbor-1.0.0/stfc-cloud-harbor-1.0.0.tgz
+    version: 1.0.0
   stfc-cloud-longhorn:
   - apiVersion: v2
     created: "2025-04-07T09:45:12.042549545Z"
@@ -322,4 +334,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2025-05-13T08:21:09.847892756Z"
+generated: "2025-05-13T09:34:13.610942279Z"
