@@ -71,7 +71,7 @@ galaxy:
           secretKeyRef:
             name: git-deploy-keys
             key: clf-vepac-key
-      command: ['sh', '-c', 'mkdir -p /root/.ssh && echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_rsa && chmod 600 /root/.ssh/id_rsa && ssh-keyscan github.com >> /root/.ssh/known_hosts && git clone git@github.com:CLF-vEPAC/Galaxy-tools.git --depth 1 --branch main {{.Values.persistence.mountPath}}/clf-vepac-tools || true']
+      command: ['sh', '-c', 'mkdir -p /root/.ssh && echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_rsa && chmod 600 /root/.ssh/id_rsa && ssh-keyscan github.com >> /root/.ssh/known_hosts && git clone git@github.com:CLF-vEPAC/Galaxy-tools.git --depth 1 --branch main {{.Values.persistence.mountPath}}/tool-data/clf-vepac-tools || true']
       volumeMounts:
         - name: galaxy-data
           mountPath: "{{.Values.persistence.mountPath}}"
@@ -188,8 +188,8 @@ galaxy:
           <tool file="{{.Values.persistence.mountPath}}/tool-data/muon-galaxy-tools/pm_nq/pm_nq.xml"/>
         </section>
         <section id="clf_vepac" name="CLF vEPAC Tools">
-          <tool file="{{.Values.persistence.mountPath}}/clf-vepac-tools/geant4-plot/geant4_plot.xml"/>
-          <tool file="{{.Values.persistence.mountPath}}/clf-vepac-tools/geant4-sim/geant4_particles.xml"/>
+          <tool file="{{.Values.persistence.mountPath}}/tool-data/clf-vepac-tools/geant4-plot/geant4_plot.xml"/>
+          <tool file="{{.Values.persistence.mountPath}}/tool-data/clf-vepac-tools/geant4-sim/geant4_particles.xml"/>
         </section>
         <label id="xas_label" text="xas" />
         <tool file="{{.Values.persistence.mountPath}}/tool-data/larch-tools/larch_select_paths/larch_select_paths.xml" />
