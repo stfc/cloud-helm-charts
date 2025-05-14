@@ -42,23 +42,6 @@ entries:
     - https://github.com/stfc/cloud-helm-charts/releases/download/materials-galaxy-2.0.1/materials-galaxy-2.0.1.tgz
     version: 2.0.1
   - apiVersion: v2
-    created: "2025-05-13T13:01:22.361379479Z"
-    dependencies:
-    - name: galaxy
-      repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
-      version: 6.1.1
-    - name: galaxy-deps
-      repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
-      version: 1.0.0
-    - name: oauth2-proxy
-      repository: https://oauth2-proxy.github.io/manifests
-      version: 7.12.13
-    digest: a0d70ede12a56debddd250890c4dadc93b3370fc0ccad75fe8032d1e649dc180
-    name: materials-galaxy
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/materials-galaxy-2.0.1-alpha.2da10eb/materials-galaxy-2.0.1-alpha.2da10eb.tgz
-    version: 2.0.1-alpha.2da10eb
-  - apiVersion: v2
     created: "2025-04-09T15:34:38.567027386Z"
     dependencies:
     - name: galaxy
@@ -75,23 +58,6 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/materials-galaxy-2.0.0/materials-galaxy-2.0.0.tgz
     version: 2.0.0
-  - apiVersion: v2
-    created: "2025-05-13T08:21:09.847812652Z"
-    dependencies:
-    - name: galaxy
-      repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
-      version: 6.1.0
-    - name: galaxy-deps
-      repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
-      version: 1.0.0
-    - name: oauth2-proxy
-      repository: https://oauth2-proxy.github.io/manifests
-      version: 7.12.8
-    digest: cbeb2cd3f2f4b67222bab862bf8af7c838b3960e3500bfa6bc3e4358c4fa915b
-    name: materials-galaxy
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/materials-galaxy-2.0.0-alpha.87e961e/materials-galaxy-2.0.0-alpha.87e961e.tgz
-    version: 2.0.0-alpha.87e961e
   - apiVersion: v2
     created: "2025-01-14T14:32:23.708908524Z"
     dependencies:
@@ -253,20 +219,6 @@ entries:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-manila-csi-1.1.1/stfc-cloud-manila-csi-1.1.1.tgz
     version: 1.1.1
   - apiVersion: v2
-    created: "2025-05-13T13:00:13.118039186Z"
-    dependencies:
-    - name: openstack-manila-csi
-      repository: https://kubernetes.github.io/cloud-provider-openstack
-      version: 2.32.0
-    - name: ceph-csi-cephfs
-      repository: https://ceph.github.io/csi-charts
-      version: 3.14.0
-    digest: 29044a5821ae384d01dfaddad84d8e25af715d591ec6315d5e989208fee096b2
-    name: stfc-cloud-manila-csi
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-manila-csi-1.1.1-alpha.e5e9a72/stfc-cloud-manila-csi-1.1.1-alpha.e5e9a72.tgz
-    version: 1.1.1-alpha.e5e9a72
-  - apiVersion: v2
     created: "2025-01-29T21:16:06.39652904Z"
     dependencies:
     - name: openstack-manila-csi
@@ -310,20 +262,6 @@ entries:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-opensearch-1.0.1/stfc-cloud-opensearch-1.0.1.tgz
     version: 1.0.1
   - apiVersion: v2
-    created: "2025-05-13T13:01:39.837057211Z"
-    dependencies:
-    - name: opensearch-operator
-      repository: https://opensearch-project.github.io/opensearch-k8s-operator/
-      version: 2.7.0
-    description: A Helm chart to deploy an opinionated opensearch cluster with IRIS-IAM
-      integration
-    digest: 9618f50adcb71e6f7986535e9a12bd8816c39214d2c71398ce6936a7c7b5ca32
-    name: stfc-cloud-opensearch
-    type: application
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-opensearch-1.0.1-alpha.3e29889/stfc-cloud-opensearch-1.0.1-alpha.3e29889.tgz
-    version: 1.0.1-alpha.3e29889
-  - apiVersion: v2
     created: "2025-01-29T21:16:06.491631809Z"
     dependencies:
     - name: opensearch-operator
@@ -352,20 +290,6 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-openstack-cluster-1.4.4/stfc-cloud-openstack-cluster-1.4.4.tgz
     version: 1.4.4
-  - apiVersion: v2
-    created: "2025-05-13T12:51:28.595025605Z"
-    dependencies:
-    - name: openstack-cluster
-      repository: https://azimuth-cloud.github.io/capi-helm-charts
-      version: 0.15.0
-    description: A Helm chart to deploy a compliant K8s cluster (using CAPI) on the
-      STFC Cloud
-    digest: 35540ae8b8f8c95ef07c87dfa02898c33156a64e8797e78533f77c5fa2b3becd
-    name: stfc-cloud-openstack-cluster
-    type: application
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-openstack-cluster-1.4.4-alpha.67339ed/stfc-cloud-openstack-cluster-1.4.4-alpha.67339ed.tgz
-    version: 1.4.4-alpha.67339ed
   - apiVersion: v2
     created: "2025-04-07T09:44:39.814475093Z"
     dependencies:
@@ -455,17 +379,6 @@ entries:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-rabbit-consumer-1.8.0/stfc-cloud-rabbit-consumer-1.8.0.tgz
     version: 1.8.0
   stfc-cloud-vm:
-  - apiVersion: v2
-    created: "2025-05-13T13:00:37.142782591Z"
-    dependencies:
-    - name: victoria-metrics-cluster
-      repository: https://victoriametrics.github.io/helm-charts/
-      version: 0.22.0
-    digest: 55ff7b0cd13b1371ddf5a949cd0841a874e490b9644a3ba791ebb79aff07e91d
-    name: stfc-cloud-vm
-    urls:
-    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.1-alpha.bb5a2a1/stfc-cloud-vm-1.0.1-alpha.bb5a2a1.tgz
-    version: 1.0.1-alpha.bb5a2a1
   - apiVersion: v2
     created: "2025-02-27T10:57:39.235220911Z"
     dependencies:
