@@ -49,7 +49,7 @@ You can copy and edit the file locally and use it as another source of helm valu
 
 ```bash
 export CLUSTER_NAME="demo-cluster"  # or your cluster name
-helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --install -f values.yaml -f addons.yaml -f nodes.yaml -f /path/to/clouds.yaml --set openstack-cluster.apiServer.floatingIP=130.246.xxx.xxx --set openstack-cluster.cloudCredentialsSecretName=${CLUSTER_NAME}-cloud-credentials -n ${CLUSTER_NAME}
+helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --create-namespace --install -f values.yaml -f addons.yaml -f nodes.yaml -f /path/to/clouds.yaml --set openstack-cluster.apiServer.floatingIP=130.246.xxx.xxx --set openstack-cluster.cloudCredentialsSecretName=${CLUSTER_NAME}-cloud-credentials -n ${CLUSTER_NAME}
 ```
 
 4. Check the cluster status
