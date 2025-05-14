@@ -1,14 +1,13 @@
 apiVersion: v2
-name: materials-galaxy
-version: 2.0.0
 dependencies:
-# https://github.com/galaxyproject/galaxy-helm
-  - repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
-    name: galaxy
-    version: 6.1.0
-  - repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
-    name: galaxy-deps
+  - name: galaxy
+    repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
+    version: 6.1.1
+  - name: galaxy-deps
+    repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
     version: 1.0.0
-  - repository: "https://oauth2-proxy.github.io/manifests"
-    name: oauth2-proxy
-    version: 7.12.8
+  - name: oauth2-proxy
+    repository: https://oauth2-proxy.github.io/manifests
+    version: 7.12.13
+name: materials-galaxy
+version: 2.0.1
