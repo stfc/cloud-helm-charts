@@ -1,0 +1,20 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
+metadata:
+  name: opensearch-output
+spec:
+  opensearch:
+    host: {{ .Values.opensearch.hostname }}
+    httpPassword: {{ .Values.opensearch.password }}
+    httpUser: {{ .Values.opensearch.username }}
+    port: 9200
+    index: "{{ .Release.Name }}-{{ .Values.global.secrets.apiServerFloatIP }}-{{ .Values.global.secrets.projectID }}-logs"
+    logstashFormat: On
+    logstashPrefix: node
+    replaceDots: true
+    type: flb_type
+    traceError: true
+    suppressTypeName: On
+    timeKey: "@timestamp"
+    tls:
+      verify: false
