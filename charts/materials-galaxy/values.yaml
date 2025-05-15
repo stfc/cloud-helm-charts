@@ -35,13 +35,6 @@ galaxy:
     downloadToolConfs:
       enabled: false
 
-  # pick up git ssh key secrets for github based tools
-  extraVolumes:
-    - name: git-deploy-keys
-      secret:
-        secretName: git-deploy-keys
-        defaultMode: 0400 # read only
-  
   ingress:
     # used in galaxy configuration
     path: "/"

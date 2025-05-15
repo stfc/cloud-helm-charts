@@ -63,21 +63,29 @@ galaxy:
   ...
   extraInitContainers:
     ...
-    - name: clone-my-tools # or name of your tools
+    - name: clone-my-tools
       applyToJob: false
-      applyToWeb: true # this should just apply to one pod - galaxy-web
+      applyToWeb: true
       applyToWorkflow: false
-      image: "registry.k8s.io/git-sync/git-sync:v4.4.0" # or your setup image
+      image: "registry.k8s.io/git-sync/git-sync:v4.4.0"
+      securityContext: # so we can read/write to galaxy-data volume
+        runAsGroup: 0
+        runAsUser: 0
+      volumeMounts:  
+        - name: galaxy-data
+          mountPath: "{{.Values.persistence.mountPath}}"
       env:
-        - name: GIT_SYNC_ROOT
-          value: "{{.Values.persistence.mountPath}}/tool-data"
-        - name: GIT_SYNC_ONE_TIME
-          value: "true"
-        - name: GIT_SYNC_DEPTH
+        - name: GITSYNC_ROOT
+          value: "{{.Values.persistence.mountPath}}/git-sync/my-tools" # what git-sync will use to track changes
+        - name: GITSYNC_LINK
+          value: "{{.Values.persistence.mountPath}}/tool-data/my-tools" # what materials-galaxy will see (always the latest changes) 
+        - name: GITSYNC_ONE_TIME
+          value: "true" 
+        - name: GITSYNC_DEPTH
           value: "1"
-        - name: GIT_SYNC_REPO
-          value: https://github.com/myuser/myrepo.git
-        - name: GIT_SYNC_BRANCH
+        - name: GITSYNC_REPO
+          value: https://github.com/MaterialsGalaxy/larch-tools.git
+        - name: GITSYNC_REF
           value: main
 ```
 `{{.Values.persistence.mountPath}}` is a reference to the filepath for the mounted shared volume - same on all containers
@@ -97,7 +105,7 @@ more about deploy keys here - https://docs.github.com/en/authentication/connecti
 Deploy keys are useful as they only grant access to a single repository, limiting attack vectors, additionally, we can set them to be read-only which is recommended for this use-case.
 
 Once you create a deploy key, you need to add it to the secrets file under - be careful not to publish this as plaintext
-```
+```yaml
 gitRepos:
   - name: repo-name
     deployKey: |-
@@ -106,35 +114,56 @@ gitRepos:
     -----END OPENSSH PRIVATE KEY-----
 ```
 
-then you'll need to create a container image to install from private repo like so:
+then you'll need to create a init container to clone private repo like so:
 ```yaml
 galaxy:
   ...
-  extraVolumes:
-    - name: git-deploy-keys
-      secret:
-        secretName: git-deploy-keys
-        defaultMode: 0400 # read only
-
   extraInitContainers:
-    ...
-    - name: clone-my-tools # or name of your tools
+  ...
+    - name: clone-my-tools
       applyToJob: false
-      applyToWeb: true # this should just apply to one pod - galaxy-web
+      applyToWeb: true
       applyToWorkflow: false
-      image: "registry.k8s.io/git-sync/git-sync:v4.4.0" # or your setup image
+      image: "registry.k8s.io/git-sync/git-sync:v4.4.0"
+      command:  # copies ssh-key from env variable into file, sets permissions and runs git-sync
+        - sh
+        - -c 
+        - |
+          mkdir -p /root/.ssh &&\ 
+          echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_rsa &&\
+          chmod 600 /root/.ssh/id_rsa &&\
+          exec /git-sync
+      securityContext:
+        runAsGroup: 0
+        runAsUser: 0
       volumeMounts:
-        - name: git-deploy-keys
-          mountPath: /etc/git-deploy-keys
-      env:
-        - name: GIT_SYNC_REPO
-          value: git@github.com:CLF-vEPAC/Galaxy-tools.git
-        - name: GIT_SYNC_BRANCH
-          value: dev
-        - name: GIT_SYNC_SSH
+        - name: galaxy-data
+          mountPath: "{{.Values.persistence.mountPath}}"
+      env: # grab the key from secret - this is pre-generated from config above
+        - name: SSH_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: git-deploy-keys # name is hardcoded
+              key: clf-vepac-key
+        - name: GITSYNC_ROOT
+          value: "{{.Values.persistence.mountPath}}/git-sync/my-tools"
+        - name: GITSYNC_LINK
+          value: "{{.Values.persistence.mountPath}}/tool-data/my-tools"
+        - name: GITSYNC_ONE_TIME
           value: "true"
-        - name: GIT_SSH_KEY_FILE
-          value: /etc/git-deploy-keys/clf-vepac-key
+        - name: GITSYNC_DEPTH
+          value: "1"
+        - name: GITSYNC_REPO
+          value: git@github.com:user/my-private-repo.git
+        - name: GITSYNC_REF
+          value: dev
+        # add the following - its required and boilerplate
+        - name: GITSYNC_SSH 
+          value: "true"
+        - name: GITSYNC_SSH_KEY_FILE 
+          value: /root/.ssh/id_rsa
+        - name: GITSYNC_SSH_KNOWN_HOSTS
+          value: "false"
 ```
 
 ## Configuring main page
