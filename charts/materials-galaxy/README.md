@@ -56,7 +56,7 @@ We use [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init
 
 To add a new set of galaxy tools - you can add a new init container definition under `extraInitContainers` like so:
 
-We recommend creating a container image to install all your tools instead of using git image like below
+We recommend using [git-sync](https://github.com/kubernetes/git-sync) as a initcontainer to sync github repos
 
 ```yaml
 galaxy:
@@ -67,13 +67,18 @@ galaxy:
       applyToJob: false
       applyToWeb: true # this should just apply to one pod - galaxy-web
       applyToWorkflow: false
-      image: "alpine/git:latest" # or your setup image
-
-      # this is an example of how to clone your tools using git
-      command: ['sh', '-c', 'git clone https://github.com/me/my-tools.git --depth 1 --branch main {{.Values.persistence.mountPath}}/my-tools || true']
-      volumeMounts:
-        - name: galaxy-data
-          mountPath: "{{.Values.persistence.mountPath}}"
+      image: "registry.k8s.io/git-sync/git-sync:v4.4.0" # or your setup image
+      env:
+        - name: GIT_SYNC_ROOT
+          value: "{{.Values.persistence.mountPath}}/tool-data"
+        - name: GIT_SYNC_ONE_TIME
+          value: "true"
+        - name: GIT_SYNC_DEPTH
+          value: "1"
+        - name: GIT_SYNC_REPO
+          value: https://github.com/myuser/myrepo.git
+        - name: GIT_SYNC_BRANCH
+          value: main
 ```
 `{{.Values.persistence.mountPath}}` is a reference to the filepath for the mounted shared volume - same on all containers
 
@@ -83,6 +88,7 @@ Then edit `galaxy.configs.tool_conf.xml` to make it available to users - add a x
  <tool file="{{.Values.persistence.mountPath}}/my-tools/my-tool-1/my-tool-1.xml>
 ``` 
 where `file` is a filepath to the galaxy tool config you want to make available 
+
 
 ### Private repos
 
@@ -101,22 +107,34 @@ gitRepos:
 ```
 
 then you'll need to create a container image to install from private repo like so:
-```
-- name: repo-name-tools
-  applyToJob: false
-  applyToWeb: true
-  applyToWorkflow: false
-  image: "alpine/git:latest"
-  env:
-  - name: SSH_PRIVATE_KEY
-    valueFrom:
-      secretKeyRef:
-        name: git-deploy-keys
-        key: repo-name
-  command: ['sh', '-c', 'mkdir -p /root/.ssh && echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_rsa && chmod 600 /root/.ssh/id_rsa && ssh-keyscan github.com >> /root/.ssh/known_hosts && git clone git@github.com:my-org/my-repo.git --depth 1 --branch main {{.Values.persistence.mountPath}}/my-repo-tools || true']
-  volumeMounts:
-    - name: galaxy-data
-      mountPath: "{{.Values.persistence.mountPath}}"
+```yaml
+galaxy:
+  ...
+  extraVolumes:
+    - name: git-deploy-keys
+      secret:
+        secretName: git-deploy-keys
+        defaultMode: 0400 # read only
+
+  extraInitContainers:
+    ...
+    - name: clone-my-tools # or name of your tools
+      applyToJob: false
+      applyToWeb: true # this should just apply to one pod - galaxy-web
+      applyToWorkflow: false
+      image: "registry.k8s.io/git-sync/git-sync:v4.4.0" # or your setup image
+      volumeMounts:
+        - name: git-deploy-keys
+          mountPath: /etc/git-deploy-keys
+      env:
+        - name: GIT_SYNC_REPO
+          value: git@github.com:CLF-vEPAC/Galaxy-tools.git
+        - name: GIT_SYNC_BRANCH
+          value: dev
+        - name: GIT_SYNC_SSH
+          value: "true"
+        - name: GIT_SSH_KEY_FILE
+          value: /etc/git-deploy-keys/clf-vepac-key
 ```
 
 ## Configuring main page
