@@ -1,0 +1,32 @@
+{{- if .Values.backup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: harbor-backup-daily
+spec:
+  schedule: "0 16 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: aws-cli
+              image: amazon/aws-cli:latest
+              command: ["/bin/sh", "-c"]
+              args:
+                - >
+                  aws s3 sync {{ .Values.backup.sourceBucket }} {{ .Values.backup.destination.daily }} \
+                  --endpoint-url {{ .Values.backup.endpoint }} --exact-timestamps --delete
+              env:
+                - name: ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: harbor-backup-secret
+                      key: accesskey
+                - name: SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: harbor-backup-secret
+                      key: secretkey
+          restartPolicy: OnFailure
+{{- end }}
