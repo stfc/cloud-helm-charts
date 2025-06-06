@@ -85,3 +85,12 @@ harbor:
         encrypt: true
         secure: true
         skipverify: true
+
+backup:
+  enable: true
+  sourceBucket: "s3://harbor-bucket"
+  destination:
+    daily: "s3://harbor-backup/daily"
+    weekly: "s3://harbor-backup/weekly"
+    monthly: "s3://harbor-backup/monthly"
+  endpoint: "s3.example.com"
