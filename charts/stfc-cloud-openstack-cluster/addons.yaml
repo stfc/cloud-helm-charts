@@ -1,10 +1,10 @@
 openstack-cluster:
   # List of comma separated additional packages to install on cluster nodes
   additionalPackages: []
-  
+
   addons:
     # Monitoring sets up kube-prometheus-stack and loki-stack.
-    # For configuration values 
+    # For configuration values
     monitoring:
       enabled: false
 
@@ -12,9 +12,9 @@ openstack-cluster:
         # set to true to install
         enabled: false
         release:
-          values: {}
+          values:
+            {}
             # for values see - https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
-
 
     # Ingress is preferred, as it allows you to use DNS to locate multiple
     # services behind a single FIP, and makes TLS trivial
@@ -27,5 +27,15 @@ openstack-cluster:
           values:
             controller:
               service:
+                annotations:
+                  # Don't delete the floating ip when deleting loadbalancers
+                  # prevents errors when deleting clusters, leave as true
+                  loadbalancer.openstack.org/keep-floatingip: true
+                  # Set loadbalancing method: ROUND_ROBIN, LEAST_CONNECTIONS, SOURCE_IP, SOURCE_IP_PORT
+                  loadbalancer.openstack.org/lb-method: ROUND_ROBIN
+                  # Client inactivity timeout in milliseconds
+                  loadbalancer.openstack.org/timeout-client-data: 60000
+                  # Set true to enable X-Forwarded-For Headers for HTTP
+                  loadbalancer.openstack.org/x-forwarded-for: false
                 loadBalancerIP: # "130.x.y.z"
             # for other values see - https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml
