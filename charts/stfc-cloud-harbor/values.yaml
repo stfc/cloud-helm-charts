@@ -24,6 +24,9 @@ harbor:
         ingress.kubernetes.io/proxy-body-size: "0"
         nginx.ingress.kubernetes.io/ssl-redirect: "true"
         nginx.ingress.kubernetes.io/proxy-body-size: "0"
+        nginx.ingress.kubernetes.io/auth-type: "basic"
+        nginx.ingress.kubernetes.io/auth-secret: "harbor-basic-auth"
+        nginx.ingress.kubernetes.io/auth-realm: "Authentication Required - Harbor"
         # Please change cluster issue to prod when you are happy
         cert-manager.io/cluster-issuer: "selfsigned"
         #cert-manager.io/cluster-issuer: "letsencrypt-prod"
@@ -94,3 +97,7 @@ backup:
     weekly: "s3://harbor-backup/weekly"
     monthly: "s3://harbor-backup/monthly"
   endpoint: "s3.example.com"
+
+  basicAuth:
+    enabled: false
+    htpasswd: "harboradmin"
