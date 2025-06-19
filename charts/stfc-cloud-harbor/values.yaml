@@ -82,9 +82,9 @@ harbor:
         accesskey: awsaccesskey
         secretkey: awssecretkey
         regionendpoint: s3.example.com
-        encrypt: true
+        encrypt: false
         secure: true
-        skipverify: true
+        skipverify: false
 
 backup:
   enable: true
