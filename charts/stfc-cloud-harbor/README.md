@@ -1,5 +1,7 @@
 # Harbor
 
+This is an alpha version of this chart
+
 Harbor is an open-source cloud registry that allows developers to securely store, distribute, and manage container images.
 It provides a centralised environment ensuring only trusted images are used in deployments. See https://goharbor.io/
 
