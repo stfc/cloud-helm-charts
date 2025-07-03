@@ -128,16 +128,17 @@ opensearch-cluster:
   #      - "indices:data/write/delete"
   #      - "indices:data/write/create"
 
-  # define new internal users here
+  # define new users here
   #https://opensearch.org/docs/latest/security/configuration/yaml/#internal_usersyml
   # recommended to setup reserved users here - those that can't be changed using the REST API or OpenSearch Dashboards
   # users:
   # - name: fluentbit
-  #   # THIS SHOULD BE A SECRET - set it in secret-template.yaml
-  #   secretName: foo 
-  #   secretKey: bar
-  #   backendRoles:
-  #    - "kibana_user"
+  #   # Set the password in the secret-template
+  #   # secret name defined here should not change
+  #   # TODO: document and make less confusing to add new users
+  #   secretName: opensearch-internal-user-credentials
+  #   secretKey: fluentbit
+
 
   # define rolemappings here 
   # https://opensearch.org/docs/latest/security/configuration/yaml/#roles_mappingyml

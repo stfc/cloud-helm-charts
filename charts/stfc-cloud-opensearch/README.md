@@ -37,6 +37,31 @@ To use this chart, you need to provide secret values. Follow these steps:
 
 Note: secret-values.yaml is git-ignored for security. Never commit actual secrets.
 
+2b. Adding new users
+
+Define new users in `values.yaml` like so: 
+
+```yaml
+
+users:
+  # MUST BE UNIQUE
+  - username: "foo"
+    # DONT CHANGE THIS - ALWAYS THE SAME
+    secretName: opensearch-internal-user-credentials
+    # MUST MATCH THE USERNAME
+    secretKey: "foo"
+```
+
+then set the password in `secret-values.yaml` - remember to copy the template to `/tmp` folder to not leak secrets
+
+```yaml
+
+userCredentials:
+  - username: foo
+    password: "some password"
+
+```
+
 You'll want to setup proper admin credentials for your opensearch cluster here
 
 ## 2. (Optional) Setup IRIS IAM
