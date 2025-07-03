@@ -2,150 +2,208 @@ opensearch-operator:
   nameOverride: op
   installCRDs: true
 
-clusterName: log-storage
-# opensearch and opensearch dashboards version
-# - https://github.com/opensearch-project/OpenSearch/releases
-# - https://github.com/opensearch-project/OpenSearch-Dashboards/releases
-version: 2.17.0
+opensearch-cluster:
+  cluster:
+    # change this to match name of cluster you want
+    name: log-storage
 
-# enable monitoring using opensearch prometheus exporter
-# https://github.com/Aiven-Open/prometheus-exporter-plugin-for-opensearch
-monitoring: 
-  enable: false
-
-# a list of opensearch plugins to enable
-pluginsList: []
-
-# https://github.com/opensearch-project/opensearch-k8s-operator/blob/main/docs/userguide/main.md#smartscaler
-useSmartScaler: false
-
-# opensearch dashboards config
-dashboards:
-  enabled: true
-  replicas: 1
-  ingress:
-    enabled: true
-    ingressClassName: nginx
     annotations: 
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-      ingress.kubernetes.io/proxy-body-size: "0"
-      nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    hosts:
-      - host: opensearch-dashboards.example.com
-        paths:
-          - path: /
-            pathType: Prefix
-    tls:
-      - secretName: opensearch-tls
-        hosts:
-          - opensearch-dashboards.example.com
+      helm.sh/hook: post-install,post-upgrade
+
+    # -- Opensearch nodes configuration
+    nodePools:
+      - component: nodes
+        diskSize: "30Gi"
+        replicas: 3
+        roles:
+          - "master"
+          - "data"
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "500m"
+        persistence:
+          pvc:
+            storageClass: csi-cinder
+            accessModes: 
+              - ReadWriteOnce
+
+    general:
+      # disable for now whilst testing
+      monitoring:
+        enable: false
+      
+      # setup snapshotting onto S3 
+      snapshotRepositories: []
     
-# opensearch clusters are composed of one or more nodepools
-# nodepools represent logical grouping of nodes with the same role
-# see https://opensearch.org/docs/latest/tuning-your-cluster/
-nodePools:
-  - component: nodes
-    replicas: 3
-    diskSize: "1Gi"
-    persistence:
-      pvc:
-        accessModes:
-          - ReadWriteOnce
-        storageClass: longhorn-opensearch
-    nodeSelector: {}
-    roles:
-      - "cluster_manager"
-      - "data"
-    pdb:
+    dashboards:
       enable: true
-      maxUnavailable: 1
+      tls: 
+        enable: true
+        generate: true
+
+      additionalConfig: 
+        opensearch_security.multitenancy.enabled: "true"
+        opensearch_security.cookie.secure: "true"
+
+        # enable this if you want iris-iam authentication
+        
+        # opensearch_security.auth.type: ["basicauth", "openid"]
+        # opensearch_security.auth.multiple_auth_enabled: "true"
+        # opensearch_security.openid.connect_url: "https://iris-iam.stfc.ac.uk/.well-known/openid-configuration"
+        # opensearch_security.openid.scope: "openid profile email preferred_username groups"
+        # opensearch_security.openid.base_redirect_url: https://opensearch.example.com
+
+    ingress:
+      opensearch:
+        annotations:
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          ingress.kubernetes.io/proxy-body-size: "0"
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+        className: nginx
+        hosts:
+          - host: opensearch.example.com
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: opensearch-tls
+            hosts:
+              - opensearch.example.com
+
+      dashboards:
+        opensearchCredentialsSecret: opensearch-admin-credentials
+
+        annotations:
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          ingress.kubernetes.io/proxy-body-size: "0"
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+        className: nginx
+        hosts:
+          - host: opensearch-dashboards.example.com
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: opensearch-tls
+            hosts:
+              - opensearch-dashboards.example.com
+        
+    security:
+      config: 
+        adminCredentialsSecret: 
+          name: opensearch-admin-credentials
   
-ingress:
-  enabled: true
-  ingressClassName: nginx
-  annotations: 
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    ingress.kubernetes.io/proxy-body-size: "0"
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
-  hosts:
-    - host: opensearch.example.com
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: opensearch-tls
-      hosts:
-        - opensearch.example.com
+  # define roles here
+  # https://opensearch.org/docs/latest/security/configuration/yaml/#rolesyml
+  # roles:
+  # - name: writer_role
+  #   allowedActions:
+  #     - "indices:data/write/index"
+  #     - "indices:data/write/bulk"
+  #     - "indices:data/write/update"
+  #     - "indices:data/write/delete"
+  #     - "indices:data/write/create"
+  # - name: writer-role-for-index-pattern
+  #   indexPermissions:
+  #     - indexPatterns:
+  #       - logs*
+  #       allowedActions:
+  #         - "indices:data/write/index"
+  #         - "indices:data/write/bulk"
+  #         - "indices:data/write/update"
+  #         - "indices:data/write/delete"
+  #         - "indices:data/write/create"
+  # - name: writer_role_with_tenant_scope
+  #   tenantPermissions:
+  #     - tenantPatterns:
+  #       - example-tenant*
+  #       allowedActions:
+  #         - "indices:data/write/index"
+  #         - "indices:data/write/bulk"
+  #         - "indices:data/write/update"
+  #         - "indices:data/write/delete"
+  #         - "indices:data/write/create"
 
-# openid is currently only configured to use IRIS IAM
-# NOTE: when setting up IRIS IAM client - the callback should be https://<opensearch-domain>/auth/openid/login 
-openid:
-  enabled: true
+  # define new users here
+  #https://opensearch.org/docs/latest/security/configuration/yaml/#internal_usersyml
+  # recommended to setup reserved users here - those that can't be changed using the REST API or OpenSearch Dashboards
+  # users:
+  # - name: log-writer
+  #   # Set the password in the secret-template
+  #   # secret name defined here should not change
+  #   # TODO: document and make less confusing to add new users
+  #   secretName: opensearch-internal-user-credentials
+  #   secretKey: log-writer
 
-# define action groups here
-# https://opensearch.org/docs/latest/security/configuration/yaml/#internal_usersyml
-actiongroups:
-#  myactiongroup:
-#   reserved: false
-#   hidden: false
-#   allowed_actions:
-#   - "indices:data/write/index*"
-#   - "indices:data/write/update*"
-#   - "indices:admin/mapping/put"
-#   - "indices:data/write/bulk*"
-#   - "read"
-#   - "write"
-#   static: false
+  # define rolemappings here 
+  # https://opensearch.org/docs/latest/security/configuration/yaml/#roles_mappingyml
+  # you can map iris-iam groups to roles here 
+  # usersRoleBinding: 
+  #  - name: admin_access
+  #    users:
+  #     - example1
+  #     - example2
+  #    roles:
+  #     - admin
+  #    roles:
+  #     - iris-iam-groupname
 
-# define custom tenants here - multi-tenancy is always enabled 
-# https://opensearch.org/docs/latest/security/configuration/yaml/#tenantsyml
-# more about tenants - https://opensearch.org/docs/latest/security/multi-tenancy/tenant-index
-tenants:
-#  prod_tenant:
-#  reserved: false
-#  description: "tenant for production logs"
+  # define custom tenants here - multi-tenancy is always enabled 
+  # https://opensearch.org/docs/latest/security/configuration/yaml/#tenantsyml
+  # more about tenants - https://opensearch.org/docs/latest/security/multi-tenancy/tenant-index
+  # tenants:
+    # - name: prod-tenant
+    #   description: "tenant for production logs"
 
-# define new internal users here
-#https://opensearch.org/docs/latest/security/configuration/yaml/#internal_usersyml
-# recommended to setup reserved users here - those that can't be changed using the REST API or OpenSearch Dashboards
-users:
-#  fluentbit:
-#    hash: THIS SHOULD BE A SECRET - set it in secret-template.yaml
-#    reserved: true
-#    backend_roles:
-#    - "kibana_user"
-#    description: "Fluentbit user for sending logs"
+  # define aliases for groups of opensearch actions here
+  # actionGroups:
+    #  myactiongroup:
+    #   reserved: false
+    #   hidden: false
+    #   allowedActions:
+    #   - "indices:data/write/index*"
+    #   - "indices:data/write/update*"
+    #   - "indices:admin/mapping/put"
+    #   - "indices:data/write/bulk*"
+    #   - "read"
+    #   - "write"
+    #   static: false
 
-# define roles here
-# https://opensearch.org/docs/latest/security/configuration/yaml/#rolesyml
-roles:
-# prod_log_writer:
-#   reserved: true
-#   cluster_permissions: []
-#   index_permissions:
-#     - index_patterns:
-#         - "prod_kube_logs*"
-#         - "prod_trivy*"
-#       allowed_actions:
-#         - "indices:data/write/index"
-#         - "indices:data/write/bulk"
-#         - "indices:data/write/update"
-#         - "indices:data/write/delete"
-#         - "indices:data/write/create"
-#   tenant_permissions: 
-#     - tenant_patterns:
-#         - "prod"
-#       allowed_actions:
-#         - "kibana_all_read"
+  # define index templates as IAC
+  # https://docs.opensearch.org/docs/latest/im-plugin/index-templates/
+  # indexTemplates:
+  # - name: logs-index-template
+  #   indexPatterns:
+  #     - "logs*"
+  #   dataStream: null # optional
+  #    composedOf: # optional
+  #      - example-component-template
+  #    priority: 100 # optional
+  #    templateSpec: {} # optional
+  #    version: 1 # optional
+  #    _meta: {} # optional
 
-# define rolemappings here 
-# https://opensearch.org/docs/latest/security/configuration/yaml/#roles_mappingyml
-# you can map iris-iam groups to roles here 
-rolesMapping:
-  # admin rolemapping - don't delete
-  all_access:
-    reserved: true
-    backend_roles:
-    - "admin"
-    - "stfc-cloud/admins"
-    description: "Maps admin to all_access"
+
+  # define index state management policies
+  # https://docs.opensearch.org/docs/latest/im-plugin/ism/index/
+#  ismPolicies:
+#    - name: retention-90d
+#      defaultState: hot
+#      description: log retention 90 days
+#      states:
+#        - name: hot
+#          actions:
+#            - replicaCount: 
+#                numberOfReplicas: 1
+#          transitions: 
+#            - stateName: delete
+#              conditions:
+#                minIndexAge: "90d"
+#        - name: delete
+#          actions: 
+#           - delete
+#          transitions: {}

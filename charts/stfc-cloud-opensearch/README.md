@@ -3,19 +3,21 @@
 OpenSearch is an open-source search and observability suite for storing unstructured data. 
 It can be used to store and analyse logs k8s for instance. See https://opensearch.org/docs/latest/about/
 
-This Helm chart deploys an OpenSearch cluster - it uses the [opensearch-operator chart](https://github.com/opensearch-project/opensearch-k8s-operator/tree/main/opensearch-operator) as a dependency chart. 
+This Helm chart sets up an opensearch chart with some opinionated values so that it can work on the STFC Cloud - such as setting up IRIS-IAM authentication for opensearch dashboards.
 
-This chart adds some slight modifications so that we can define security config - such as users, roles, role mappings via helm
+This Helm chart deploys:
+  - opensearch operator chart - which installs various CRDs - [opensearch-operator chart](https://github.com/opensearch-project/opensearch-k8s-operator/tree/main/charts/opensearch-operator)
 
-We also setup IRIS-IAM authentication for opensearch dashboards.
+  - opensearch cluster chart - which sets up an opensearch cluster - [opensearch-cluster chart](https://github.com/opensearch-project/opensearch-k8s-operator/tree/main/charts/opensearch-cluster)
+
 
 # Prerequisites
 
 ## Storage
-We've tested OpenSearch using `longhorn` as default storage - for quick install, ensure longhorn is deployed and available to use. Other storage classes are available and should work - but these haven't been tested
+We've tested OpenSearch using `longhorn` and `cinder` as default storage - for quick install, ensure `cinder-csi` is deployed and available to use - should be enabled by default on our CAPI clusters. Make sure you also have quota for setting up cinder volumes on your openstack project. Other storage classes are available and should work - but these haven't been tested
 
 ## Ingress
-For Opensearch and Opensearch Dashboards to be accessible outside the cluster - we recommend using nginx ingress. Make sure its enabled on your cluster
+For Opensearch and Opensearch Dashboards to be accessible outside the cluster - we recommend using nginx ingress (used by default). Make sure its enabled on your cluster
 
 
 # Installation
@@ -35,10 +37,39 @@ To use this chart, you need to provide secret values. Follow these steps:
 
 Note: secret-values.yaml is git-ignored for security. Never commit actual secrets.
 
+2b. Adding new users
+
+Define new users in `values.yaml` like so: 
+
+```yaml
+
+users:
+  # MUST BE UNIQUE
+  - username: "foo"
+    # DONT CHANGE THIS - ALWAYS THE SAME
+    secretName: opensearch-internal-user-credentials
+    # MUST MATCH THE USERNAME
+    secretKey: "foo"
+```
+
+then set the password in `secret-values.yaml` - remember to copy the template to `/tmp` folder to not leak secrets
+
+```yaml
+
+userCredentials:
+  - username: foo
+    password: "some password"
+
+```
+
+You'll want to setup proper admin credentials for your opensearch cluster here
+
 ## 2. (Optional) Setup IRIS IAM
 
-If you are using IRIS IAM authentication (`openid.enabled=true`)
-You'll need to configure an IRIS-IAM application and set the secret/id in your `secret-values.yaml` 
+If you want to enable IRIS IAM 
+1. uncomment config in `values.yaml` under `opensearch-cluster.cluster.dashboards.additionalConfig`
+2. configure an IRIS-IAM application
+3. set the application secret + id in `secret-values.yaml` 
 
 ## Deployment 
 
@@ -51,44 +82,10 @@ helm install opensearch cloud-charts/stfc-cloud-opensearch -n opensearch-system 
 
 # Configuration
 
-## Defining action_groups, tenants, users, roles and role-mappings
+## Defining tenants, users, roles, role-mappings, action groups, index templates and ism policies
 
-You can setup action_groups, tenants, users, roles and role-mappings using this helm chart. This chart automatically builds the YAML configuration files that OpenSearch security plugin uses. See chart values.yaml for examples
+You can define these things using custom CRDs that opensearch-operator makes available
 
-## DNS + cert
+See - https://github.com/opensearch-project/opensearch-k8s-operator/blob/main/docs/userguide/main.md#managing-security-configurations-with-kubernetes-resources 
 
-To configure DNS name for OpenSearch + OpenSearch Dashboards you can add cluster-specific ingress specification. See below for example
-
-We utilise [cert-manager](https://cert-manager.io/) for managing certs
-
-```yaml
-# for access to opensearch dashboards
-dashboards:
-  ingress:
-    annotations:
-      cert-manager.io/cluster-issuer: self-signed # le-staging, le-prod for let's encrypt
-    hosts:
-      - host: dashboards.dev.nubes.stfc.ac.uk
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls:
-      - secretName: opensearch-tls
-        hosts:
-          - dashboards.dev.nubes.stfc.ac.uk
-
-
-# for access to opensearch nodes
-ingress:
-  annotations:
-    cert-manager.io/cluster-issuer: self-signed # le-staging, le-prod for let's encrypt
-  hosts:
-    - host: nodes.dev.nubes.stfc.ac.uk
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - secretName: opensearch-tls
-      hosts:
-        - nodes.dev.nubes.stfc.ac.uk
-```
+You can generate these CRs by adding entries under `roles`, `users`, and `usersRoleBindings` under the `values.yaml` file. See comments for examples 

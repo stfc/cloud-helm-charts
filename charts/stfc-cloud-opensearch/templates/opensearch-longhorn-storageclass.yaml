@@ -1,3 +1,6 @@
+# not used by default
+# TODO find a better place for this
+
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
