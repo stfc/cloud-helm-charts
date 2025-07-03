@@ -107,38 +107,37 @@ opensearch-cluster:
   #     - "indices:data/write/update"
   #     - "indices:data/write/delete"
   #     - "indices:data/write/create"
-  # - name: writer_role_for_index_pattern
+  # - name: writer-role-for-index-pattern
   #   indexPermissions:
-  #     indexPatterns:
+  #     - indexPatterns:
   #       - logs*
-  #     allowedActions:
-  #      - "indices:data/write/index"
-  #      - "indices:data/write/bulk"
-  #      - "indices:data/write/update"
-  #      - "indices:data/write/delete"
-  #      - "indices:data/write/create"
+  #       allowedActions:
+  #         - "indices:data/write/index"
+  #         - "indices:data/write/bulk"
+  #         - "indices:data/write/update"
+  #         - "indices:data/write/delete"
+  #         - "indices:data/write/create"
   # - name: writer_role_with_tenant_scope
   #   tenantPermissions:
-  #     tenantPatterns:
-  #       - azimuth*
-  #     allowedActions:
-  #      - "indices:data/write/index"
-  #      - "indices:data/write/bulk"
-  #      - "indices:data/write/update"
-  #      - "indices:data/write/delete"
-  #      - "indices:data/write/create"
+  #     - tenantPatterns:
+  #       - example-tenant*
+  #       allowedActions:
+  #         - "indices:data/write/index"
+  #         - "indices:data/write/bulk"
+  #         - "indices:data/write/update"
+  #         - "indices:data/write/delete"
+  #         - "indices:data/write/create"
 
   # define new users here
   #https://opensearch.org/docs/latest/security/configuration/yaml/#internal_usersyml
   # recommended to setup reserved users here - those that can't be changed using the REST API or OpenSearch Dashboards
   # users:
-  # - name: fluentbit
+  # - name: log-writer
   #   # Set the password in the secret-template
   #   # secret name defined here should not change
   #   # TODO: document and make less confusing to add new users
   #   secretName: opensearch-internal-user-credentials
-  #   secretKey: fluentbit
-
+  #   secretKey: log-writer
 
   # define rolemappings here 
   # https://opensearch.org/docs/latest/security/configuration/yaml/#roles_mappingyml
@@ -151,13 +150,13 @@ opensearch-cluster:
   #    roles:
   #     - admin
   #    roles:
-  #     - stfc-cloud/admins
+  #     - iris-iam-groupname
 
   # define custom tenants here - multi-tenancy is always enabled 
   # https://opensearch.org/docs/latest/security/configuration/yaml/#tenantsyml
   # more about tenants - https://opensearch.org/docs/latest/security/multi-tenancy/tenant-index
   # tenants:
-    # - name: prod_tenant
+    # - name: prod-tenant
     #   description: "tenant for production logs"
 
   # define aliases for groups of opensearch actions here
@@ -165,7 +164,7 @@ opensearch-cluster:
     #  myactiongroup:
     #   reserved: false
     #   hidden: false
-    #   allowed_actions:
+    #   allowedActions:
     #   - "indices:data/write/index*"
     #   - "indices:data/write/update*"
     #   - "indices:admin/mapping/put"
