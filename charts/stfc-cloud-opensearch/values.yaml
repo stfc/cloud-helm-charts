@@ -7,6 +7,9 @@ opensearch-cluster:
     # change this to match name of cluster you want
     name: log-storage
 
+    annotations: 
+      helm.sh/hook: post-install,post-upgrade
+
     # -- Opensearch nodes configuration
     nodePools:
       - component: nodes
@@ -35,9 +38,6 @@ opensearch-cluster:
       
       # setup snapshotting onto S3 
       snapshotRepositories: []
-
-      # https://github.com/opensearch-project/opensearch-k8s-operator/blob/main/docs/userguide/main.md#smartscaler
-      useSmartScaler: false
     
     dashboards:
       enable: true
@@ -94,11 +94,12 @@ opensearch-cluster:
         
     security:
       config: 
-        adminCredentialsSecret: opensearch-admin-credentials
+        adminCredentialsSecret: 
+          name: opensearch-admin-credentials
   
   # define roles here
   # https://opensearch.org/docs/latest/security/configuration/yaml/#rolesyml
-  roles:
+  # roles:
   # - name: writer_role
   #   allowedActions:
   #     - "indices:data/write/index"
@@ -130,7 +131,7 @@ opensearch-cluster:
   # define new internal users here
   #https://opensearch.org/docs/latest/security/configuration/yaml/#internal_usersyml
   # recommended to setup reserved users here - those that can't be changed using the REST API or OpenSearch Dashboards
-  users:
+  # users:
   # - name: fluentbit
   #   # THIS SHOULD BE A SECRET - set it in secret-template.yaml
   #   secretName: foo 
@@ -141,7 +142,7 @@ opensearch-cluster:
   # define rolemappings here 
   # https://opensearch.org/docs/latest/security/configuration/yaml/#roles_mappingyml
   # you can map iris-iam groups to roles here 
-  usersRoleBinding: 
+  # usersRoleBinding: 
   #  - name: admin_access
   #    users:
   #     - example1
@@ -154,12 +155,12 @@ opensearch-cluster:
   # define custom tenants here - multi-tenancy is always enabled 
   # https://opensearch.org/docs/latest/security/configuration/yaml/#tenantsyml
   # more about tenants - https://opensearch.org/docs/latest/security/multi-tenancy/tenant-index
-  tenants:
+  # tenants:
     # - name: prod_tenant
     #   description: "tenant for production logs"
 
   # define aliases for groups of opensearch actions here
-  actionGroups:
+  # actionGroups:
     #  myactiongroup:
     #   reserved: false
     #   hidden: false
@@ -174,7 +175,7 @@ opensearch-cluster:
 
   # define index templates as IAC
   # https://docs.opensearch.org/docs/latest/im-plugin/index-templates/
-  indexTemplates:
+  # indexTemplates:
   # - name: logs-index-template
   #   indexPatterns:
   #     - "logs*"
@@ -189,7 +190,7 @@ opensearch-cluster:
 
   # define index state management policies
   # https://docs.opensearch.org/docs/latest/im-plugin/ism/index/
-  ismPolicies:
+#  ismPolicies:
 #    - name: retention-90d
 #      defaultState: hot
 #      description: log retention 90 days
