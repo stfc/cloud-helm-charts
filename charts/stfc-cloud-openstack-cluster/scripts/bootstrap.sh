@@ -34,7 +34,10 @@ echo "Updating system to apply latest security patches..."
 export DEBIAN_FRONTEND=noninteractive
 sudo apt-get update -qq
 # Shut apt up, since it just blows up the logs
-sudo apt-get upgrade -y -qq > /dev/null
+# On dialogues about config file updates, keep current config file and use default choices
+sudo apt-get -o Dpkg::Options::="--force-confold" \
+             -o Dpkg::Options::="--force-confdef" \
+             -y -qq upgrade > /dev/null
 
 echo "Installing required tools..."
 sudo apt-get install -y snapd
