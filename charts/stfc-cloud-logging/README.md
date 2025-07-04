@@ -1,58 +1,70 @@
 # STFC Cloud Logging Chart
+> [!NOTE]
+> This chart is in active development, and may not yet be useful to most users beyond for setting up fluentbit to output to opensearch without having to create a secret resource.
+> Future development will aim to setup log filtering via custom filter resources, to programatically generate and manage opensearch credentials, to integrate trivy for security compliance, and to work on some method for secure log aggregation for all user clusters.
 
-> [!CAUTION]
-> This is currently under development and should not be used in production!
-
-This chart is required for compliance with STFC Cloud policy on running K8s clusters (currently being developed). 
-
-This chart configures automatic log collection using fluent-operator, it deploys a set of preconfigured fluent-operator CRDs to collect cluster logs from all running services and send them to a central opensearch service.   
+This chart configures automatic log collection using [fluent-operator](https://github.com/fluent/fluent-operator/tree/master/charts/fluent-operator) (which implements fluent-bit). It collects cluster logs from all services running under kubernetes and send them to a configurable set of outputs. By default, this is only to Loki, running under the Loki-Stack component of our [Openstack Cluster chart](https://github.com/stfc/cloud-helm-charts/tree/main/charts/stfc-cloud-openstack-cluster)
 
 # Installation
 
-## Configure secrets
+## Configure openstack cluster
 
-You'll need to configure the following secrets:
-1. API Server floating IP and project ID for the cluster 
-2. Opensearch hostname, username and password
+If you intend to use Fluent-Operator to output to the Loki-Stack component of our capi openstack cluster chart, you must first enable Loki-Stack and disable its promtail component, which is deprecated and can be replaced by FluentBit.
+
+In the `values.yaml`, under the Addons section, enable LokiStack but disable Promtail:
+```yaml
+addons:
+  monitoring:
+    enabled: true
+    lokiStack:
+      enabled: true
+      release:
+        values:
+          promtail:
+          enabled: false
+```
+
+You must then run a Helm Upgrade on the cluster, passing these new values, in order to re-enable Loki-Stack.
+
+> Note if outputting to Loki that by default, Grafana is only available from within the cluster and must be accessed using
+[port forwarding](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/):
+```sh
+kubectl -n monitoring-system port-forward svc/kube-prometheus-stack-grafana 3000:80
+```
+> If desired, an ingress can be configured for it. But this must be properly secured i.e. using Oauth2, or using network restriction and basic-auth.
+
+
+If you don't intend to output to Loki-Stack, comment out the configuration block in `values.yaml`.
+
+## Configure OpenSearch
+
+FluentBit can output to multiple destinations, see the fluentbit-output-* templates [here](https://github.com/fluent/fluent-operator/tree/master/charts/fluent-operator/templates)
+
+One of those destinations is OpenSearch.
+
+You'll need to configure the credentials, and the connection details.
+
+Under the `opensearch` block in `values.yaml`, configure values as desired.
    
-See `secret-values.yaml.template` for how to set these values 
+See `secret-values.yaml.template` to set the credentials.
 Copy the template file to a temporary directory outside of the repo - like `/tmp` and edit it
 
 ```bash
 git clone https://github.com/stfc/cloud-helm-charts.git
 cd cloud-helm-charts/charts/stfc-cloud-logging
 cp secret-values.yaml.template /tmp/secret-values.yaml
+chmod 600 /tmp/secret-values.yaml
 ``` 
 
+If you instead don't wish to output to opensearch, the configuration block can be commented out.
+
+## Install the chart
+
+Install the chart using Helm. If setting up output to OpenSearch, pass in the created `secret-values.yaml`.
+If you have instead disabled the opensearch output, remove the `secret-values.yaml` argument from the below install command.
+
 ```bash
-helm dependency update .
-helm install stfc-cloud-logging . -n cert-manager --create-namespace -f /tmp/secret-values.yaml
+helm repo add cloud-charts https://stfc.github.io/cloud-helm-charts/
+helm repo update
+helm install fluent-operator cloud-charts/stfc-cloud-fluent-operator -n monitoring-system --create-namespace -f values.yaml -f /tmp/secret-values.yaml
 ```
-
-## Developer Notes
-
-We want to make this chart a dependency of stfc-cloud-openstack-cluster
-To do this, we must consider:
-
-1. How do we make new K8s clusters authenticate themselves and send logs to OpenSearch
-   - we'll need to specify write only credentials via chart
-   - should we generate credentials for each cluster?
-   - or have a shared one - how do we prevent password leaks?
-
-   - users will have to register their clusters somewhere - so we can setup and provide them opensearch credentials 
-   - can we get the chart to generate a request for opensearch info automatically - is it even a good idea?
-  
-2. How do we ensure that the logs are coming from the correct K8s cluster?
-    - 2-way verification - need to create valid tls certs as part of setup 
-    - How do we register the certificate on the opensearch side?
-
-3. How do we advertise opensearch endpoint via the chart without making it susceptible to DDOS attacks?
-    - every user cluster needs to send logs there, so the endpoint and credentials to access would be made available to everyone
-
-4. How do we prevent users leaking/modifying secrets in the config after setup 
-    - setup a inaccessible namespace on the cluster for setting up logging config and logging secrets?
-    - setup short-lived opensearch credentials that need renewing?
-
-
-
-
