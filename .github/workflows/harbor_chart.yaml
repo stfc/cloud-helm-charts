@@ -1,0 +1,25 @@
+name: lint stfc-cloud-harbor chart
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - ".github/workflows/harbor_chart.yaml"
+      - "charts/stfc-cloud-harbor/**"
+
+jobs:
+  helm-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.18.3
+      - name: Lint Helm Chart
+        # Note --strict=true != --strict with the former being stricter
+        run: |
+          cp charts/stfc-cloud-harbor/secret-values.yaml.template /tmp/secret-values.yaml
+          helm dependency update charts/stfc-cloud-harbor/.
+          helm lint charts/stfc-cloud-harbor --values charts/stfc-cloud-harbor/values.yaml --values /tmp/secret-values.yaml --strict=true
