@@ -87,10 +87,10 @@ harbor:
         skipverify: false
 
 backup:
-  enable: true
-  sourceBucket: "s3://harbor-bucket"
+  enabled: true
+  sourceBucket: "s3://harbor-source-bucket"
   destination:
-    daily: "s3://harbor-backup/daily"
-    weekly: "s3://harbor-backup/weekly"
-    monthly: "s3://harbor-backup/monthly"
-  endpoint: "s3.example.com"
+    daily: "s3://harbor-destination-backup/daily"
+    weekly: "s3://harbor-destination-backup/weekly"
+    monthly: "s3://harbor-destination-backup/monthly"
+  endpoint: "https://s3.example.com"
