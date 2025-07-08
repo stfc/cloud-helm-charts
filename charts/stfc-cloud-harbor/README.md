@@ -3,17 +3,18 @@
 Harbor is an open-source cloud registry that allows developers to securely store, distribute, and manage container images.
 It provides a centralised environment ensuring only trusted images are used in deployments. See https://goharbor.io/
 
-This Helm chart deploys a Harbor cluster - it uses the [Harbor chart](https://github.com/goharbor/harbor-helm).
+This Helm chart deploys a Harbor cluster - it uses the [Harbor chart](https://github.com/goharbor/harbor-helm) with custom configuration.
 
 # Prerequisites
+You will need S3 Quota allocated to your project.
 
 ## Storage
-Harbor will use S3 for image storage, and an external database for users and logging.
+Harbor use S3 as storage backend, and an external database for users and logging.
 
 ## Ingress
 It uses nginx ingress - make sure it is enabled and assign a floating ip to the loadbalancerIP.
-```
-...
+
+```yaml
 addons:
   ingress:
     enabled: true
@@ -33,10 +34,12 @@ addons:
 To use this chart, you need to provide secret values. Follow these steps:
 
 1. Copy the template file:
-   ```bash
-   cp secret-values.yaml.template /tmp/secret-values.yaml
-  chmod 600 /tmp/secret-values.yaml
-   ```
+
+```bash
+git clone https://github.com/stfc/cloud-helm-charts.git
+cd cloud-helm-charts/charts/stfc-cloud-harbor/
+cp secret-values.yaml.template /tmp/secret-values.yaml
+```
 
 2. Edit secret-values.yaml with your actual secret values
 
@@ -47,13 +50,13 @@ Note: secret-values.yaml is git-ignored for security. Never commit actual secret
 ```bash
 helm repo add cloud-charts https://stfc.github.io/cloud-helm-charts/
 helm repo update
-helm install harbor cloud-charts/stfc-cloud-harbor -n harbor --create-namespace -f secret-values.yaml
+helm install harbor cloud-charts/stfc-cloud-harbor -n harbor --create-namespace -f values -f /tmp/secret-values.yaml
 ```
 
 # Configuration
 Add host to ingress for DNS name which can be used to access harbor. [Cert-manager](https://cert-manager.io/) is used for managing certificates.
 
-```
+```yaml
 # Access to harbor service
 harbor:
   externalURL: "https://harbor.example.com"
@@ -64,8 +67,9 @@ harbor:
       annotations:
         cert-manager.io/cluster-issuer: self-signed # le-staging, le-prod for let's encrypt
 ```
-```
-# Add database host
+
+```yaml
+# Add An external postresql database host
   database:
     type: external
     external:
