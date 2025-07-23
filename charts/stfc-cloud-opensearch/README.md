@@ -22,7 +22,6 @@ For Opensearch and Opensearch Dashboards to be accessible outside the cluster - 
 
 # Installation
 
-
 ## Setup Secrets
 
 To use this chart, you need to provide secret values. Follow these steps:
@@ -79,6 +78,11 @@ helm repo update
 helm install opensearch cloud-charts/stfc-cloud-opensearch -n opensearch-system --create-namespace -f secret-values.yaml
 ```
 
+## 3. Change the admin password
+
+By default the admin password is `admin` once you deploy opensearch be sure to change the password via the UI or making a post request to the endpoint.
+
+You will want to change the dashboard user `kibanaserver` password, which has default password `kibanaserver` and is the way opensearch dashboards accesses the opensearch nodes
 
 # Configuration
 

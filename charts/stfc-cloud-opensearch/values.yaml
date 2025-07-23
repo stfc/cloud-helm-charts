@@ -5,7 +5,7 @@ opensearch-operator:
 opensearch-cluster:
   cluster:
     # change this to match name of cluster you want
-    name: log-storage
+    name: "opensearch-cluster"
 
     annotations: 
       helm.sh/hook: post-install,post-upgrade
@@ -40,6 +40,7 @@ opensearch-cluster:
       snapshotRepositories: []
     
     dashboards:
+
       enable: true
       tls: 
         enable: true
@@ -75,7 +76,6 @@ opensearch-cluster:
               - opensearch.example.com
 
       dashboards:
-        opensearchCredentialsSecret: opensearch-admin-credentials
 
         annotations:
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
@@ -91,11 +91,7 @@ opensearch-cluster:
           - secretName: opensearch-tls
             hosts:
               - opensearch-dashboards.example.com
-        
-    security:
-      config: 
-        adminCredentialsSecret: 
-          name: opensearch-admin-credentials
+      
   
   # define roles here
   # https://opensearch.org/docs/latest/security/configuration/yaml/#rolesyml

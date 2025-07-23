@@ -9,4 +9,4 @@ dependencies:
 description: A Helm chart to deploy an opinionated opensearch cluster with IRIS-IAM integration
 name: stfc-cloud-opensearch
 type: application
-version: 2.0.0
+version: 2.0.1
