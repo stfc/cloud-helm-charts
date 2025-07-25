@@ -1,5 +1,7 @@
 # Opensearch
 
+This is an alpha version of this chart
+
 OpenSearch is an open-source search and observability suite for storing unstructured data. 
 It can be used to store and analyse logs k8s for instance. See https://opensearch.org/docs/latest/about/
 
