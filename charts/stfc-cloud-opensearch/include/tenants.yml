@@ -1,0 +1,18 @@
+_meta:
+  type: "tenants"
+  config_version: 2
+
+# Production tenant
+prod:
+  reserved: false
+  description: "Production environment tenant for production workloads and dashboards"
+
+# Development tenant  
+dev:
+  reserved: false
+  description: "Development environment tenant for testing and development"
+
+# Admin tenant (reserved)
+admin_tenant:
+  reserved: true
+  description: "Admin tenant for administrative tasks"

@@ -1,0 +1,52 @@
+# We've setup rolemappings for demo users writer, dev-writer, reader, prod-reader, admin
+
+_meta:
+  type: "rolesmapping"
+  config_version: 2
+
+# Map admin backend role to admin_role
+admin_role:
+  reserved: true
+  backend_roles:
+    - "admin"
+  description: "Maps admin backend role to admin_role"
+
+# Map reader backend role to reader_role
+reader_role:
+  reserved: false
+  backend_roles:
+    - "reader_role"
+  description: "Maps reader backend role to reader_role for cross-tenant read access"
+
+# Map writer backend role to writer_role  
+writer_role:
+  reserved: false
+  backend_roles:
+    - "writer_role"
+  description: "Maps writer backend role to writer_role for cross-tenant write access"
+
+# Map prod writer backend role to prod_writer_role
+prod_writer_role:
+  reserved: false
+  backend_roles:
+    - "prod_writer_role"
+  description: "Maps prod writer backend role to prod-only write access"
+
+# Map dev writer backend role to dev_writer_role
+dev_writer_role:
+  reserved: false
+  backend_roles:
+    - "dev_writer_role"
+  description: "Maps dev writer backend role to dev-only write access"
+
+# Built-in mappings for OpenSearch Dashboards
+all_access:
+  reserved: true
+  backend_roles:
+    - "admin"
+
+own_index:
+  reserved: false
+  users:
+    - "*"
+  description: "Allow full access to an index named like the username"

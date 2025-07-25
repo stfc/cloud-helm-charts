@@ -3,8 +3,6 @@
 OpenSearch is an open-source search and observability suite for storing unstructured data. 
 It can be used to store and analyse logs k8s for instance. See https://opensearch.org/docs/latest/about/
 
-This Helm chart sets up an opensearch chart with some opinionated values so that it can work on the STFC Cloud - such as setting up IRIS-IAM authentication for opensearch dashboards.
-
 This Helm chart deploys:
   - opensearch operator chart - which installs various CRDs - [opensearch-operator chart](https://github.com/opensearch-project/opensearch-k8s-operator/tree/main/charts/opensearch-operator)
 
@@ -22,7 +20,6 @@ For Opensearch and Opensearch Dashboards to be accessible outside the cluster - 
 
 # Installation
 
-
 ## Setup Secrets
 
 To use this chart, you need to provide secret values. Follow these steps:
@@ -37,39 +34,19 @@ To use this chart, you need to provide secret values. Follow these steps:
 
 Note: secret-values.yaml is git-ignored for security. Never commit actual secrets.
 
-2b. Adding new users
 
-Define new users in `values.yaml` like so: 
 
-```yaml
 
-users:
-  # MUST BE UNIQUE
-  - username: "foo"
-    # DONT CHANGE THIS - ALWAYS THE SAME
-    secretName: opensearch-internal-user-credentials
-    # MUST MATCH THE USERNAME
-    secretKey: "foo"
-```
+3. Adding new security config
 
-then set the password in `secret-values.yaml` - remember to copy the template to `/tmp` folder to not leak secrets
+You can add extra config by using:
 
-```yaml
+`customSecurityConfigFiles`
 
-userCredentials:
-  - username: foo
-    password: "some password"
+and specifying any config files roles.yaml, internal_users.yaml etc. directly
+see - https://docs.opensearch.org/latest/security/configuration/yaml/
 
-```
-
-You'll want to setup proper admin credentials for your opensearch cluster here
-
-## 2. (Optional) Setup IRIS IAM
-
-If you want to enable IRIS IAM 
-1. uncomment config in `values.yaml` under `opensearch-cluster.cluster.dashboards.additionalConfig`
-2. configure an IRIS-IAM application
-3. set the application secret + id in `secret-values.yaml` 
+example files have been included for you to get an initial setup but it is not recommended to use this in production.
 
 ## Deployment 
 
@@ -79,6 +56,11 @@ helm repo update
 helm install opensearch cloud-charts/stfc-cloud-opensearch -n opensearch-system --create-namespace -f secret-values.yaml
 ```
 
+## 3. Change the admin password
+
+By default the admin password is `admin` once you deploy opensearch be sure to change the password via the UI or making a post request to the endpoint.
+
+You will want to change the dashboard user `kibanaserver` password, which has default password `kibanaserver` and is the way opensearch dashboards accesses the opensearch nodes
 
 # Configuration
 
