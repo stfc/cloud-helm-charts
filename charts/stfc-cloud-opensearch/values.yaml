@@ -2,10 +2,6 @@ opensearch-operator:
   nameOverride: op
   installCRDs: true
 
-# turn on for openid - need to enable some other annotations in dashboards - see below
-openid:
-  enabled: false
-
 opensearch-cluster:
   cluster:
     # change this to match name of cluster you want
@@ -54,7 +50,7 @@ opensearch-cluster:
         opensearch_security.multitenancy.enabled: "true"
         opensearch_security.cookie.secure: "true"
 
-        # enable this if you want iris-iam authentication
+        # enable this if you want iris-iam authentication, you'll need to modify config.yml as well 
         
         # opensearch_security.auth.type: ["basicauth", "openid"]
         # opensearch_security.auth.multiple_auth_enabled: "true"
@@ -78,9 +74,13 @@ opensearch-cluster:
           - secretName: opensearch-tls
             hosts:
               - opensearch.example.com
-
+      
+      # change the secret references to match the name of your cluster - under "opensearch-cluster.cluster.name" 
+      # e.g. if your cluster name is "log-storage" - change secret to `log-storage-admin-credentials`
+      # TODO: introduce a "kibanaserver" user which has more locked down permissions for dashboards to use
       dashboards:
-
+        opensearchCredentialsSecret:
+          name: opensearch-admin-credentials
         annotations:
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
           ingress.kubernetes.io/proxy-body-size: "0"
@@ -95,115 +95,24 @@ opensearch-cluster:
           - secretName: opensearch-tls
             hosts:
               - opensearch-dashboards.example.com
-      
+        
+    # change the secret references to match the name of your cluster - under "opensearch-cluster.cluster.name" 
+    # e.g. if your cluster name is "log-storage" - change secret to `log-storage-admin-credentials` and `log-storage-securityconfig-secret`
+    security:
+      config: 
+        adminCredentialsSecret: 
+          name: opensearch-admin-credentials
+        securityConfigSecret:
+          name: opensearch-securityconfig-secret
   
-  # define roles here
-  # https://opensearch.org/docs/latest/security/configuration/yaml/#rolesyml
-  # roles:
-  # - name: writer_role
-  #   allowedActions:
-  #     - "indices:data/write/index"
-  #     - "indices:data/write/bulk"
-  #     - "indices:data/write/update"
-  #     - "indices:data/write/delete"
-  #     - "indices:data/write/create"
-  # - name: writer-role-for-index-pattern
-  #   indexPermissions:
-  #     - indexPatterns:
-  #       - logs*
-  #       allowedActions:
-  #         - "indices:data/write/index"
-  #         - "indices:data/write/bulk"
-  #         - "indices:data/write/update"
-  #         - "indices:data/write/delete"
-  #         - "indices:data/write/create"
-  # - name: writer_role_with_tenant_scope
-  #   tenantPermissions:
-  #     - tenantPatterns:
-  #       - example-tenant*
-  #       allowedActions:
-  #         - "indices:data/write/index"
-  #         - "indices:data/write/bulk"
-  #         - "indices:data/write/update"
-  #         - "indices:data/write/delete"
-  #         - "indices:data/write/create"
+# Its recommended not to use the opensearch CRDs at the moment due to various incompatibility issues with securityconfig secret. 
+# We have found that using CRs for user management tends to be inconsistent and error-prone thus we have opted not to use it.
 
-  # define new users here
-  #https://opensearch.org/docs/latest/security/configuration/yaml/#internal_usersyml
-  # recommended to setup reserved users here - those that can't be changed using the REST API or OpenSearch Dashboards
-  # users:
-  # - name: log-writer
-  #   # Set the password in the secret-template
-  #   # secret name defined here should not change
-  #   # TODO: document and make less confusing to add new users
-  #   secretName: opensearch-internal-user-credentials
-  #   secretKey: log-writer
+# Instead you can define custom security config files directly here:
+# see https://docs.opensearch.org/latest/security/configuration/yaml/ 
 
-  # define rolemappings here 
-  # https://opensearch.org/docs/latest/security/configuration/yaml/#roles_mappingyml
-  # you can map iris-iam groups to roles here 
-  # usersRoleBinding: 
-  #  - name: admin_access
-  #    users:
-  #     - example1
-  #     - example2
-  #    roles:
-  #     - admin
-  #    roles:
-  #     - iris-iam-groupname
-
-  # define custom tenants here - multi-tenancy is always enabled 
-  # https://opensearch.org/docs/latest/security/configuration/yaml/#tenantsyml
-  # more about tenants - https://opensearch.org/docs/latest/security/multi-tenancy/tenant-index
-  # tenants:
-    # - name: prod-tenant
-    #   description: "tenant for production logs"
-
-  # define aliases for groups of opensearch actions here
-  # actionGroups:
-    #  myactiongroup:
-    #   reserved: false
-    #   hidden: false
-    #   allowedActions:
-    #   - "indices:data/write/index*"
-    #   - "indices:data/write/update*"
-    #   - "indices:admin/mapping/put"
-    #   - "indices:data/write/bulk*"
-    #   - "read"
-    #   - "write"
-    #   static: false
-
-  # define index templates as IAC
-  # https://docs.opensearch.org/docs/latest/im-plugin/index-templates/
-  # indexTemplates:
-  # - name: logs-index-template
-  #   indexPatterns:
-  #     - "logs*"
-  #   dataStream: null # optional
-  #    composedOf: # optional
-  #      - example-component-template
-  #    priority: 100 # optional
-  #    templateSpec: {} # optional
-  #    version: 1 # optional
-  #    _meta: {} # optional
-
-
-  # define index state management policies
-  # https://docs.opensearch.org/docs/latest/im-plugin/ism/index/
-#  ismPolicies:
-#    - name: retention-90d
-#      defaultState: hot
-#      description: log retention 90 days
-#      states:
-#        - name: hot
-#          actions:
-#            - replicaCount: 
-#                numberOfReplicas: 1
-#          transitions: 
-#            - stateName: delete
-#              conditions:
-#                minIndexAge: "90d"
-#        - name: delete
-#          actions: 
-#           - delete
-#          transitions: {}
+# customSecurityConfigFiles:
+#   config.yml: |
+#     # see https://docs.opensearch.org/latest/security/configuration/configuration/
+#   roles.yml: | 
+#     ...

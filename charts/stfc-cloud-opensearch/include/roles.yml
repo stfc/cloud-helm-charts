@@ -1,0 +1,116 @@
+# We've setup roles for demo users writer, dev-writer, reader, prod-reader, admin
+
+_meta:
+  type: "roles"
+  config_version: 2
+
+# Admin role - full cluster access
+admin_role:
+  reserved: true
+  cluster_permissions:
+    - "cluster:admin/*"
+    - "cluster:monitor/*"
+    - "indices:admin/*"
+    - "indices:monitor/*"
+  index_permissions:
+    - index_patterns:
+        - "*"
+      allowed_actions:
+        - "indices:*"
+  tenant_permissions:
+    - tenant_patterns:
+        - "*"
+      allowed_actions:
+        - "kibana_all_write"
+
+# Global reader role - read access to all tenants
+reader_role:
+  reserved: false
+  cluster_permissions:
+    - "cluster:monitor/nodes/info"
+    - "cluster:monitor/health"
+  index_permissions:
+    - index_patterns:
+        - "*"
+      allowed_actions:
+        - "indices:data/read/*"
+        - "indices:admin/mappings/get"
+        - "indices:monitor/*"
+  tenant_permissions:
+    - tenant_patterns:
+        - "prod"
+        - "dev"
+      allowed_actions:
+        - "kibana_all_read"
+
+# Global writer role - read-write access to all tenants
+writer_role:
+  reserved: false
+  cluster_permissions:
+    - "cluster:monitor/nodes/info"
+    - "cluster:monitor/health"
+    - "indices:admin/template/get"
+    - "indices:admin/template/put"
+  index_permissions:
+    - index_patterns:
+        - "*"
+      allowed_actions:
+        - "indices:data/*"
+        - "indices:admin/mappings/get"
+        - "indices:admin/mappings/put"
+        - "indices:monitor/*"
+        - "indices:admin/create"
+  tenant_permissions:
+    - tenant_patterns:
+        - "prod"
+        - "dev"
+      allowed_actions:
+        - "kibana_all_write"
+
+# Prod-only writer role
+prod_writer_role:
+  reserved: false
+  cluster_permissions:
+    - "cluster:monitor/nodes/info"
+    - "cluster:monitor/health"
+    - "indices:admin/template/get"
+    - "indices:admin/template/put"
+  index_permissions:
+    - index_patterns:
+        - "prod-*"
+        - ".kibana_prod_*"
+      allowed_actions:
+        - "indices:data/*"
+        - "indices:admin/mappings/get"
+        - "indices:admin/mappings/put"
+        - "indices:monitor/*"
+        - "indices:admin/create"
+  tenant_permissions:
+    - tenant_patterns:
+        - "prod"
+      allowed_actions:
+        - "kibana_all_write"
+
+# Dev-only writer role
+dev_writer_role:
+  reserved: false
+  cluster_permissions:
+    - "cluster:monitor/nodes/info"
+    - "cluster:monitor/health"
+    - "indices:admin/template/get"
+    - "indices:admin/template/put"
+  index_permissions:
+    - index_patterns:
+        - "dev-*"
+        - ".kibana_dev_*"
+      allowed_actions:
+        - "indices:data/*"
+        - "indices:admin/mappings/get"
+        - "indices:admin/mappings/put"
+        - "indices:monitor/*"
+        - "indices:admin/create"
+  tenant_permissions:
+    - tenant_patterns:
+        - "dev"
+      allowed_actions:
+        - "kibana_all_write"
