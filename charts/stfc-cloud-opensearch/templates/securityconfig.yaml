@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ (index .Values "opensearch-cluster").cluster.name }}-securityconfig-secret
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+stringData:
+      config.yml: |-
+        _meta:
+          type: "config"
+          config_version: "2"
+        config:
+          dynamic:
+            http:
+              anonymous_auth_enabled: false
+            authc:
+              basic_internal_auth_domain:
+                description: "Authenticate via HTTP Basic against Internal Users Database"
+                http_enabled: true
+                transport_enabled: true
+                order: "1"
+                http_authenticator:
+                  type: basic
+                  challenge: false
+                authentication_backend:
+                  type: intern
+            
+            {{- if .Values.openid.enabled }}
+              openid_auth_domain:
+                http_enabled: true
+                transport_enabled: true
+                order: 2
+                http_authenticator:
+                  type: openid
+                  challenge: false
+                  config:
+                    subject_key: preferred_username
+                    roles_key: groups
+                    openid_connect_url: "https://iris-iam.stfc.ac.uk/.well-known/openid-configuration"
+                    enable_ssl: true
+                    verify_hostnames: true
+                authentication_backend:
+                  type: noop
+            {{- end }}

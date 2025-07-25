@@ -2,6 +2,10 @@ opensearch-operator:
   nameOverride: op
   installCRDs: true
 
+# turn on for openid - need to enable some other annotations in dashboards - see below
+openid:
+  enabled: false
+
 opensearch-cluster:
   cluster:
     # change this to match name of cluster you want
