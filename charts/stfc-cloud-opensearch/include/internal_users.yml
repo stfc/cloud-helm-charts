@@ -1,0 +1,40 @@
+# We've setup some demo users for you  
+# Make sure to overwrite these before you use this chart in production
+
+# BE CAREFUL WHEN COMMITTING PASSWORDS - even when hashed    
+
+_meta:
+  type: "internalusers"
+  config_version: 2
+
+# Admin user with full access
+admin:
+  hash: "$2a$12$.GazcpLQXklzDk3gJeMHoOyeOdsXFrQZj/OflLjfjZIKl.Bly6JDe"  # admin
+  reserved: true
+  backend_roles:
+    - "admin"
+  description: "Admin user with full cluster access"
+
+# staging writer
+writer-staging:
+  hash: "$2a$12$9xxOdXJROFqMlGgZuGmuyu9lT2kgHKHtfv8ED1ZU/bQrfV1HgS7fS"  # writerstaging123
+  reserved: false
+  backend_roles:
+    - "writer_staging_role"
+  description: "Writer access to staging tenant"
+
+# production writer
+writer-prod:
+  hash: "$2a$12$O9VRqna2KlJ.cZdf3e3AnOm3/zUldNGMDK6JF.V3Hnbakdi7zd2Bm"  # writerprod123
+  reserved: false
+  backend_roles:
+    - "writer_prod_role"
+  description: "Writer access to prod tenant"
+
+# staging reader
+reader-staging:
+  hash: "$2a$12$5tduo.n323SE.MMVvfuHVO4yVe5W4nx4YEZTFSgH3H9kSEAGOSdWe"  # readerstaging123
+  reserved: false
+  backend_roles:
+    - "reader_staging_role"
+  description: "Reader access to staging tenant"
