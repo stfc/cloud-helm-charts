@@ -940,6 +940,17 @@ entries:
     version: 1.8.0
   stfc-cloud-vm:
   - apiVersion: v2
+    created: "2025-07-29T16:23:04.048243656Z"
+    dependencies:
+    - name: victoria-metrics-cluster
+      repository: https://victoriametrics.github.io/helm-charts/
+      version: 0.27.0
+    digest: 35153b880a86d001ccd901ad55bbba3799c778f633f22c36f79f708c9951774e
+    name: stfc-cloud-vm
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.1/stfc-cloud-vm-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
     created: "2025-02-27T10:57:39.235220911Z"
     dependencies:
     - name: victoria-metrics-cluster
@@ -950,4 +961,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2025-07-29T16:22:03.766840177Z"
+generated: "2025-07-29T16:23:04.048486913Z"
