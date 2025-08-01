@@ -8,15 +8,12 @@ _meta:
 admin_role:
   reserved: true
   cluster_permissions:
-    - "cluster:admin/*"
-    - "cluster:monitor/*"
-    - "indices:admin/*"
-    - "indices:monitor/*"
+    - "cluster_all"
   index_permissions:
     - index_patterns:
         - "*"
       allowed_actions:
-        - "indices:*"
+        - "indices_all"
   tenant_permissions:
     - tenant_patterns:
         - "*"
