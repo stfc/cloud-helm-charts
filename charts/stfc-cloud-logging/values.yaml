@@ -21,8 +21,8 @@ fluent-operator:
       # For a complete set of opensearch options see
       # https://github.com/fluent/helm-charts/blob/62a6d1c8ea98f40141c479d24ce3fe83a7156b66/charts/fluent-operator/charts/fluent-bit-crds/crds/fluentbit.fluent.io_outputs.yaml#L2532
       opensearch:
-        host: <opensearch_host>
-        port: <opensearch_port>
+        host: NotSet
+        port: NotSet
         # Credentials should be set as a secret, see secrets.yaml.template
         httpUser:
           valueFrom:
@@ -35,7 +35,7 @@ fluent-operator:
               name: opensearch-credentials
               key: password
         logstashFormat: On
-        logstashPrefix: "<some_index_prefix>"
+        logstashPrefix: MissingPrefix
         # Alternatively, logstash can be disabled, and a static index name specified
         # index: "<some_index_name>"
         replaceDots: true
