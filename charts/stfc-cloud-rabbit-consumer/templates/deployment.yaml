@@ -15,7 +15,7 @@ spec:
       annotations:
         # Force pod restart on configmap change
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        kubectl.kubernetes.io/default-container: consumer
+        kubectl.kubernetes.io/default-container: consumer-ral-info
       labels:
         app: rabbit-consumer
     spec:
