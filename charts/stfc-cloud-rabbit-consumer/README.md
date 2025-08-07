@@ -13,7 +13,7 @@ This application does not require persistent storage and is completely standalon
 
 - Install secret from an existing krb5.keytab, this should match the principle used in the values.yaml file:
 
-`kubectl create secret generic rabbit-consumer-keytab --from-file krb5.keytab -n rabbit-consumers`
+`kubectl create secret generic rabbit-consumer-keytab --from-file krb5.keytab -n rabbit-consumer`
 
 - Install secrets for the Rabbit and Openstack credentials
   based on the following .yaml template:
@@ -31,7 +31,7 @@ kind: Secret
 metadata:
   # This should match the values.yaml values
   name: openstack-credentials
-  namespace: rabbit-consumers
+  namespace: rabbit-consumer
 type: Opaque
 stringData:
   OPENSTACK_USERNAME:
@@ -41,7 +41,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: rabbit-credentials
-  namespace: rabbit-consumers
+  namespace: rabbit-consumer
 type: Opaque
 stringData:
   RABBIT_USERNAME:
@@ -85,9 +85,9 @@ helm upgrade rabbit-consumer cloud-charts/stfc-cloud-rabbit-consumer  -f values.
 The pod may fail 1-3 times whilst the sidecar spins up, authenticates and caches the krb5 credentials. During this time the consumer will start, check for the credentials and terminate if they are not ready yet.
 
 The logs can be found by doing
-`kubectl logs deploy/rabbit-consumers -n rabbit-consumers -c <container>`
+`kubectl logs deploy/rabbit-consumer -n rabbit-consumer -c <container>`
 
-Where `<container>` is either `kerberos` or `consumer` for the sidecar / main consumers respectively. 
+Where `<container>` is either `kerberos` or `consumer` for the sidecar / main consumers respectively.
 
 
 # Updating This Chart
