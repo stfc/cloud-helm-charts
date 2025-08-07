@@ -1,0 +1,82 @@
+# Default values can be found in: https://github.com/fluent/helm-charts/blob/main/charts/fluent-operator/values.yaml
+# and through examination of the templates in this repo, including those defined in the CRD charts in /charts/fluent-bit-crds/
+fluent-operator:
+  fluentbit:
+    resources:
+      limits:
+        cpu: 2
+        memory: 1.0Gi
+      requests:
+        cpu: 10m
+        memory: 25Mi
+    annotations:
+      fluentbit.io/exclude: "true"
+      promtheus.io/scrape: "true"
+
+    # Inputs can be configured below if desired, but we are using defaults
+    # input:
+
+    output:
+      # To disable the opensearch output, comment out the below config block.
+      # For a complete set of opensearch options see
+      # https://github.com/fluent/helm-charts/blob/62a6d1c8ea98f40141c479d24ce3fe83a7156b66/charts/fluent-operator/charts/fluent-bit-crds/crds/fluentbit.fluent.io_outputs.yaml#L2532
+      opensearch:
+        host: NotSet
+        port: NotSet
+        # Credentials should be set as a secret, see secrets.yaml.template
+        httpUser:
+          valueFrom:
+            secretKeyRef:
+              name: opensearch-credentials
+              key: username
+        httpPassword:
+          valueFrom:
+            secretKeyRef:
+              name: opensearch-credentials
+              key: password
+        logstashFormat: On
+        logstashPrefix: MissingPrefix
+        # Alternatively, logstash can be disabled, and a static index name specified
+        # index: "<some_index_name>"
+        replaceDots: true
+        type: flb_type
+        traceError: true
+        suppressTypeName: On
+        timeKey: "@timestamp"
+        tls:
+          verify: false # If your opensearch instance supports TLS, this can be set to true
+          debug: 1 # Level 1 is Error only
+
+      # You should disable/comment out this section if you have disabled lokiStack in your openstack-cluster config
+      # It is disabled by default in our opinionated config, but we recommend you enable it when setting up FluentOperator to replace Promtail.
+      loki:
+        enable: true
+        host: loki-stack
+        port: 3100
+        tenantID: ""
+        labels: ["job=fluent-bit"]
+        removeKeys: []
+        autoKubernetesLabels: "on"
+
+      prometheusMetricsExporter:
+        metricsExporter:
+          host: "0.0.0.0"
+          port: 2020
+          addLabels:
+            app: "fluentbit"
+      
+      # Additional outputs (elasticsearch/kafka...) can be added below, see:
+      # https://github.com/fluent/fluent-operator/tree/master/charts/fluent-operator/templates
+
+    filter:
+      kubernetes:
+        enable: true
+        labels: true
+        annotations: false
+    
+    serviceMonitor:
+      enable: true
+      port: http-metrics
+
+  fluentd:
+    enable: false
