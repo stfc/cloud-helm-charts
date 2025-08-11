@@ -513,6 +513,18 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-harbor-1.0.0/stfc-cloud-harbor-1.0.0.tgz
     version: 1.0.0
+  stfc-cloud-logging:
+  - apiVersion: v2
+    created: "2025-08-11T08:05:19.210242728Z"
+    dependencies:
+    - name: fluent-operator
+      repository: https://fluent.github.io/helm-charts
+      version: 3.4.0
+    digest: cd067ec5cbc0d8430e3d77d2884df9d6c903c576488ec92bdf1a5290e3beb1ef
+    name: stfc-cloud-logging
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-logging-1.0.0/stfc-cloud-logging-1.0.0.tgz
+    version: 1.0.0
   stfc-cloud-longhorn:
   - apiVersion: v2
     created: "2025-07-29T16:13:06.787640383Z"
@@ -1016,4 +1028,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2025-08-05T10:03:42.300905692Z"
+generated: "2025-08-11T08:05:19.397531438Z"
