@@ -25,6 +25,23 @@ entries:
     version: 1.0.0
   materials-galaxy:
   - apiVersion: v2
+    created: "2025-08-12T12:53:42.830327006Z"
+    dependencies:
+    - name: galaxy
+      repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
+      version: 6.3.0
+    - name: galaxy-deps
+      repository: https://raw.githubusercontent.com/CloudVE/helm-charts/master/
+      version: 1.0.0
+    - name: oauth2-proxy
+      repository: https://oauth2-proxy.github.io/manifests
+      version: 7.17.1
+    digest: 7df12f564049e69982908291d70c9ac0cf28f9ebd3b641be0f1566f84b77b774
+    name: materials-galaxy
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/materials-galaxy-2.1.7/materials-galaxy-2.1.7.tgz
+    version: 2.1.7
+  - apiVersion: v2
     created: "2025-08-05T09:39:34.322287736Z"
     dependencies:
     - name: galaxy
@@ -1061,4 +1078,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2025-08-12T12:53:21.82571443Z"
+generated: "2025-08-12T12:53:42.830624862Z"
