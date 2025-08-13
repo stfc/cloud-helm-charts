@@ -1,0 +1,17 @@
+apiVersion: v2
+name: stfc-azimuth-llm-chat
+description: HuggingFace large language model serving along with a simple web interface.
+
+type: application
+
+version: 0.1.0
+
+icon: https://huggingface.co/datasets/huggingface/brand-assets/resolve/main/hf-logo.svg
+
+annotations:
+  azimuth.stackhpc.com/label: HuggingFace LLM
+
+dependencies:
+  - name: azimuth-llm-chat
+    version: 0.9.5
+    repository: "https://stackhpc.github.io/azimuth-llm"
