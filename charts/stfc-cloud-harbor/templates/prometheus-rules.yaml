@@ -1,0 +1,88 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+    name: harbor-alerts
+spec:
+    groups:
+    - name: harbor.availability
+      rules:
+      - alert: HarborDown
+        expr: |
+            min by (component) (harbor_up{job="harbor"}) == 0
+        for: 5m
+        annotations:
+            message: "Harbor component {{`{{ $labels.component }}`}} has been down for 5 minutes."
+        labels:
+            severity: critical
+
+      - alert: HarborHttpError
+        expr: |
+            (sum(rate(harbor_core_http_request_total{ code=~"5.." }[5m])) / sum(rate(harbor_core_http_request_total[5m])))*100 > 5
+        for: 5m
+        annotations:
+            message: "Harbor is experiencing {{`{{ round $value 3 }}`}} % error rate in the last 5 minutes."
+        labels:
+            severity: warning
+
+      - alert: HarborHttpError
+        expr: |
+            (sum(rate(harbor_core_http_request_total{ code=~"5.." }[5m])) / sum(rate(harbor_core_http_request_total[5m])))*100 > 20
+        for: 5m
+        annotations:
+            message: "Harbor is experiencing {{`{{ round $value 3 }}`}} % error rate in the last 5 minutes."
+        labels:
+            severity: critical
+
+      - alert: HarborComponentDown
+        expr: |
+            min by (component) (harbor_up{job="harbor"}) == 0
+        for: 5m
+        annotations:
+            message: "Harbor component {{`{{ $labels.component }}`}} is down for 5 minutes."
+        labels:
+            severity: critical
+
+      - alert: HarborTargetDown
+        expr: |
+            up{job="harbor"} == 0
+        for: 5m
+        annotations:
+            message: "Prometheus cannot scrape harbor instance {{`{{ $labels.instance }}`}} since 5 minutes."
+        labels:
+            severity: critical
+
+      - alert: HarborDatabaseConnectionFailure
+        expr: |
+            harbor_up{component=~"database"} == 0
+        for: 5m
+        annotations:
+            message: "Harbor database component {{`{{ $labels.instance }}`}} is down for 5 minutes."
+        labels:
+            severity: critical
+
+      - alert: HarborUnauthorisedRequests
+        expr: |
+            rate(harbor_core_http_request_total{code="401"}[5m]) > 20
+        for: 5m
+        annotations:
+            message: "Harbor is experiencing {{`{{ $value }}`}} unauthorised requests per second."
+        labels:
+            severity: warning
+
+      - alert: HarborOIDCAuthFailure
+        expr: |
+            harbor_system_info{auth_mode="oidc_auth"} == 0
+        for: 5m
+        annotations:
+            message: "Harbor OIDC authentication is failing, users cannot login via SSO."
+        labels:
+            severity: critical
+
+      - alert: HarborOverallQuota
+        expr: |
+            (sum(min by (project_name) (harbor_project_quota_usage_byte{job="harbor"}))) / 10995116277760 > 0.9
+        for: 5m
+        annotations:
+            message: "Harbor overall quota usage is greater than 90% of the 10TB quota."
+        labels:
+            severity: critical
