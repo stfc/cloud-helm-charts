@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "docker-registry.fullname" . }}-service
+  labels:
+    app: {{ template "docker-registry.name" . }}
+spec:
+  ports:
+    - port: {{ .Values.service.port }}
+      protocol: TCP
+      name: {{ .Values.service.name }}
+      targetPort: 5000
+{{- if .Values.metrics.enabled }}
+    - port: {{ .Values.metrics.port }}
+      protocol: TCP
+      name: http-metrics
+      targetPort: {{ (split ":" .Values.configData.http.debug.addr)._1 }}
+{{- end }}
+  selector:
+    app: {{ template "docker-registry.name" . }}
