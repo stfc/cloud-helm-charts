@@ -88,6 +88,8 @@ harbor:
 
   metrics:
     enabled: true
+    rules:
+      enabled: true
     serviceMonitor:
       enabled: true
       additionalLabels:
