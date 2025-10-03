@@ -16,8 +16,7 @@ ingress:
   hosts:
     - dockerhub.example.com
   annotations:
-    kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: "letsencrypt-staging"  
+    cert-manager.io/cluster-issuer: "self-signed"  
   tls:
     - hosts:
        - dockerhub.example.com
