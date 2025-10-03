@@ -1,3 +1,4 @@
+{{- if .Values.harbor.metrics.rules.enabled -}}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -86,3 +87,4 @@ spec:
             message: "Harbor overall quota usage is greater than 90% of the 10TB quota."
         labels:
             severity: critical
+{{- end -}}
