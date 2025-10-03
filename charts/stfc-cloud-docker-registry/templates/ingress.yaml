@@ -16,12 +16,7 @@ spec:
   {{- if .Values.ingress.ingressClassName }}
   ingressClassName: {{ .Values.ingress.ingressClassName }}
   {{- end }}
-
-  {{- if .Values.ingress.tls }}
-  tls:
-    {{ toYaml .Values.ingress.tls | indent 4 }}
-  {{- end }}
-
+  
   rules:
     {{- range $host := .Values.ingress.hosts }}
     - host: {{ $host }}
@@ -35,4 +30,9 @@ spec:
                 port:
                   number: {{ $servicePort }}
     {{- end -}}  
+
+  {{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+  {{- end -}}
 {{- end -}}
