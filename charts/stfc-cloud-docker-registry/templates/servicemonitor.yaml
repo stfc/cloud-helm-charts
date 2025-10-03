@@ -1,0 +1,15 @@
+{{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "docker-registry.fullname" . }}-servicemonitor
+  labels:
+    app: {{ template "docker-registry.name" . }}-metrics
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "docker-registry.name" . }}
+  endpoints:
+  - port: http-metrics
+    interval: 15s
+{{- end -}}

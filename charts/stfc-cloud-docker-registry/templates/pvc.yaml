@@ -1,0 +1,17 @@
+{{- if .Values.persistence.enabled -}}
+{{- if not .Values.persistence.existingClaim -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "docker-registry.fullname" . }}-pvc
+  labels:
+    app: {{ template "docker-registry.fullname" . }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size | quote }}
+  storageClassName: "{{ .Values.persistence.storageClass }}"
+{{- end -}}
+{{- end -}}
