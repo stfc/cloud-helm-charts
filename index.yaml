@@ -399,6 +399,13 @@ entries:
     version: 0.1.0
   stfc-cloud-docker-registry:
   - apiVersion: v2
+    created: "2025-10-03T11:56:49.977949628Z"
+    digest: 2e9ee3e24d1bea6a34bd942cd1068965b5ce723aea959f5637f67310230d31a7
+    name: stfc-cloud-docker-registry
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-docker-registry-1.0.0-alpha.744fb22/stfc-cloud-docker-registry-1.0.0-alpha.744fb22.tgz
+    version: 1.0.0-alpha.744fb22
+  - apiVersion: v2
     created: "2025-10-02T16:26:17.439510814Z"
     digest: b7bdcebd6860deac9a704b02a9053b5d935ef4aeefd8620a77fce39472348af0
     name: stfc-cloud-docker-registry
@@ -1165,4 +1172,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2025-10-03T11:52:03.167434752Z"
+generated: "2025-10-03T11:56:49.978116179Z"
