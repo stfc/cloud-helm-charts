@@ -125,6 +125,14 @@ jobs:
           # We're just updating the patch for now
           yq e -i ".version = \"${major}.${minor}.$((patch + 1))\"" "$CHART_YAML"
 
+      - name: "Setup Github Token"
+        if: ${{ steps.deps-update.outputs.update-type != 'none' }}
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+
       - name: "Create Pull Request for a minor/patch update"
         if: ${{ steps.deps-update.outputs.update-type != 'none' && steps.deps-update.outputs.update-type != 'major' }}
         id: minor-pr
@@ -134,7 +142,7 @@ jobs:
           branch: "chart-autoupdate-${{ steps.deps-update.outputs.update-type }}-${{ matrix.chart }}"
           labels: "chart-autoupdate-${{ steps.deps-update.outputs.update-type }}"
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           commit-message: ${{ env.pr-title }}
           author: ${{ env.author }}
           committer: ${{ env.author }}
@@ -159,7 +167,7 @@ jobs:
         env:
           pr-title: "major update of dependencies on ${{ matrix.chart }} chart"
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           commit-message: ${{ env.pr-title }}
           author: ${{ env.author }}
           committer: ${{ env.author }}
