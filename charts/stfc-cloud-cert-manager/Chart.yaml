@@ -2,8 +2,8 @@ apiVersion: v2
 dependencies:
   - name: cert-manager
     repository: https://charts.jetstack.io
-    version: v1.18.2
+    version: v1.19.0
 description: A Helm chart to deploy opinionated instance of cert-manager for the STFC Cloud
 name: stfc-cloud-cert-manager
 type: application
-version: 1.2.3
+version: 1.2.4
