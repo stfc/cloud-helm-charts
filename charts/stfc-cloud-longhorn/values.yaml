@@ -14,12 +14,12 @@ longhorn:
     enabled: true
 
   longhornManager:
-    nodeSelector: 
+    nodeSelector:
       longhorn.store.nodeselect/longhorn-storage-node: "true"
 
   defaultSettings:
     taintToleration: "nvidia.com/gpu:NoSchedule"
-    snapshotMaxCount: 10
+    snapshotMaxCount: "10"
     snapshotDataIntegrity: "enabled"
     snapshotDataIntegrityCronjob: "0 12 * * 1"
     replicaAutoBalance: "best-effort"
@@ -31,4 +31,4 @@ longhorn:
     defaultClassReplicaCount: 3
     defaultDataLocality: disabled
     migratable: "true"
-    
+
