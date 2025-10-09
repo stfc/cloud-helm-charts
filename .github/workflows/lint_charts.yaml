@@ -89,6 +89,12 @@ jobs:
             values_files: 
               - values.yaml
             include_clouds_yaml: false
+          
+          "charts/stfc-cloud-docker-registry":
+            values_files: 
+              - values.yaml
+              - secret-values.yaml.template
+            include_clouds_yaml: false
           EOF
 
       - name: Create clouds.yaml files
