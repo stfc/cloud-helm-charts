@@ -21,9 +21,17 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
 
+      - name: "Setup Github Token"
+        if: ${{ steps.deps-update.outputs.update-type != 'none' }}
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
           skip_existing: true
         env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_TOKEN: "${{ steps.app-token.outputs.token }}"
