@@ -13,13 +13,3 @@ openstack-manila-csi:
 ceph-csi-cephfs:
   readAffinity: 
     enabled: false
-  provisioner:
-    provisioner:
-      args:
-        httpEndpointPort: ""
-    resizer:
-      args:
-          httpEndpointPort: ""
-    snapshotter:
-      args:
-        httpEndpointPort: ""
