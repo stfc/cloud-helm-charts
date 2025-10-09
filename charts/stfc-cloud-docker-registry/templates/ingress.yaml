@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-{{- $serviceName := include "docker-registry.fullname" . -}}-service
+{{- $serviceName := include "docker-registry.fullname" . }}-service
 {{- $servicePort := .Values.service.port -}}
 {{- $path := .Values.ingress.path -}}
 apiVersion: networking.k8s.io/v1
