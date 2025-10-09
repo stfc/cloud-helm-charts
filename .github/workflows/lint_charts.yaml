@@ -1,0 +1,162 @@
+name: Lint Helm Charts
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/lint_charts.yaml"
+      - 'charts/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'charts/**'
+
+jobs:
+  lint-charts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'latest'
+
+      - name: Create charts-config file
+        run: |
+          cat << EOF > /tmp/charts-config.yaml
+          "charts/materials-galaxy":
+            values_files: 
+              - values.yaml
+              - secret-values.yaml.template
+            include_clouds_yaml: false
+
+          "charts/stfc-cloud-cert-manager":
+            values_files: 
+              - values.yaml
+            include_clouds_yaml: false
+
+          "charts/stfc-cloud-chatops":
+            values_files: 
+              - values.yaml
+              - secret-values.yaml.template
+            include_clouds_yaml: false
+
+          "charts/stfc-cloud-harbor":
+            values_files: 
+              - values.yaml
+              - secret-values.yaml.template
+            include_clouds_yaml: false
+
+          "charts/stfc-cloud-logging":
+            values_files: 
+              - values.yaml
+              - secret-values.yaml.template
+            include_clouds_yaml: false
+
+          "charts/stfc-cloud-longhorn":
+            values_files: 
+              - values.yaml
+            include_clouds_yaml: false
+
+          "charts/stfc-cloud-manila-csi":
+            values_files: 
+              - values.yaml
+            include_clouds_yaml: true
+
+          "charts/stfc-cloud-opensearch":
+            values_files: 
+              - values.yaml
+              - secret-values.yaml.template
+            include_clouds_yaml: false
+
+          "charts/stfc-cloud-openstack-cluster":
+            values_files: 
+              - values.yaml
+              - nodes.yaml
+              - addons.yaml
+              - secret-values.yaml.template
+            include_clouds_yaml: true
+
+          "charts/stfc-cloud-rabbit-consumer":
+            values_files: 
+              - values.yaml
+              - prod-values.yaml
+            include_clouds_yaml: false
+            
+          "charts/stfc-cloud-vm":
+            values_files: 
+              - values.yaml
+            include_clouds_yaml: false
+          
+          "charts/stfc-cloud-docker-registry":
+            values_files: 
+              - values.yaml
+              - secret-values.yaml.template
+            include_clouds_yaml: false
+          EOF
+
+      - name: Create clouds.yaml files
+        run: |
+          charts=$(yq eval 'keys | .[]' /tmp/charts-config.yaml)
+          
+          for chart_dir in $charts; do
+            include_clouds_yaml=$(yq eval ".\"$chart_dir\".include_clouds_yaml" /tmp/charts-config.yaml)
+            
+            if [ "$include_clouds_yaml" = "true" ]; then
+              echo "Creating clouds.yaml.yaml for $chart_dir"
+              cat > "$chart_dir/clouds.yaml" <<'EOF'
+          # Bespoke secrets for linting
+          clouds:
+            openstack:
+              auth:
+                auth_url: "foo.example.com"
+                application_credential_id: "foo"
+                application_credential_secret: "bar"
+              region_name: "biz"
+              interface: "public"
+              identity_api_version: 3
+              auth_type: "v3applicationcredential"
+          EOF
+            fi
+          done
+
+      - name: Lint Helm charts
+        run: |
+          charts=$(yq eval 'keys | .[]' /tmp/charts-config.yaml)
+          
+          for chart_dir in $charts; do
+            echo "================================"
+            echo "Linting $chart_dir..."
+
+            if [ ! -d "$(pwd)/$charts_dir" ]; then 
+              echo " Warning: chart's directory does not exist, skipping..."
+              continue
+            fi
+
+            helm dependency update $(pwd)/$chart_dir/.
+            LINT_CMD="helm lint $(pwd)/$chart_dir"
+            # Get values files from config
+            values_files=$(yq eval ".\"$chart_dir\".values_files[]" /tmp/charts-config.yaml)
+            
+            for values_file in $values_files; do
+              if [ -f "$(pwd)/$chart_dir/$values_file" ]; then
+                LINT_CMD="$LINT_CMD -f $(pwd)/$chart_dir/$values_file"
+                echo "  Including: $values_file"
+              else
+                echo "  Skipping: $values_file (not found)"
+              fi
+            done
+            
+            # Add clouds.yaml if it exists
+            if [ -f "$(pwd)/$chart_dir/clouds.yaml" ]; then
+              LINT_CMD="$LINT_CMD -f $(pwd)/$chart_dir/clouds.yaml"
+              echo "  Including: clouds.yaml"
+            fi
+          done
+
+      - name: Clean up
+        if: always()
+        run: |
+          find charts -name "clouds.yaml" -type f -delete
