@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: harbor-grafana-dashboards
+  labels:
+    grafana_dashboard: "1"
+data:
+  harbor-dashboards.json: |
+    {{- .Files.Get "grafana-dashboards/harbor-dashboard.json" | nindent 12 }}
