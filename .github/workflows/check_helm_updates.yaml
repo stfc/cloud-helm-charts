@@ -32,7 +32,8 @@ on:
         default: false
 
 env:
-  author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+  author: "${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>"
+  committer: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
 
 jobs:
   discover-charts:
@@ -42,7 +43,7 @@ jobs:
       update-strategies: ${{ steps.set-strategies.outputs.strategies }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Find charts
         id: set-charts
@@ -98,12 +99,19 @@ jobs:
         chart: ${{ fromJson(needs.discover-charts.outputs.chart-names) }}
         update-strategy: ${{ fromJson(needs.discover-charts.outputs.update-strategies) }}
     steps:
+      - name: "Setup Github Token"
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "Upgrade Helm chart dependencies"
         id: deps-update
-        uses: camptocamp/helm-dependency-update-action@v0.4.1
+        uses: camptocamp/helm-dependency-update-action@v0.5.0
         with:
           chart-path: "charts/${{ matrix.chart }}"
           update-strategy: "${{ matrix.update-strategy }}"
@@ -125,18 +133,10 @@ jobs:
           # We're just updating the patch for now
           yq e -i ".version = \"${major}.${minor}.$((patch + 1))\"" "$CHART_YAML"
 
-      - name: "Setup Github Token"
-        if: ${{ steps.deps-update.outputs.update-type != 'none' }}
-        uses: actions/create-github-app-token@v2
-        id: app-token
-        with:
-          app-id: ${{ vars.APP_ID }}
-          private-key: ${{ secrets.PRIVATE_KEY }}
-
       - name: "Create Pull Request for a minor/patch update"
         if: ${{ steps.deps-update.outputs.update-type != 'none' && steps.deps-update.outputs.update-type != 'major' }}
         id: minor-pr
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v7
         env:
           pr-title: "${{ steps.deps-update.outputs.update-type }} update of dependencies on ${{ matrix.chart }} chart"
           branch: "chart-autoupdate-${{ steps.deps-update.outputs.update-type }}-${{ matrix.chart }}"
@@ -145,7 +145,7 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           commit-message: ${{ env.pr-title }}
           author: ${{ env.author }}
-          committer: ${{ env.author }}
+          committer: ${{ env.committer }}
           branch: ${{ env.branch }}
           delete-branch: true
           title: ${{ env.pr-title }}
@@ -163,14 +163,14 @@ jobs:
       - name: "Create Pull Request for a major update"
         if: ${{ steps.deps-update.outputs.update-type != 'none' && steps.deps-update.outputs.update-type == 'major' }}
         id: major-pr
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v7
         env:
           pr-title: "major update of dependencies on ${{ matrix.chart }} chart"
         with:
           token: ${{ steps.app-token.outputs.token }}
           commit-message: ${{ env.pr-title }}
           author: ${{ env.author }}
-          committer: ${{ env.author }}
+          committer: ${{ env.committer }}
           branch: "chart-autoupdate-major-${{ matrix.chart }}"
           delete-branch: true
           title: ${{ env.pr-title }}
