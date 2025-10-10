@@ -4,4 +4,4 @@ dependencies:
     repository: https://charts.longhorn.io
     version: 1.10.0
 name: stfc-cloud-longhorn
-version: 1.0.4
+version: 1.0.5
