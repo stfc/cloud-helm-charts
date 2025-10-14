@@ -18,5 +18,5 @@ spec:
     - http01:
         ingress:
           # Assuming you have used the CAPI Addons Ingress Controller
-          ingressClassName: nginx
+          ingressClassName: {{ default "nginx" (index .Values "le-prod" "ingressClassName") }}
 {{- end }}
