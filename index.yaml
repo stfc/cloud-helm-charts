@@ -368,6 +368,20 @@ entries:
     version: 1.6.1
   stfc-cloud-cert-manager:
   - apiVersion: v2
+    created: "2025-10-28T15:37:47.15104269Z"
+    dependencies:
+    - name: cert-manager
+      repository: https://charts.jetstack.io
+      version: v1.19.1
+    description: A Helm chart to deploy opinionated instance of cert-manager for the
+      STFC Cloud
+    digest: 7a120a1b74079e8d618a2c8a813cb39d910e50479aa0e4e0d6507a948064ebb5
+    name: stfc-cloud-cert-manager
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-cert-manager-1.2.6/stfc-cloud-cert-manager-1.2.6.tgz
+    version: 1.2.6
+  - apiVersion: v2
     created: "2025-10-14T13:05:37.509596443Z"
     dependencies:
     - name: cert-manager
@@ -737,6 +751,20 @@ entries:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-longhorn-1.0.1/stfc-cloud-longhorn-1.0.1.tgz
     version: 1.0.1
   stfc-cloud-manila-csi:
+  - apiVersion: v2
+    created: "2025-10-28T15:37:47.347748182Z"
+    dependencies:
+    - name: openstack-manila-csi
+      repository: https://kubernetes.github.io/cloud-provider-openstack
+      version: 2.34.1
+    - name: ceph-csi-cephfs
+      repository: https://ceph.github.io/csi-charts
+      version: 3.15.0
+    digest: cf5b4ebf599e7fcd13f0655b7eb73bdc93fa5bf57dfb7b664be549a5eda9180d
+    name: stfc-cloud-manila-csi
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-manila-csi-1.1.5/stfc-cloud-manila-csi-1.1.5.tgz
+    version: 1.1.5
   - apiVersion: v2
     created: "2025-09-10T14:01:42.744256544Z"
     dependencies:
@@ -1288,4 +1316,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2025-10-28T15:37:07.371450345Z"
+generated: "2025-10-28T15:37:47.348001686Z"
