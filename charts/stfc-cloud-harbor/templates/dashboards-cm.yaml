@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: harbor-grafana-dashboards
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator
+# Enable the sidecar to automatically load dashboards with a label {{ grafana.sidecar.dashboards.label }}=1
+  labels:
+    grafana_dashboard: "1"
+data:
+  harbor-dashboards.json: |
+    {{- .Files.Get "grafana-dashboards/harbor-dashboard.json" | nindent 12 }}
