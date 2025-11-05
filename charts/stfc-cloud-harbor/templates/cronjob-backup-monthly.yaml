@@ -4,7 +4,8 @@ kind: CronJob
 metadata:
   name: harbor-backup-monthly
 spec:
-  schedule: "0 18 1 * *"
+  # space these out because they fail if they run together
+  schedule: "0 16 1 * *" # 4pm on the 1st of every month
   jobTemplate:
     spec:
       template:
@@ -16,7 +17,8 @@ spec:
               args:
                 - |
                   aws s3 sync {{ .Values.backup.sourceBucket }} {{ .Values.backup.destination.monthly }} \
-                  --endpoint-url {{ .Values.backup.endpoint }} --exact-timestamps --delete
+                  --endpoint-url {{ .Values.backup.endpoint }} \
+                  --exact-timestamps --delete --no-progress 2>&1 | tee /tmp/s3sync.log
               env:
                 - name: AWS_ACCESS_KEY_ID
                   valueFrom:
