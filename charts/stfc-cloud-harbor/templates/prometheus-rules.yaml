@@ -21,7 +21,7 @@ spec:
             (sum(rate(harbor_core_http_request_total{ code=~"5.." }[5m])) / sum(rate(harbor_core_http_request_total[5m])))*100 > 5
         for: 5m
         annotations:
-            message: "Harbor is experiencing {{`{{ round $value 3 }}`}} % 5xx http server error rate in the last 5 minutes."
+            message: "Harbor is experiencing {{`{{ $value }}`}} % 5xx http server error rate in the last 5 minutes."
         labels:
             severity: warning
 
@@ -30,7 +30,7 @@ spec:
             (sum(rate(harbor_core_http_request_total{ code=~"5.." }[5m])) / sum(rate(harbor_core_http_request_total[5m])))*100 > 10
         for: 5m
         annotations:
-            message: "Harbor is experiencing {{`{{ round $value 3 }}`}} % 5xx http server error rate in the last 5 minutes."
+            message: "Harbor is experiencing {{`{{ $value }}`}} % 5xx http server error rate in the last 5 minutes."
         labels:
             severity: critical
 
