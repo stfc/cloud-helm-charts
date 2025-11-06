@@ -96,10 +96,16 @@ harbor:
         release: kube-prometheus
 
 backup:
-  enabled: true
+  image: amazon/aws-cli:latest  
+  endpoint: "https://s3.example.com"
   sourceBucket: "s3://harbor-source-bucket"
+
   destination:
     daily: "s3://harbor-destination-backup/daily"
     weekly: "s3://harbor-destination-backup/weekly"
     monthly: "s3://harbor-destination-backup/monthly"
-  endpoint: "https://s3.example.com"
+
+  schedule:
+    daily: "0 12 * * *"   # Every day @ 12:00
+    weekly: "0 9 * * 1"   # Every Monday @ 9:00
+    monthly: "0 16 1 * *" # 1st of month @ 16:00

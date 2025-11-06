@@ -1,0 +1,48 @@
+{{- if .Values.backup.enabled }}
+
+{{- range $period, $schedule := .Values.backup.schedule }}
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: harbor-backup-{{ $period }}
+spec:
+  schedule: "{{ $schedule }}"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: backup-{{ $period }}
+              image: {{ $.Values.backup.image }}
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -euo pipefail
+                  echo "$(date) Starting {{ $period }} S3 backup sync..."
+
+                  aws s3 sync {{ $.Values.backup.sourceBucket }} {{ index $.Values.backup.destination $period }} \
+                    --endpoint-url {{ $.Values.backup.endpoint }} \
+                    --exact-timestamps --delete --no-progress 2>&1 | tee /tmp/s3sync.log
+
+                  echo "$(date) {{ $period }} backup completed."
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: harbor-backup-secret
+                      key: accesskey
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: harbor-backup-secret
+                      key: secretkey
+---
+{{- end }}
+{{- end }}
