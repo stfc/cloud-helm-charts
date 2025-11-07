@@ -97,9 +97,16 @@ harbor:
 
 backup:
   enabled: true
+  image: amazon/aws-cli:latest  
+  endpoint: "https://s3.example.com"
   sourceBucket: "s3://harbor-source-bucket"
+
   destination:
     daily: "s3://harbor-destination-backup/daily"
     weekly: "s3://harbor-destination-backup/weekly"
     monthly: "s3://harbor-destination-backup/monthly"
-  endpoint: "https://s3.example.com"
+
+  schedule:
+    daily: "12 12 * * *"   # Every day @ 12:12 (add smear)
+    weekly: "2 9 * * 1"   # Every Monday @ 9:02
+    monthly: "17 16 1 * *" # 1st of month @ 16:17 
