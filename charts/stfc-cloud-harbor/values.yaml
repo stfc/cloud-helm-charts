@@ -107,6 +107,6 @@ backup:
     monthly: "s3://harbor-destination-backup/monthly"
 
   schedule:
-    daily: "0 12 * * *"   # Every day @ 12:00
-    weekly: "0 9 * * 1"   # Every Monday @ 9:00
-    monthly: "0 16 1 * *" # 1st of month @ 16:00
+    daily: "12 12 * * *"   # Every day @ 12:12 (add smear)
+    weekly: "2 9 * * 1"   # Every Monday @ 9:02
+    monthly: "17 16 1 * *" # 1st of month @ 16:17 
