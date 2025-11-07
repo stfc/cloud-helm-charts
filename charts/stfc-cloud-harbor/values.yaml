@@ -96,6 +96,7 @@ harbor:
         release: kube-prometheus
 
 backup:
+  enabled: true
   image: amazon/aws-cli:latest  
   endpoint: "https://s3.example.com"
   sourceBucket: "s3://harbor-source-bucket"
