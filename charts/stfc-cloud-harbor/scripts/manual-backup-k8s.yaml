@@ -1,0 +1,58 @@
+## CURRENTLY SETUP TO WORK FOR DEV
+## UPDATE THE SCRIPT TO RUN IN ON PROD:
+## change the command to
+##  for repo in $(aws s3 ls s3://prod-harbor-bucket/docker/registry/v2/repositories/ --endpoint-url https://s3.echo.stfc.ac.uk | awk '{print $2}'); do
+##    repo="${repo%/}"
+##    echo "Syncing $repo..."
+##    aws s3 sync \
+##      s3://prod-harbor-bucket/docker/registry/v2/repositories/$repo \
+##      s3://prod-harbor-backup/daily/docker/registry/v2/repositories/$repo \
+##      --exact-timestamps --endpoint-url https://s3.echo.stfc.ac.uk --delete --no-progress
+##  done
+## then run kubectl apply -f manual-backup-k8s.yaml
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: harbor-backup-manual
+  namespace: harbor
+spec:  
+  backoffLimit: 1
+  template:
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -c
+        - |
+          set -euo pipefail
+          echo "$(date) Starting daily S3 backup sync..."
+
+          for repo in $(aws s3 ls s3://new-staging-harbor/docker/registry/v2/repositories/ --endpoint-url https://s3.echo.stfc.ac.uk | awk '{print $2}'); do
+            repo="${repo%/}"
+            echo "Syncing $repo..."
+            aws s3 sync \
+              s3://new-staging-harbor/docker/registry/v2/repositories/$repo \
+              s3://staging-harbor-backup/daily/docker/registry/v2/repositories/$repo \
+              --exact-timestamps --endpoint-url https://s3.echo.stfc.ac.uk --delete --no-progress
+          done
+
+          echo "$(date) daily backup completed."
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: accesskey
+              name: harbor-backup-secret
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secretkey
+              name: harbor-backup-secret
+        image: amazon/aws-cli:latest
+        imagePullPolicy: Always
+        name: backup-manual
+
+      dnsPolicy: ClusterFirst
+      restartPolicy: Never
+      schedulerName: default-scheduler
