@@ -27,10 +27,18 @@ spec:
                   set -euo pipefail
                   echo "$(date) Starting {{ $period }} S3 backup sync..."
 
-                  aws s3 sync {{ $.Values.backup.sourceBucket }} {{ index $.Values.backup.destination $period }} \
-                    --endpoint-url {{ $.Values.backup.endpoint }} \
-                    --exact-timestamps --delete --no-progress 2>&1 | tee /tmp/s3sync.log
-
+                  for repo in $(aws s3 ls {{ $.Values.backup.sourceBucket }}/docker/registry/v2/repositories/ \
+                      --endpoint-url {{ $.Values.backup.endpoint }} \
+                      | awk '{print $2}'); 
+                  do
+                    repo="${repo%/}"
+                    echo "Syncing $repo..."
+                    aws s3 sync \
+                      {{ $.Values.backup.sourceBucket }}/docker/registry/v2/repositories/$repo \
+                      {{ index $.Values.backup.destination $period }}/docker/registry/v2/repositories/$repo \
+                      --exact-timestamps --endpoint-url {{ $.Values.backup.endpoint }} --delete --no-progress
+                  done
+    
                   echo "$(date) {{ $period }} backup completed."
               env:
                 - name: AWS_ACCESS_KEY_ID
