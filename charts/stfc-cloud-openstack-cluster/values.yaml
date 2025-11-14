@@ -110,3 +110,11 @@ openstack-cluster:
       csiCinder:
         defaultStorageClass:
           availabilityZone: ceph
+    
+    etcdDefrag:
+      # KEEP IN until next capi-helm-chart update
+      # https://github.com/azimuth-cloud/capi-helm-charts/pull/634
+      release:
+        values:
+          repository: bitnami/kubectl
+          tag: latest
