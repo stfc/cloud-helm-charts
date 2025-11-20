@@ -116,5 +116,6 @@ openstack-cluster:
       # https://github.com/azimuth-cloud/capi-helm-charts/pull/634
       release:
         values:
-          repository: bitnami/kubectl
-          tag: latest
+          image:
+            repository: bitnami/kubectl
+            tag: latest
