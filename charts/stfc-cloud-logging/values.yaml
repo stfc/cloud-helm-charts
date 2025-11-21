@@ -1,7 +1,9 @@
 # Default values can be found in: https://github.com/fluent/helm-charts/blob/main/charts/fluent-operator/values.yaml
 # and through examination of the templates in this repo, including those defined in the CRD charts in /charts/fluent-bit-crds/
-fluent-operator:
+fluent-operator:  
   fluentbit:
+    metrics:
+      rules: enabled
     resources:
       limits:
         cpu: 2
