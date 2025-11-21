@@ -811,6 +811,17 @@ entries:
     version: 1.0.0
   stfc-cloud-logging:
   - apiVersion: v2
+    created: "2025-11-21T16:08:35.704119144Z"
+    dependencies:
+    - name: fluent-operator
+      repository: https://fluent.github.io/helm-charts
+      version: 3.5.0
+    digest: 4f01383768a5c5dc38c7361052f7f1d853e90064a4af81af089ceb58633f5f61
+    name: stfc-cloud-logging
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-logging-1.1.0/stfc-cloud-logging-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v2
     created: "2025-11-21T13:59:51.344282885Z"
     dependencies:
     - name: fluent-operator
@@ -1631,4 +1642,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2025-11-21T16:02:56.977115317Z"
+generated: "2025-11-21T16:08:35.704540387Z"
