@@ -2,26 +2,26 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-    name: fluent-bit-alerts
+  name: fluent-bit-alerts
 spec:
-    groups:
-    - name: fluent-bit-output
-      rules:
-      - alert: FluentBitOutputErrors
-        expr: rate(fluentbit_output_retries_failed_total{job="fluent-bit"}[5m]) > 1
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Failing to deliver logs"
-          description: "Consistent log write failures over 5m. Check OpenSearch connectivity."
+  groups:
+  - name: fluent-bit-output
+    rules:
+    - alert: FluentBitOutputErrors
+      expr: rate(fluentbit_output_retries_failed_total{job="fluent-bit"}[5m]) > 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Failing to deliver logs"
+        description: "Consistent log write failures over 5m. Check OpenSearch connectivity."
 
-      - alert: FluentBitOutputRetriesHigh
-        expr: rate(fluentbit_output_retries_total{job="fluent-bit"}[5m]) > 5
-        for: 10m
-        labels: 
-          severity: warning
-        annotations:
-          summary: "Log write retries high"
-          description: "Log write retries are growing — check OpenSearch performance."
+    - alert: FluentBitOutputRetriesHigh
+      expr: rate(fluentbit_output_retries_total{job="fluent-bit"}[5m]) > 5
+      for: 10m
+      labels: 
+      severity: warning
+      annotations:
+        summary: "Log write retries high"
+        description: "Log write retries are growing — check OpenSearch performance."
 {{- end -}}
