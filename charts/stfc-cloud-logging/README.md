@@ -1,4 +1,6 @@
 # STFC Cloud Logging Chart
+
+This is an alpha version of this chart
 > [!NOTE]
 > This chart is in active development, and may not yet be useful to most users beyond for setting up fluentbit to output to opensearch without having to create a secret resource.
 > Future development will aim to setup log filtering via custom filter resources, to programatically generate and manage opensearch credentials, to integrate trivy for security compliance, and to work on some method for secure log aggregation for all user clusters.
