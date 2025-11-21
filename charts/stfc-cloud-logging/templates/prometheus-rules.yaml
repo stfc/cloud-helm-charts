@@ -20,7 +20,7 @@ spec:
       expr: rate(fluentbit_output_retries_total{job="fluent-bit"}[5m]) > 5
       for: 10m
       labels: 
-      severity: warning
+        severity: warning
       annotations:
         summary: "Log write retries high"
         description: "Log write retries are growing — check OpenSearch performance."
