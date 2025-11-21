@@ -1,4 +1,4 @@
-{{- if (index .Values "fluent-operator").fluentbit.metrics.rules.enabled -}}
+{{- if .Values.includePrometheusRules -}}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
