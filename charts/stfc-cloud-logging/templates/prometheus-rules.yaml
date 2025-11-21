@@ -9,7 +9,7 @@ spec:
       rules:
       - alert: FluentBitOutputErrors
         expr: rate(fluentbit_output_retries_failed_total{job="fluent-bit"}[5m]) > 1
-        for: 5mh
+        for: 5m
         labels:
           severity: warning
         annotations:
