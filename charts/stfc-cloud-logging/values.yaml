@@ -1,6 +1,10 @@
 # Default values can be found in: https://github.com/fluent/helm-charts/blob/main/charts/fluent-operator/values.yaml
 # and through examination of the templates in this repo, including those defined in the CRD charts in /charts/fluent-bit-crds/
-fluent-operator:
+
+# custom flag if we include our prometheus rules
+includePrometheusRules: true
+
+fluent-operator:  
   fluentbit:
     resources:
       limits:
@@ -59,6 +63,7 @@ fluent-operator:
         autoKubernetesLabels: "on"
 
       prometheusMetricsExporter:
+        match: "fb.metrics"
         metricsExporter:
           host: "0.0.0.0"
           port: 2020
@@ -77,6 +82,12 @@ fluent-operator:
     serviceMonitor:
       enable: true
       port: http-metrics
+
+    input:
+      fluentBitMetrics:
+        scrapeInterval: "2"
+        scrapeOnStart: true
+        tag: "fb.metrics"
 
   fluentd:
     enable: false
