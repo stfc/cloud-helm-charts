@@ -45,7 +45,7 @@ export PATH=$PATH:/snap/bin
 sudo snap install kubectl --classic
 sudo snap install helm --classic
 
-curl --no-progress-meter -L "https://github.com/kubernetes-sigs/cluster-api/releases/download/${CLUSTER_CTL_VERSION}/clusterctl-linux-amd64" -o clusterctl
+curl --no-progress-meter -L "https://github.com/kubernetes-sigs/cluster-api/releases/download/${CLUSTER_API}/clusterctl-linux-amd64" -o clusterctl
 chmod +x clusterctl
 sudo mv clusterctl /usr/local/bin/clusterctl
 
@@ -66,13 +66,16 @@ sudo microk8s enable dns
 
 echo "Initialising cluster-api OpenStack provider..."
 echo "If this fails you may need a GITHUB_TOKEN, see https://stfc.atlassian.net/wiki/spaces/CLOUDKB/pages/211878034/Cluster+API+Setup for details"
-clusterctl init --infrastructure=openstack:"${CAPO_PROVIDER_VERSION}"
+clusterctl init --infrastructure=openstack:"${CLUSTER_API_PROVIDER_OPENSTACK}"
 
 echo "Importing required helm repos and packages"
 helm repo add cloud-charts https://stfc.github.io/cloud-helm-charts/
 helm repo add capi-addons https://azimuth-cloud.github.io/cluster-api-addon-provider
 helm repo update
-helm upgrade cluster-api-addon-provider capi-addons/cluster-api-addon-provider --create-namespace --install --wait -n capi-addon-system --version "${AZIMUTH_CAPO_ADDON_VERSION}"
+helm upgrade cluster-api-addon-provider capi-addons/cluster-api-addon-provider --create-namespace --install --wait -n capi-addon-system --version "${ADDON_PROVIDER}"
 
+
+export ADDON_VERSION=$ADDON_PROVIDER
+export CAPO_PROVIDER_VERSION=$CLUSTER_API_PROVIDER_OPENSTACK
 
 echo "You are now ready to create a cluster - see README.md"
