@@ -524,6 +524,17 @@ entries:
     version: 1.0.1
   stfc-cloud-harbor:
   - apiVersion: v2
+    created: "2025-12-12T10:38:55.785850954Z"
+    dependencies:
+    - name: harbor
+      repository: https://helm.goharbor.io
+      version: 1.18.1
+    digest: dffc3f49b809668e37dae05dd292789cc62f4af8402e5e847f210fdd5b089297
+    name: stfc-cloud-harbor
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-harbor-1.2.4/stfc-cloud-harbor-1.2.4.tgz
+    version: 1.2.4
+  - apiVersion: v2
     created: "2025-11-14T13:27:07.185062543Z"
     dependencies:
     - name: harbor
@@ -1664,4 +1675,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2025-11-21T16:44:42.996907597Z"
+generated: "2025-12-12T10:38:55.927752943Z"
