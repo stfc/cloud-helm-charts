@@ -47,7 +47,7 @@ jobs:
           echo version=$VERSION >> $GITHUB_OUTPUT
 
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "bump chart ${{github.event.inputs.chart}} to version: ${{ steps.bump-version.outputs.version }}"
           branch: br-${{github.event.inputs.chart}}-v${{ steps.bump-version.outputs.version }}
@@ -81,7 +81,7 @@ jobs:
           sed -i '0,/^#/ s/^#.*$/&\n\nThis is an alpha version of this chart/' charts/${{github.event.inputs.chart}}/README.md
       
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "update readme"
           branch: br-${{github.event.inputs.chart}}-v${{ needs.bump-charts.outputs.alpha-version }}
