@@ -136,7 +136,7 @@ jobs:
       - name: "Create Pull Request for a minor/patch update"
         if: ${{ steps.deps-update.outputs.update-type != 'none' && steps.deps-update.outputs.update-type != 'major' }}
         id: minor-pr
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         env:
           pr-title: "${{ steps.deps-update.outputs.update-type }} update of dependencies on ${{ matrix.chart }} chart"
           branch: "chart-autoupdate-${{ steps.deps-update.outputs.update-type }}-${{ matrix.chart }}"
@@ -163,7 +163,7 @@ jobs:
       - name: "Create Pull Request for a major update"
         if: ${{ steps.deps-update.outputs.update-type != 'none' && steps.deps-update.outputs.update-type == 'major' }}
         id: major-pr
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         env:
           pr-title: "major update of dependencies on ${{ matrix.chart }} chart"
         with:
