@@ -16,7 +16,7 @@ jobs:
     # Run on main branch pushes OR pull requests OR manual triggers
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -66,7 +66,7 @@ jobs:
           private-key: ${{ secrets.PRIVATE_KEY }}
     
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: br-${{github.event.inputs.chart}}-v${{ needs.bump-charts.outputs.alpha-version }}
 

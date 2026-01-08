@@ -43,7 +43,7 @@ jobs:
       update-strategies: ${{ steps.set-strategies.outputs.strategies }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Find charts
         id: set-charts
@@ -107,7 +107,7 @@ jobs:
           private-key: ${{ secrets.PRIVATE_KEY }}
 
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: "Upgrade Helm chart dependencies"
         id: deps-update
