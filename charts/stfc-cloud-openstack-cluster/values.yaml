@@ -1,4 +1,3 @@
-
 openstack-cluster:
   # The name of the cloud to use from the specified clouds.yaml
   cloudName: openstack
@@ -27,11 +26,11 @@ openstack-cluster:
     serviceDomain: cluster.local
 
   clusterNetworking:
-    internalNetwork: 
+    internalNetwork:
       nodeCidr: 192.168.128.0/17
 
   # Settings for registry mirrors
-  registryMirrors: { docker.io: ["https://dockerhub.stfc.ac.uk"] }
+  registryMirrors: { docker.io: ["https://dockerhub.stfc.ac.uk/v2/"] }
 
   # Settings for the Kubernetes API server
   apiServer:
@@ -101,7 +100,7 @@ openstack-cluster:
     # and includes Loki which is required for central logging as per UKRI policy
     monitoring:
       enabled: true
-      # disable loki-stack by default 
+      # disable loki-stack by default
       # we'll setup our own log collection
       lokiStack:
         enabled: false
@@ -110,7 +109,7 @@ openstack-cluster:
       csiCinder:
         defaultStorageClass:
           availabilityZone: ceph
-    
+
     etcdDefrag:
       # KEEP IN until next capi-helm-chart update
       # https://github.com/azimuth-cloud/capi-helm-charts/pull/634
