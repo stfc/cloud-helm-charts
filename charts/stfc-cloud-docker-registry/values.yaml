@@ -11,20 +11,23 @@ service:
 ingress:
   enabled: false
   ingressClassName: nginx
-  path: /
+  path: ^(/v2)?(/.*)?$
+  pathType: ImplementationSpecific
   # Used to create an Ingress record.
   hosts:
     - dockerhub.example.com
   annotations:
-    cert-manager.io/cluster-issuer: "self-signed"  
+    cert-manager.io/cluster-issuer: "self-signed"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /v2/$2
   tls:
     - hosts:
-       - dockerhub.example.com
+        - dockerhub.example.com
 
 persistence:
   enabled: false
-# existingClaim: claim-name
-  accessMode: 'ReadWriteOnce'
+  # existingClaim: claim-name
+  accessMode: "ReadWriteOnce"
   size: 10Gi
   storageClass: longhorn
 
@@ -47,7 +50,7 @@ extraEnvVars:
 # - name: EXTRA_VAR_2
 #   value: extra-var-value-2
 
-# remote url for pull-through cache 
+# remote url for pull-through cache
 proxy:
   remoteURL: https://registry-1.docker.io
 
@@ -58,7 +61,7 @@ metrics:
   serviceMonitor:
     enabled: false
 
-# Config to pass to 
+# Config to pass to
 configData:
   version: 0.1
   log:
