@@ -11,7 +11,7 @@ service:
 ingress:
   enabled: false
   ingressClassName: nginx
-  path: ^(/v2)?(/.*)?$
+  path: ^(?!/v2)(/.*)$
   pathType: ImplementationSpecific
   # Used to create an Ingress record.
   hosts:
