@@ -42,11 +42,11 @@ spec:
             {{- end }}
           livenessProbe:
             httpGet:
-              path: /
+              path: /v2
               port: 5000
           readinessProbe:
             httpGet:
-              path: /
+              path: /v2
               port: 5000
           env: {{ include "docker-registry.envs" . | nindent 12 }}
           volumeMounts: {{ include "docker-registry.volumeMounts" . | nindent 12 }} 
