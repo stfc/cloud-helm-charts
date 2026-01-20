@@ -11,15 +11,17 @@ service:
 ingress:
   enabled: false
   ingressClassName: nginx
-  path: ^(?!/v2)(/.*)$
-  pathType: ImplementationSpecific
+  path: /
+  pathType: Prefix
   # Used to create an Ingress record.
   hosts:
     - dockerhub.example.com
   annotations:
     cert-manager.io/cluster-issuer: "self-signed"
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /v2/$2
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($request_uri !~ ^/v2) {
+        rewrite ^(.*)$ /v2$1 break;
+      }
   tls:
     - hosts:
         - dockerhub.example.com
