@@ -1,5 +1,7 @@
 # Docker Registry pull-through Cache
 
+This is an alpha version of this chart
+
 This chart will setup a docker registry as a pull-through cache service.
 
 Since 20/11/2020 dockerhub rate limited free users, hence we implemented a registry mirror to cache popular images for our users and SCD in general. 
