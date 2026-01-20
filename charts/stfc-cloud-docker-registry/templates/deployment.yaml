@@ -40,14 +40,6 @@ spec:
               name: http-metrics
               protocol: TCP
             {{- end }}
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 5000
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 5000
           env: {{ include "docker-registry.envs" . | nindent 12 }}
           volumeMounts: {{ include "docker-registry.volumeMounts" . | nindent 12 }} 
       volumes: {{ include "docker-registry.volumes" . | nindent 8 }}
