@@ -34,8 +34,12 @@ You can copy and edit the file locally and use it as another source of helm valu
 > [!NOTE] 
 > Step 2 is mandatory, but only needs to be run once per new clouds.yaml
 
-
-2. Run `cloud-helm-charts/charts/stfc-cloud-openstack-cluster/scripts/bootstrap.sh`
+2. Run 
+```bash
+source set-env.sh
+cd cloud-helm-charts/charts/stfc-cloud-openstack-cluster/scripts
+./bootstrap.sh
+```
 
 > [!NOTE]
 > This script will setup a microk8s cluster which will be used to spin up your cluster 
@@ -48,6 +52,7 @@ You can copy and edit the file locally and use it as another source of helm valu
 3. Install the chart, `openstack-cluster.apiServer.floatingIP` needs to be set to the floating IP you setup to access your cluster - see Requirements
 
 ```bash
+source set-env.sh
 export CLUSTER_NAME="demo-cluster"  # or your cluster name
 helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --create-namespace --install -f values.yaml -f addons.yaml -f nodes.yaml -f /path/to/clouds.yaml --set openstack-cluster.apiServer.floatingIP=130.246.xxx.xxx --set openstack-cluster.cloudCredentialsSecretName=${CLUSTER_NAME}-cloud-credentials -n ${CLUSTER_NAME}
 ```

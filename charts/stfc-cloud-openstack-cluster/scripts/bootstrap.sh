@@ -1,34 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Function to convert dependencies to a valid environment variables
-sanitize_var_name() {
-    echo "$1" | tr '-' '_' | tr '[:lower:]' '[:upper:]'
-}
+echo "Installing required tools..."
+sudo apt-get install -y snapd python3-openstackclient yq
 
-# Read in dependencies.json file
-set_env_vars() {
-    local json_file="$1"
-    
-    # Check if jq is installed
-    if ! command -v jq &> /dev/null; then
-        echo "Error: jq is not installed. Please install jq to parse JSON."
-        exit 1
-    fi
-    
-    # Read each key-value pair from the JSON file
-    while IFS='=' read -r key value; do
-        # Sanitize the key to create a valid environment variable name
-        env_var=$(sanitize_var_name "$key")
-
-        # Set the environment variable
-        export "$env_var"="$value"
-        echo "Set $env_var=$value"
-    done < <(jq -r 'to_entries[] | .key + "=" + .value' "$json_file")
-}
-
-# Set environment variables from dependencies.json
-set_env_vars "dependencies.json"
+export PATH=$PATH:/snap/bin
+sudo snap install kubectl --classic
+sudo snap install helm --classic
 
 echo "Updating system to apply latest security patches..."
 export DEBIAN_FRONTEND=noninteractive
@@ -39,13 +17,21 @@ sudo apt-get -o Dpkg::Options::="--force-confold" \
              -o Dpkg::Options::="--force-confdef" \
              -y -qq upgrade > /dev/null
 
-echo "Installing required tools..."
-sudo apt-get install -y snapd
-export PATH=$PATH:/snap/bin
-sudo snap install kubectl --classic
-sudo snap install helm --classic
 
-curl --no-progress-meter -L "https://github.com/kubernetes-sigs/cluster-api/releases/download/${CLUSTER_API}/clusterctl-linux-amd64" -o clusterctl
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+VALUES_DIR=$(dirname $SCRIPT_DIR)
+
+# Check a clouds.yaml file exists in the same directory as the script
+if [ ! -f "$VALUES_DIR/clouds.yaml" ]; then
+    echo "A clouds.yaml file is required in stfc-cloud-openstack-cluster"
+    exit 1
+fi
+
+# adding project-id to clouds.yaml
+source "$SCRIPT_DIR"/set-project-id.sh "$VALUES_DIR"/clouds.yaml
+
+echo "Installing clusterctl..."
+curl --progress-bar -L "https://github.com/kubernetes-sigs/cluster-api/releases/download/${CLUSTER_API}/clusterctl-linux-amd64" -o clusterctl
 chmod +x clusterctl
 sudo mv clusterctl /usr/local/bin/clusterctl
 
@@ -59,6 +45,7 @@ echo "Backing up existing kubeconfig if it exists..."
 if [ -f "$HOME/.kube/config" ]; then 
     mv -v "$HOME/.kube/config" "$HOME/.kube/config.bak"
 fi
+
 sudo microk8s.config | tee ~/.kube/config > /dev/null
 sudo chown "$USER" ~/.kube/config
 sudo chmod 600 ~/.kube/config
@@ -74,8 +61,11 @@ helm repo add capi-addons https://azimuth-cloud.github.io/cluster-api-addon-prov
 helm repo update
 helm upgrade cluster-api-addon-provider capi-addons/cluster-api-addon-provider --create-namespace --install --wait -n capi-addon-system --version "${ADDON_PROVIDER}"
 
-
 export ADDON_VERSION=$ADDON_PROVIDER
 export CAPO_PROVIDER_VERSION=$CLUSTER_API_PROVIDER_OPENSTACK
 
-echo "You are now ready to create a cluster - see README.md"
+echo ""
+echo "=============================================================================="
+echo "You are now ready to create a cluster following the remaining instructions..."
+echo "See README.md - https://github.com/stfc/cloud-helm-charts/tree/main/charts/stfc-cloud-openstack-cluster/README.md"
+echo "=============================================================================="
