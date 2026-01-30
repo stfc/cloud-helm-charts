@@ -9,7 +9,7 @@ openstack-cluster:
   # we aim to keep n-1 of latest K8s version
   kubernetesVersion: "1.34.3"
   # The name of the image to use for cluster machines
-  machineImage: "capi-ubuntu-2204-kube-v1.34.3-2026-01-14"
+  machineImage: "capi-ubuntu-2204-kube-v1.34.3"
 
   # Values for the Kubernetes cluster network
   kubeNetwork:
