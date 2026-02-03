@@ -5,6 +5,17 @@
 includePrometheusRules: true
 
 fluent-operator:  
+
+  operator:
+    resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 20Mi
+    disableComponentControllers: "fluentd"
+
   fluentbit:
     resources:
       limits:
@@ -58,9 +69,15 @@ fluent-operator:
         host: loki-stack
         port: 3100
         tenantID: ""
-        labels: ["job=fluent-bit"]
+        labels:
+          - job=fluent-bit
+          - pod=$kubernetes['pod_name']
+          - namespace=$kubernetes['namespace_name']
+          - container_name=$kubernetes['container_name']
+          # - app=$kubernetes['labels']['app'] # This isn't standard (i.e. sometimes its labels.k8s.app); and it generally duplicates container_name anyway
         removeKeys: []
-        autoKubernetesLabels: "on"
+        autoKubernetesLabels: "off" # Only seems to work for labels and annotations, not metadata. Disabling and doing it myself!
+        lineFormat: json
 
       prometheusMetricsExporter:
         match: "fb.metrics"
@@ -81,7 +98,6 @@ fluent-operator:
     
     serviceMonitor:
       enable: true
-      port: http-metrics
 
     input:
       fluentBitMetrics:
