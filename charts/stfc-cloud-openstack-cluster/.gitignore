@@ -1,0 +1,6 @@
+upstream_dependencies.json
+
+# all gained from cloud-capi-values
+dependencies.yaml
+bootstrap.sh
+set-env.sh

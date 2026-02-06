@@ -28,16 +28,20 @@ You can copy and edit the file locally and use it as another source of helm valu
 
 1. For a fresh install, clone the repo, modify `nodes.yaml` and `addons.yaml` files locally - see "Configuration" above
 
-2. Run `cloud-helm-charts/charts/stfc-cloud-openstack-cluster/scripts/set-project-id.sh </path/to/clouds.yaml>`
-- This modifies your clouds.yaml to add the corresponding `project_id` to the appplication credential
+2. Create a clouds.yaml, populate it with your application credentials and place it in this directory, (alongside values.yaml)
 
 > [!NOTE] 
 > Step 2 is mandatory, but only needs to be run once per new clouds.yaml
 
-2. Run 
+3. Run `setup.sh` to download all latest scripts and dependencies from cloud-capi-values
+```bash
+./setup.sh
+```
+
+4. Run:
+
 ```bash
 source set-env.sh
-cd cloud-helm-charts/charts/stfc-cloud-openstack-cluster/scripts
 ./bootstrap.sh
 ```
 
@@ -45,11 +49,11 @@ cd cloud-helm-charts/charts/stfc-cloud-openstack-cluster/scripts
 > This script will setup a microk8s cluster which will be used to spin up your cluster 
 
 > [!NOTE]
-> This step is OPTIONAL if you 
+> This step is OPTIONAL if your
 >   - have a bootstrap cluster already setup
 >   - you're spinning up a child cluster
 
-3. Install the chart, `openstack-cluster.apiServer.floatingIP` needs to be set to the floating IP you setup to access your cluster - see Requirements
+5. Install the chart, `openstack-cluster.apiServer.floatingIP` needs to be set to the floating IP you setup to access your cluster - see Requirements
 
 ```bash
 source set-env.sh
@@ -57,7 +61,7 @@ export CLUSTER_NAME="demo-cluster"  # or your cluster name
 helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --create-namespace --install -f values.yaml -f addons.yaml -f nodes.yaml -f /path/to/clouds.yaml --set openstack-cluster.apiServer.floatingIP=130.246.xxx.xxx --set openstack-cluster.cloudCredentialsSecretName=${CLUSTER_NAME}-cloud-credentials -n ${CLUSTER_NAME}
 ```
 
-4. Check the cluster status
+6. Check the cluster status
 
 When the deployment is complete clusterctl will report the cluster as Ready: True
 
@@ -82,7 +86,7 @@ you should be able to run commands on your cluster like this:
 KUBECONFIG=$CLUSTER_NAME.kubeconfig kubectl get nodes
 ```
 
-5. (Optional) Perform move to self-managed cluster
+7. (Optional) Perform move to self-managed cluster
 
 > [!NOTE]
 > Ignore this if you are deploying a child cluster
