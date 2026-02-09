@@ -29,16 +29,17 @@ spec:
 
                   for repo in $(aws s3 ls {{ $.Values.backup.sourceBucket }}/docker/registry/v2/repositories/ \
                       --endpoint-url {{ $.Values.backup.endpoint }} \
-                      | awk '{print $2}'); 
+                      | awk '{print $2}');
                   do
                     repo="${repo%/}"
                     echo "Syncing $repo..."
                     aws s3 sync \
                       {{ $.Values.backup.sourceBucket }}/docker/registry/v2/repositories/$repo \
                       {{ index $.Values.backup.destination $period }}/docker/registry/v2/repositories/$repo \
+                      --exclude "e87c6257-1f8b-4e34-9f5a-a036145d7ed7/startedat" \
                       --exact-timestamps --endpoint-url {{ $.Values.backup.endpoint }} --delete --no-progress
                   done
-    
+
                   echo "$(date) {{ $period }} backup completed."
               env:
                 - name: AWS_ACCESS_KEY_ID
