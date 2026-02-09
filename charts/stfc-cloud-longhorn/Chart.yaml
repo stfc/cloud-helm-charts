@@ -2,6 +2,6 @@ apiVersion: v2
 dependencies:
   - name: longhorn
     repository: https://charts.longhorn.io
-    version: 1.10.2
+    version: 1.11.0
 name: stfc-cloud-longhorn
-version: 1.0.7
+version: 1.0.8
