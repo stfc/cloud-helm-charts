@@ -128,10 +128,15 @@ jobs:
           CURRENT_VERSION=$(yq e '.version' "$CHART_YAML")
           # Split version into major, minor, patch
           IFS='.' read -r major minor patch <<< "$CURRENT_VERSION"
-          
-          # Update Chart.yaml with new version
-          # We're just updating the patch for now
-          yq e -i ".version = \"${major}.${minor}.$((patch + 1))\"" "$CHART_YAML"
+
+          ## Update Chart.yaml with new version if its major, minor or patch
+          if ${{ steps.deps-update.outputs.update-type == 'patch' }}; then
+            yq e -i ".version = \"${major}.${minor}.$((patch + 1))\"" "$CHART_YAML"
+          elif ${{ steps.deps-update.outputs.update-type == 'minor' }}; then
+            yq e -i ".version = \"${major}.$((minor + 1)).0}\"" "$CHART_YAML"
+          else 
+            yq e -i ".version = \"$((major + 1)).0.0}\"" "$CHART_YAML"
+          fi
 
       - name: "Create Pull Request for a minor/patch update"
         if: ${{ steps.deps-update.outputs.update-type != 'none' && steps.deps-update.outputs.update-type != 'major' }}
