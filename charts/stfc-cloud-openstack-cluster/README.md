@@ -18,15 +18,10 @@ You can copy and edit the file locally and use it as another source of helm valu
 `nodes.yaml` - This file contains values that setup your cluster's worker and control plane nodes.
 - e.g. To add/edit new group of worker nodes - modify entries under `openstack-cluster.nodeGroups` 
 
-`addons.yaml` - This file contains values setup addon services including: 
-  - Monitoring - using [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml)
-  - Logging - using [loki-stack](https://github.com/grafana/helm-charts/blob/main/charts/loki-stack/values.yaml)
-  - [Nginx ingress controller](https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml)
-
 
 # Installation
 
-1. For a fresh install, clone the repo, modify `nodes.yaml` and `addons.yaml` files locally - see "Configuration" above
+1. For a fresh install, clone the repo, modify `nodes.yaml` file locally - see "Configuration" above
 
 2. Create a clouds.yaml, populate it with your application credentials and place it in this directory, (alongside values.yaml)
 
@@ -58,7 +53,7 @@ source set-env.sh
 ```bash
 source set-env.sh
 export CLUSTER_NAME="demo-cluster"  # or your cluster name
-helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --create-namespace --install -f values.yaml -f addons.yaml -f nodes.yaml -f /path/to/clouds.yaml --set openstack-cluster.apiServer.floatingIP=130.246.xxx.xxx --set openstack-cluster.cloudCredentialsSecretName=${CLUSTER_NAME}-cloud-credentials -n ${CLUSTER_NAME}
+helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --create-namespace --install -f values.yaml -f nodes.yaml -f /path/to/clouds.yaml --set openstack-cluster.apiServer.floatingIP=130.246.xxx.xxx --set openstack-cluster.cloudCredentialsSecretName=${CLUSTER_NAME}-cloud-credentials -n ${CLUSTER_NAME}
 ```
 
 6. Check the cluster status
@@ -121,5 +116,5 @@ Run the install step again on the new cluster - to self manage the cluster
 # Update the cluster to ensure everything lines up with your helm chart
 helm upgrade --create-namespace cluster-api-addon-provider capi-addons/cluster-api-addon-provider --install --wait --version $ADDON_VERSION -n capi-addon-system
 
-helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --install -f values.yaml -f addons.yaml -f nodes.yaml -f /path/to/clouds.yaml --set openstack-cluster.apiServer.floatingIP=130.246.xxx.xxx --set openstack-cluster.cloudCredentialsSecretName=${CLUSTER_NAME}-cloud-credentials -n ${CLUSTER_NAME}
+helm upgrade $CLUSTER_NAME cloud-charts/stfc-cloud-openstack-cluster --install -f values.yaml -f nodes.yaml -f /path/to/clouds.yaml --set openstack-cluster.apiServer.floatingIP=130.246.xxx.xxx --set openstack-cluster.cloudCredentialsSecretName=${CLUSTER_NAME}-cloud-credentials -n ${CLUSTER_NAME}
 ```

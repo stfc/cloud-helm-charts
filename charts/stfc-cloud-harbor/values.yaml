@@ -1,34 +1,43 @@
 harbor:
+  fullnameOverride: harbor
+
   externalURL: "https://harbor.example.com"
+
+  internalTLS:
+    enabled: true
+    certSource: secret
+    core:
+      secretName: "harbor-core-tls"
+    jobservice:
+      secretName: "harbor-jobservice-tls"
+    registry:
+      secretName: "harbor-registry-tls"
+    portal:
+      secretName: "harbor-portal-tls"
+    trivy:
+      secretName: "harbor-trivy-tls"
+
   expose:
-    type: ingress
+    type: route
     tls:
+      # keep this disabled for gateway proxy and setup your own tls termination on gateway layer
+      enabled: false
+
+    route:
       enabled: true
-      certSource: auto
-      auto:
-        commonName: "harbor"
-      secret:
-        secretName: "selfsigned"
-        #secretName: "letsencrypt-prod"
-    ingress:
-      hosts:
-        core: "harbor.example.com"
-      controller: default
-      ## Allow .Capabilities.KubeVersion.Version to be overridden while creating ingress
-      kubeVersionOverride: ""
-      className: "nginx"
-      annotations:
-        # note different ingress controllers may require a different ssl-redirect annotation
-        # for Envoy, use ingress.kubernetes.io/force-ssl-redirect: "true" and remove the nginx lines below
-        ingress.kubernetes.io/ssl-redirect: "true"
-        ingress.kubernetes.io/proxy-body-size: "0"
-        nginx.ingress.kubernetes.io/ssl-redirect: "true"
-        nginx.ingress.kubernetes.io/proxy-body-size: "0"
-        # Please change cluster issue to prod when you are happy
-        cert-manager.io/cluster-issuer: "selfsigned"
-        #cert-manager.io/cluster-issuer: "letsencrypt-prod"
-      # ingress-specific labels
       labels: {}
+      annotations: {}
+      # References to the parent gateways
+      parentRefs: []
+        # - name: envoy-internal
+        #   namespace: networking
+        #   sectionName: https
+        #   group: gateway.networking.k8s.io
+        #   kind: Gateway
+      # The hostnames for the HTTPRoute
+      hosts: []
+        # - "harbor.example.com"
+
   database:
     type: external
     external:
@@ -37,6 +46,7 @@ harbor:
       coreDatabase: "harbor_registry"
       username: "registry_user"
       # if using existing secret, the key must be "password"
+      # OVERRIDE and Encrypt this as SOP key
       password: "password"
       # "disable" - No SSL
       # "require" - Always SSL (skip verification)
@@ -57,30 +67,37 @@ harbor:
     podAnnotations: {}
     ## Additional deployment labels
     podLabels: {}
+
   jobservice:
     replicas: 2
     jobLoggers:
       - database
+
   registry:
     replicas: 2
+
   trivy:
     replicas: 2
+
   exporter:
     replicas: 2
+
   portal:
     replicas: 2
+
   core:
     replicas: 2
+
   persistence:
-    enabled: false
     resourcePolicy: ""
     imageChartStorage:
-      disableredirect: false
       type: s3
       s3:
         bucket: bucketname
+        # OVERRIDE and Encrypt these as SOPs keys
         accesskey: awsaccesskey
         secretkey: awssecretkey
+
         regionendpoint: s3.example.com
         encrypt: false
         secure: true
@@ -97,9 +114,12 @@ harbor:
 
 backup:
   enabled: true
-  image: amazon/aws-cli:latest  
+  image: amazon/aws-cli:latest
   endpoint: "https://s3.example.com"
   sourceBucket: "s3://harbor-source-bucket"
+  # OVERRIDE and Encrypt these as SOPs keys
+  accesskey: awsaccesskey
+  secretkey: awssecretkey
 
   destination:
     daily: "s3://harbor-destination-backup/daily"
@@ -107,6 +127,13 @@ backup:
     monthly: "s3://harbor-destination-backup/monthly"
 
   schedule:
-    daily: "12 12 * * *"   # Every day @ 12:12 (add smear)
-    weekly: "2 9 * * 1"   # Every Monday @ 9:02
-    monthly: "17 16 1 * *" # 1st of month @ 16:17 
+    daily: "12 12 * * *" # Every day @ 12:12 (add smear)
+    weekly: "2 9 * * 1" # Every Monday @ 9:02
+    monthly: "17 16 1 * *" # 1st of month @ 16:17
+
+
+# internal cluster issuer to generate internal certs (default internal-ca)
+# internalCertIssuer: ""
+
+# internal trust-manager bundle, to expose internal CA cert for backendtlspolicy verification (default internal-bundle)
+# caBundleName: ""

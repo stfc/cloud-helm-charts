@@ -1,118 +1,129 @@
 opensearch-operator:
-  nameOverride: op
+  nameOverride: log-storage
   installCRDs: true
+
+httproute:
+  opensearch:
+    enabled: true
+    hostnames: []
+    #  - opensearch.example.com
+    parentRefs: []
+    #  - name: foo
+    #    namespace: envoy-gateway-system
+    #    sectionName: internal-https
+
+  dashboards:
+    enabled: true
+    hostnames: []
+    #  - opensearch-dashboards.example.com
+    parentRefs:
+    #  - name: foo
+    #    namespace: envoy-gateway-system
+    #    sectionName: staging-internal-https
 
 opensearch-cluster:
   cluster:
     # change this to match name of cluster you want
-    name: "opensearch-cluster"
+    name: log-storage
 
-    annotations: 
-      helm.sh/hook: post-install,post-upgrade
-
-    # -- Opensearch nodes configuration
-    nodePools:
-      - component: nodes
-        diskSize: "30Gi"
-        replicas: 3
-        roles:
-          - "master"
-          - "data"
-        resources:
-          requests:
-            memory: "2Gi"
-            cpu: "500m"
-          limits:
-            memory: "2Gi"
-            cpu: "500m"
-        persistence:
-          pvc:
-            storageClass: csi-cinder
-            accessModes: 
-              - ReadWriteOnce
-
-    general:
-      # disable for now whilst testing
-      monitoring:
-        enable: false
-      
-      # setup snapshotting onto S3 
-      snapshotRepositories: []
-    
-    dashboards:
-
-      enable: true
-      tls: 
-        enable: true
-        generate: true
-
-      additionalConfig: 
-        opensearch_security.multitenancy.enabled: "true"
-        opensearch_security.cookie.secure: "true"
-
-        # enable this if you want iris-iam authentication, you'll need to modify config.yml as well 
-        
-        # opensearch_security.auth.type: ["basicauth", "openid"]
-        # opensearch_security.auth.multiple_auth_enabled: "true"
-        # opensearch_security.openid.connect_url: "https://iris-iam.stfc.ac.uk/.well-known/openid-configuration"
-        # opensearch_security.openid.scope: "openid profile email preferred_username groups"
-        # opensearch_security.openid.base_redirect_url: https://opensearch.example.com
-
-    ingress:
-      opensearch:
-        annotations:
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-          ingress.kubernetes.io/proxy-body-size: "0"
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-        className: nginx
-        hosts:
-          - host: opensearch.example.com
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - secretName: opensearch-tls
-            hosts:
-              - opensearch.example.com
-      
-      # change the secret references to match the name of your cluster - under "opensearch-cluster.cluster.name" 
-      # e.g. if your cluster name is "log-storage" - change secret to `log-storage-admin-credentials`
-      # TODO: introduce a "kibanaserver" user which has more locked down permissions for dashboards to use
-      dashboards:
-        opensearchCredentialsSecret:
-          name: opensearch-admin-credentials
-        annotations:
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-          ingress.kubernetes.io/proxy-body-size: "0"
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-        className: nginx
-        hosts:
-          - host: opensearch-dashboards.example.com
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - secretName: opensearch-tls
-            hosts:
-              - opensearch-dashboards.example.com
-        
-    # change the secret references to match the name of your cluster - under "opensearch-cluster.cluster.name" 
+    # set explicit cert secrets because argocd doesn't play nice with self generated secrets
+    # instead explicitly generate self-signed certs using cert-manager and have them managed externally outside of argocd
+    # change the secret references to match the name of your cluster - under "opensearch-cluster.cluster.name"
     # e.g. if your cluster name is "log-storage" - change secret to `log-storage-admin-credentials` and `log-storage-securityconfig-secret`
     security:
-      config: 
-        adminCredentialsSecret: 
-          name: opensearch-admin-credentials
+      tls:
+        http:
+          adminDn: ["CN=admin,OU=log-storage"]
+          generate: false
+          secret:
+            name: log-storage-http-cert
+
+        transport:
+          generate: false
+          perNode: false
+          caSecret:
+            name: log-storage-ca
+          nodesDn: ["CN=log-storage,OU=log-storage"]
+          adminDn: ["CN=admin, OU=log-storage"]
+          secret:
+            name: log-storage-transport-cert
+          #enableHotReload: false
+
+      # change the secret references to match the name of your cluster - under "opensearch-cluster.cluster.name"
+      # e.g. if your cluster name is "log-storage" - change secret to `log-storage-admin-credentials` and `log-storage-securityconfig-secret`
+      config:
+        adminSecret:
+          name: log-storage-admin-cert
+        adminCredentialsSecret:
+          name: log-storage-admin-credentials
         securityConfigSecret:
-          name: opensearch-securityconfig-secret
-  
-# Its recommended not to use the opensearch CRDs at the moment due to various incompatibility issues with securityconfig secret. 
+          name: log-storage-securityconfig-secret
+
+    annotations:
+      helm.sh/hook: post-install,post-upgrade
+
+    general:
+      version: 3.1.0
+      monitoring:
+        enable: true
+
+      # setup snapshotting onto S3
+      snapshotRepositories: []
+
+    dashboards:
+      enable: true
+      tls:
+        generate: false
+        secret:
+          name: log-storage-dashboards-cert
+
+      additionalConfig:
+        opensearch.requestHeadersAllowlist: "['Authorization', 'securitytenant', 'x-forwarded-for', 'x-forwarded-by']"
+        opensearch_security.auth.multiple_auth_enabled: "true"
+        opensearch_security.auth.type: |
+          '["basicauth", "openid"]'
+        opensearch_security.openid.connect_url: "https://iris-iam.stfc.ac.uk/.well-known/openid-configuration"
+        opensearch_security.openid.scope: "openid profile email preferred_username groups"
+        opensearch_security.openid.base_redirect_url: https://opensearch-dashboards.staging-worker.nubes.stfc.ac.uk
+
+        # OVERRIDE using SOPS secrets for iris-iam
+        # opensearch_security.openid.client_id: iris-iam-id
+        # opensearch_security.openid.client_secret: iris-iam-secret
+
+      opensearchCredentialsSecret:
+        name: log-storage-admin-credentials
+      version: 3.1.0
+
+# Provide username and password for the initial admin user - used to configure and manage the cluster
+# You must provide the password in plaintext and as a bycrpt hash
+# ENCRYPT THESE WITH SOPS
+adminCredentials:
+  username: admin
+  password: admin
+
+# Its recommended not to use the opensearch CRDs at the moment due to various incompatibility issues with securityconfig secret.
 # We have found that using CRs for user management tends to be inconsistent and error-prone thus we have opted not to use it.
 
 # Instead you can define custom security config files directly here:
-# see https://docs.opensearch.org/latest/security/configuration/yaml/ 
+# see https://docs.opensearch.org/latest/security/configuration/yaml/
 
 # customSecurityConfigFiles:
 #   config.yml: |
 #     # see https://docs.opensearch.org/latest/security/configuration/configuration/
-#   roles.yml: | 
+#   roles.yml: |
 #     ...
+
+# Specified a seried of config files for log-storage
+# It is recommended to add internal_users as secrets as they contain sensitive password hashes
+customSecurityConfigFiles:
+  internal_users: |
+    new_user: 
+      hash: "foobarfobar" # bycrpt hash
+      backend_roles: 
+        - blah
+      description: new user
+
+#  tenants.yml: |
+#  roles_mapping.yml:
+#  roles.yml
+#  internal_users.yml

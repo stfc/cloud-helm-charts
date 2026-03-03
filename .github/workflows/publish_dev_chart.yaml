@@ -10,7 +10,7 @@ on:
 jobs:
   bump-charts:
     runs-on: ubuntu-latest
-    outputs: 
+    outputs:
       alpha-version: ${{steps.bump-version.outputs.version}}
 
     # Run on main branch pushes OR pull requests OR manual triggers
@@ -27,7 +27,7 @@ jobs:
 
       - name: Install Helm
         uses: azure/setup-helm@v4
-      
+
       - name: "Set alpha chart version"
         id: bump-version
         run: |
@@ -36,10 +36,10 @@ jobs:
           CURRENT_VERSION=$(yq e '.version' "$CHART_YAML")
           # Split version into major, minor, patch, and ignore any extra parts
           IFS='.' read -r major minor patch _ <<< "$CURRENT_VERSION"
-          
+
           # Get the latest commit short hash
           GIT_COMMIT_TAG=$(git rev-parse --short HEAD)
-          
+
           # Update Chart.yaml with new version
           # Adding alpha.<github commit tag> to set it as alpha chart
           VERSION=${major}.${minor}.$((patch))-alpha.${GIT_COMMIT_TAG}
@@ -53,7 +53,7 @@ jobs:
           branch: br-${{github.event.inputs.chart}}-v${{ steps.bump-version.outputs.version }}
           tagging_message: ${{github.event.inputs.chart}}-v${{ steps.bump-version.outputs.version }}
           create_branch: true
-  
+
   publish:
     needs: bump-charts
     runs-on: ubuntu-latest
@@ -64,7 +64,7 @@ jobs:
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.PRIVATE_KEY }}
-    
+
       - name: Checkout
         uses: actions/checkout@v6
         with:
@@ -79,7 +79,7 @@ jobs:
       - name: Update Readme alpha chart warning
         run: |
           sed -i '0,/^#/ s/^#.*$/&\n\nThis is an alpha version of this chart/' charts/${{github.event.inputs.chart}}/README.md
-      
+
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
