@@ -1,5 +1,3 @@
-# We've setup roles for demo users writer, dev-writer, reader, prod-reader, admin
-
 _meta:
   type: "roles"
   config_version: 2
@@ -8,109 +6,113 @@ _meta:
 admin_role:
   reserved: true
   cluster_permissions:
-    - "cluster:admin/*"
-    - "cluster:monitor/*"
-    - "indices:admin/*"
-    - "indices:monitor/*"
+    - "cluster_all"
   index_permissions:
     - index_patterns:
         - "*"
       allowed_actions:
-        - "indices:*"
+        - "indices_all"
   tenant_permissions:
     - tenant_patterns:
         - "*"
       allowed_actions:
         - "kibana_all_write"
 
-# Global reader role - read access to all tenants
-reader_role:
+# Cloud staging writer role
+writer_staging_role:
   reserved: false
   cluster_permissions:
-    - "cluster:monitor/nodes/info"
     - "cluster:monitor/health"
+    - "indices:data/write/bulk"
   index_permissions:
     - index_patterns:
-        - "*"
+        - "kube_logs_staging*"
+        - "trivy_staging*"
+        - "kube_logs_azimuth-stfc-staging*"
+        - "trivy_azimuth-stfc-staging*"
       allowed_actions:
-        - "indices:data/read/*"
-        - "indices:admin/mappings/get"
-        - "indices:monitor/*"
+        - "indices:data/write/index"
+        - "indices:data/write/update"
+        - "indices:admin/mapping/put"
+        - "indices:admin/create"
+        - "indices:data/write/bulk"
+        - "indices:data/write/bulk*"
+
+# Cloud production writer role
+writer_prod_role:
+  reserved: false
+  cluster_permissions:
+    - "cluster:monitor/health"
+    - "indices:data/write/bulk"
+  index_permissions:
+    - index_patterns:
+        - "kube_logs_prod*"
+        - "trivy_prod*"
+        - "kube_logs_azimuth-stfc-prod*"
+        - "trivy_azimuth-stfc-prod*"
+      allowed_actions:
+        - "indices:data/write/index"
+        - "indices:data/write/update"
+        - "indices:admin/mapping/put"
+        - "indices:admin/create"
+        - "indices:data/write/bulk"
+        - "indices:data/write/bulk*"
+
+# Cloud staging reader role
+reader_staging_role:
+  reserved: false
+  cluster_permissions:
+    - "cluster:monitor/main"
+    - "cluster:monitor/nodes/info"
+    - "cluster:monitor/health"
+    - "cluster_composite_ops_ro"
+  index_permissions:
+    - index_patterns:
+        - "kube_logs_staging*"
+        - "trivy_staging*"
+        - "kube_logs_azimuth-stfc-staging*"
+        - "trivy_azimuth-stfc-staging*"
+        - "kube_logs_azimuth_staging_user_cluster*"
+      allowed_actions:
+        - "read"
+        - "indices_monitor"
   tenant_permissions:
     - tenant_patterns:
-        - "prod"
-        - "dev"
+        - "cloud-staging"
+        - "azimuth-staging"
       allowed_actions:
         - "kibana_all_read"
 
-# Global writer role - read-write access to all tenants
-writer_role:
+# Azimuth production writer role
+writer_azimuth_user_prod_role:
   reserved: false
   cluster_permissions:
-    - "cluster:monitor/nodes/info"
     - "cluster:monitor/health"
-    - "indices:admin/template/get"
-    - "indices:admin/template/put"
+    - "indices:data/write/bulk"
   index_permissions:
     - index_patterns:
-        - "*"
+        - "kube_logs_azimuth_user_cluster*"
       allowed_actions:
-        - "indices:data/*"
-        - "indices:admin/mappings/get"
-        - "indices:admin/mappings/put"
-        - "indices:monitor/*"
+        - "indices:data/write/index"
+        - "indices:data/write/update"
+        - "indices:admin/mapping/put"
         - "indices:admin/create"
-  tenant_permissions:
-    - tenant_patterns:
-        - "prod"
-        - "dev"
-      allowed_actions:
-        - "kibana_all_write"
+        - "indices:data/write/bulk"
+        - "indices:data/write/bulk*"
 
-# Prod-only writer role
-prod_writer_role:
+# Azimuth staging writer role
+writer_azimuth_user_staging_role:
   reserved: false
   cluster_permissions:
-    - "cluster:monitor/nodes/info"
     - "cluster:monitor/health"
-    - "indices:admin/template/get"
-    - "indices:admin/template/put"
+    - "indices:data/write/bulk"
   index_permissions:
     - index_patterns:
-        - "prod-*"
-        - ".kibana_prod_*"
+        - "kube_logs_azimuth_staging_user_cluster*"
       allowed_actions:
-        - "indices:data/*"
-        - "indices:admin/mappings/get"
-        - "indices:admin/mappings/put"
-        - "indices:monitor/*"
+        - "indices:data/write/index"
+        - "indices:data/write/update"
+        - "indices:admin/mapping/put"
         - "indices:admin/create"
-  tenant_permissions:
-    - tenant_patterns:
-        - "prod"
-      allowed_actions:
-        - "kibana_all_write"
-
-# Dev-only writer role
-dev_writer_role:
-  reserved: false
-  cluster_permissions:
-    - "cluster:monitor/nodes/info"
-    - "cluster:monitor/health"
-    - "indices:admin/template/get"
-    - "indices:admin/template/put"
-  index_permissions:
-    - index_patterns:
-        - "dev-*"
-        - ".kibana_dev_*"
-      allowed_actions:
-        - "indices:data/*"
-        - "indices:admin/mappings/get"
-        - "indices:admin/mappings/put"
-        - "indices:monitor/*"
-        - "indices:admin/create"
-  tenant_permissions:
-    - tenant_patterns:
-        - "dev"
-      allowed_actions:
-        - "kibana_all_write"
+        - "indices:data/write/bulk"
+        - "indices:data/write/bulk*"

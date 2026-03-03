@@ -1,0 +1,67 @@
+{{- if .Values.httproute.opensearch.enabled -}}
+{{- $clusterName := include "opensearch-cluster.cluster-name" (index .Subcharts "opensearch-cluster") -}}
+{{- $servicePort := (index .Values "opensearch-cluster").cluster.general.httpPort -}}
+{{- $serviceName := (index .Values "opensearch-cluster").cluster.general.serviceName | default $clusterName }}
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $clusterName }}-httproute
+  labels:
+    {{- include "opensearch-cluster.labels" (index .Subcharts "opensearch-cluster") | nindent 4 }}
+  {{- with .Values.httproute.opensearch.annotations -}}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  parentRefs:
+    {{- with .Values.httproute.opensearch.parentRefs }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.httproute.opensearch.hostnames }}
+  hostnames:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  rules:
+    {{- range .Values.httproute.dashboards.rules }}
+    {{- with .matches }}
+    - matches:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .filters }}
+      filters:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .timeouts }}
+      timeouts:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
+      backendRefs:
+        - group: gateway.envoyproxy.io
+          kind: Backend
+          name: {{ $clusterName }}-backend
+          port: 443
+          weight: 1
+    {{- end }}
+
+---
+
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name: {{ $clusterName }}-backend-tls-policy
+  namespace: {{ .Release.Namespace }}
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: {{ $serviceName }}
+  validation:
+    caCertificateRefs:
+      - group: ""
+        kind: ConfigMap
+        name: {{ .Values.caBundleName | default "internal-bundle" }}
+    hostname: {{ $serviceName }}.{{ .Release.Namespace }}.svc.cluster.local
+
+{{- end }}

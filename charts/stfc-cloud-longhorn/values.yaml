@@ -2,13 +2,20 @@ longhorn:
   preUpgradeChecker:
     jobEnabled: false
 
+  httproute:
+    enabled: true
+    parentRefs: []
+    #- name: envoy-gateway-internal
+    #  namespace: envoy-gateway-system
+    #  sectionName: staging-internal-https
+    #  group: gateway.networking.k8s.io
+    #  kind: Gateway
+    hostnames: []
+    #- longhorn.example.com
+    annotations: {}
+
   ingress:
-    enabled: "true"
-    ingressClassName: nginx
-    host: longhorn.example.com
-    tls: true
-    secureBackends: false
-    path: /
+    enabled: false
 
   serviceMonitor:
     enabled: true
@@ -31,4 +38,3 @@ longhorn:
     defaultClassReplicaCount: 3
     defaultDataLocality: disabled
     migratable: "true"
-

@@ -1,0 +1,66 @@
+{{- if .Values.httproute.dashboards.enabled -}}
+{{- $clusterName := include "opensearch-cluster.cluster-name" (index .Subcharts "opensearch-cluster") -}}
+{{- $serviceName := (index .Values "opensearch-cluster").cluster.general.serviceName | default $clusterName }}
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $clusterName }}-dashboards-httproute
+  labels:
+    {{- include "opensearch-cluster.labels" (index .Subcharts "opensearch-cluster") | nindent 4 }}
+  {{- with .Values.httproute.dashboards.annotations -}}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  parentRefs:
+    {{- with .Values.httproute.dashboards.parentRefs }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.httproute.dashboards.hostnames }}
+  hostnames:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  rules:
+    {{- range .Values.httproute.dashboards.rules }}
+    {{- with .matches }}
+    - matches:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .filters }}
+      filters:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .timeouts }}
+      timeouts:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
+      backendRefs:
+        - group: gateway.envoyproxy.io
+          kind: Backend
+          name: {{ $clusterName }}-dashboards-backend
+          port: 5601
+          weight: 1
+    {{- end }}
+
+---
+
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name:  {{ $clusterName }}-dashboards-backend-tls-policy
+  namespace: {{ .Release.Namespace }}
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: {{ $serviceName }}-dashboards
+  validation:
+    caCertificateRefs:
+      - group: ""
+        kind: ConfigMap
+        name: {{ .Values.caBundleName | default "internal-bundle" }}
+    hostname: {{ $serviceName }}-dashboards.{{ .Release.Namespace }}.svc.cluster.local
+
+{{- end }}

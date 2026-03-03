@@ -1,52 +1,55 @@
-# We've setup rolemappings for demo users writer, dev-writer, reader, prod-reader, admin
-
 _meta:
   type: "rolesmapping"
   config_version: 2
 
-# Map admin backend role to admin_role
+# Admin role mapping
 admin_role:
   reserved: true
   backend_roles:
     - "admin"
+    - "stfc-cloud/admins"
   description: "Maps admin backend role to admin_role"
 
-# Map reader backend role to reader_role
-reader_role:
-  reserved: false
-  backend_roles:
-    - "reader_role"
-  description: "Maps reader backend role to reader_role for cross-tenant read access"
-
-# Map writer backend role to writer_role  
-writer_role:
-  reserved: false
-  backend_roles:
-    - "writer_role"
-  description: "Maps writer backend role to writer_role for cross-tenant write access"
-
-# Map prod writer backend role to prod_writer_role
-prod_writer_role:
-  reserved: false
-  backend_roles:
-    - "prod_writer_role"
-  description: "Maps prod writer backend role to prod-only write access"
-
-# Map dev writer backend role to dev_writer_role
-dev_writer_role:
-  reserved: false
-  backend_roles:
-    - "dev_writer_role"
-  description: "Maps dev writer backend role to dev-only write access"
-
-# Built-in mappings for OpenSearch Dashboards
+# all-access role mapping
 all_access:
   reserved: true
   backend_roles:
     - "admin"
+    - "stfc-cloud/admins"
+  description: "Maps admin backend role to admin_role"
 
-own_index:
+# Cloud staging writer role mapping
+writer_staging_role:
   reserved: false
-  users:
-    - "*"
-  description: "Allow full access to an index named like the username"
+  backend_roles:
+    - "writer_staging_role"
+  description: "Maps writer-staging user to cloud-staging tenant write access"
+
+# Cloud production writer role mapping
+writer_prod_role:
+  reserved: false
+  backend_roles:
+    - "writer_prod_role"
+  description: "Maps writer-prod user to cloud tenant write access"
+
+# Cloud staging reader role mapping
+reader_staging_role:
+  reserved: false
+  backend_roles:
+    - "reader_staging_role"
+    - "stfc-cloud/team"
+  description: "Maps reader-staging user to cloud-staging and azimuth-staging read access"
+
+# Azimuth production writer role mapping
+writer_azimuth_user_prod_role:
+  reserved: false
+  backend_roles:
+    - "writer_azimuth_user_prod_role"
+  description: "Maps writer-azimuth-user-prod to azimuth tenant write access"
+
+# Azimuth staging writer role mapping
+writer_azimuth_user_staging_role:
+  reserved: false
+  backend_roles:
+    - "writer_azimuth_user_staging_role"
+  description: "Maps writer-azimuth-user-staging to azimuth-staging tenant write access"

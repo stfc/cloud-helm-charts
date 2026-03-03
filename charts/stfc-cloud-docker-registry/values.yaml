@@ -1,4 +1,5 @@
-replicaCount: 1
+replicaCount: 3
+nameOverride: docker-registry
 
 image:
   repository: registry
@@ -7,6 +8,55 @@ image:
 service:
   name: registry
   port: 5000
+
+internalTLS:
+  enabled: true
+  secretName: "docker-registry-tls"
+
+httproute:
+  # Enable HTTPRoute resource for docker-registry (Gateway API)
+  enabled: true
+  # -- Additional HTTPRoute labels
+  labels: {}
+  # -- Additional HTTPRoute annotations
+  annotations: {}
+  # -- Gateway API parentRefs for the HTTPRoute
+  ## Must reference an existing Gateway
+  parentRefs: []
+    #  - name: gateway-external
+    #    namespace: envoy-gateway-system
+    #    sectionName: dockerhub
+    #    group: gateway.networking.k8s.io
+    #    kind: Gateway
+
+  # -- List of hostnames for the HTTPRoute
+  hostnames: []
+  # - dockerhub.example.com
+
+  # -- HTTPRoute rules configuration
+  rules:
+    # Rule 1: Normal routing for /v2
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /v2
+      timeouts:
+        request: 900s
+        backendRequest: 900s
+
+  extraRules:
+    # Rule 2: Redirect everything not starting with /v2 -> /v2
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      filters:
+        - type: RequestRedirect
+          requestRedirect:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /v2
+            statusCode: 301
 
 ingress:
   enabled: false
@@ -26,6 +76,7 @@ ingress:
     - hosts:
         - dockerhub.example.com
 
+# we'll default to S3
 persistence:
   enabled: false
   # existingClaim: claim-name
@@ -34,7 +85,7 @@ persistence:
   storageClass: longhorn
 
 # set the type of filesystem to use: filesystem or s3
-storage: filesystem
+storage: s3
 
 # Options for s3 storage type if .Values.storage=s3:
 s3:
@@ -43,7 +94,6 @@ s3:
   encrypt: false
   secure: true
   region: us-east-1
-  skipverify: false
 
 ## Pass extra environment variables to the Docker Registry container.
 extraEnvVars:
@@ -55,13 +105,16 @@ extraEnvVars:
 # remote url for pull-through cache
 proxy:
   remoteURL: https://registry-1.docker.io
+  # username and password to remoteurl docker repo to cache from
+  username: user1
+  password: pass1
 
 metrics:
-  enabled: false
+  enabled: true
   port: 5001
   # Create a prometheus-operator servicemonitor
   serviceMonitor:
-    enabled: false
+    enabled: true
 
 # Config to pass to
 configData:
@@ -76,13 +129,33 @@ configData:
     addr: :5000
     headers:
       X-Content-Type-Options: [nosniff]
+    tls:
+      certificate: /etc/docker/ssl/tls.crt
+      key: /etc/docker/ssl/tls.key
+      clientcas:
+        - /etc/docker/ssl/ca.crt
     debug:
       addr: :5001
       prometheus:
-        enabled: false
+        enabled: true
         path: /metrics
   health:
     storagedriver:
       enabled: true
       interval: 10s
       threshold: 3
+
+# to enable HA, all registry copies must have a random 16 digit alphanumeric set
+# if you don't pass this, one will be created but you may run into argoCD out-of-sync issues
+secrets:
+  # # (Optional): Use an existing secret for haSharedSecret and proxy secrets
+  # # secretRef: <secret-name>
+  haSharedSecret: foobar12
+  # to enable s3 persistent storage - pass access and storage keys and set .Values.storage=s3
+  # Secrets for S3 access and secret keys
+  #   s3:
+  #     # (Optional): Use an existing secret for S3 creds
+  #     # secretRef: <secret-name>
+  s3:
+    accessKey: awsaccesskey
+    secretKey: awssecretkey
