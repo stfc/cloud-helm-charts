@@ -1,0 +1,41 @@
+{{- if .Values.basicAuth.enabled }}
+{{- if (index .Values "kube-prometheus-stack").prometheus.enabled -}}
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: basicauth-prometheus
+  namespace: {{.Release.Namespace}}
+  labels:
+    monitoring-auth/type: basic-auth
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: kube-prometheus-stack-prometheus-main
+  basicAuth:
+    users:
+      name: internal-basic-auth
+{{ end }}
+---
+{{- if (index .Values "kube-prometheus-stack").alertmanager.enabled -}}
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: basicauth-alertmanager
+  namespace: {{.Release.Namespace}}
+  labels:
+    monitoring-auth/type: basic-auth
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: kube-prometheus-stack-alertmanager-main
+  basicAuth:
+    users:
+      group: ""
+      kind: Secret
+      name: internal-basic-auth
+      namespace: {{.Release.Namespace}}
+{{- end }}
+{{- end }}

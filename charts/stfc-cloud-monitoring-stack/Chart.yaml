@@ -1,0 +1,9 @@
+apiVersion: v2
+name: stfc-cloud-monitoring-stack
+dependencies:
+  - repository: https://prometheus-community.github.io/helm-charts
+    name: kube-prometheus-stack
+    version: 82.10.1
+description: A Helm chart to deploy an opinionated version of kube-prometheus-stack
+type: application
+version: 1.0.0
