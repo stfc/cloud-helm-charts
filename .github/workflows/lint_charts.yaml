@@ -90,6 +90,20 @@ jobs:
             values_files: 
               - values.yaml
             include_clouds_yaml: false
+
+          "charts/stfc-cloud-envoy-gateways":
+            values_files: 
+              - values.yaml
+            include_clouds_yaml: false
+
+          "charts/stfc-cloud-monitoring-stack":
+            values_files: 
+              - values.yaml
+            include_clouds_yaml: false
+
+          "charts/stfc-cloud-argocd":
+            values_files: 
+              - values.yaml
             include_clouds_yaml: false
           EOF
 
