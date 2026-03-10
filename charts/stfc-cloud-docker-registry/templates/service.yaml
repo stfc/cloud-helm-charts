@@ -5,7 +5,7 @@ metadata:
   labels:
     app: {{ template "docker-registry.name" . }}
 spec:
-  sessionAffinity: Cluster
+  internalTrafficPolicy: Cluster
   ports:
     - port: {{ .Values.service.port }}
       protocol: TCP

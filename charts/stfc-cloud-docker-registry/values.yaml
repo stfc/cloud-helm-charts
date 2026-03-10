@@ -9,9 +9,28 @@ service:
   name: registry
   port: 5000
 
+# for version 2
+# for version 3 - /etc/distribution
+configPath: /etc/docker/registry
+
 internalTLS:
   enabled: true
-  secretName: "docker-registry-tls"
+  # use existing secret, if defined, uses this over certificate-generated secret
+  # existingSecret: "my-secret"
+
+  # generate a cert-manager certificate
+  certificate:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: internal-ca-issuer
+
+# to allow internalTLS to work with gateway api
+# specify the configmap "internal-bundle" which is managed by "trust-manager"
+backendTLSPolicy:
+  enabled: true
+  caBundleName: internal-bundle
 
 httproute:
   # Enable HTTPRoute resource for docker-registry (Gateway API)
@@ -60,21 +79,6 @@ httproute:
 
 ingress:
   enabled: false
-  ingressClassName: nginx
-  path: /
-  pathType: Prefix
-  # Used to create an Ingress record.
-  hosts:
-    - dockerhub.example.com
-  annotations:
-    cert-manager.io/cluster-issuer: "self-signed"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      if ($request_uri !~ ^/v2) {
-        return 301 $scheme://$host/v2$request_uri;
-      }
-  tls:
-    - hosts:
-        - dockerhub.example.com
 
 # we'll default to S3
 persistence:
@@ -130,10 +134,8 @@ configData:
     headers:
       X-Content-Type-Options: [nosniff]
     tls:
-      certificate: /etc/docker/ssl/tls.crt
-      key: /etc/docker/ssl/tls.key
-      clientcas:
-        - /etc/docker/ssl/ca.crt
+      certificate: /etc/ssl/docker/tls.crt
+      key: /etc/ssl/docker/tls.key
     debug:
       addr: :5001
       prometheus:

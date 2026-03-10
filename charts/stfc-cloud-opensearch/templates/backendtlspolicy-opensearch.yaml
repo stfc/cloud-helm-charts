@@ -1,0 +1,22 @@
+{{- if .Values.backendTLSPolicy.opensearch.enabled -}}
+{{- $clusterName := include "opensearch-cluster.cluster-name" (index .Subcharts "opensearch-cluster") -}}
+{{- $serviceName := (index .Values "opensearch-cluster").cluster.general.serviceName | default $clusterName }}
+
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name: {{ $clusterName }}-backend-tls-policy
+  namespace: {{ .Release.Namespace }}
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: {{ $serviceName }}
+  validation:
+    caCertificateRefs:
+      - group: ""
+        kind: ConfigMap
+        name: {{ .Values.backendTLSPolicy.opensearch.caBundleName }}
+    hostname: {{ $serviceName }}.{{ .Release.Namespace }}.svc.cluster.local
+
+{{- end -}}

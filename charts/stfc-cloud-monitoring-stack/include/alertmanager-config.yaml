@@ -1,0 +1,119 @@
+# AlertmanagerConfig spec for sending K8s alerts to Opsgenie
+
+route:
+  receiver: "null"
+  groupWait: 30s
+  groupInterval: 5m
+  repeatInterval: 2h
+  routes:
+    # Route 0: Silence Watchdog and InfoInhibitor — clears up the alert queue
+    - matchers:
+        - name: alertname
+          matchType: =~
+          value: "Watchdog|InfoInhibitor"
+      receiver: "null"
+      continue: false
+
+    # Route 1: Alerts WITH a namespace label — group by severity + namespace
+    - matchers:
+        - name: namespace
+          matchType: =~
+          value: ".+"
+        - name: alertname
+          matchType: "!="
+          value: "Watchdog|InfoInhibitor"
+      receiver: with-namespace-receiver
+      groupBy:
+        - severity
+        - namespace
+      continue: false
+      activeTimeIntervals:
+        - officehours
+
+    # Route 2: Alerts WITHOUT a namespace label — group by severity + alertname
+    - matchers:
+        - name: namespace
+          matchType: "="
+          value: ""
+        - name: alertname
+          matchType: "!="
+          value: "Watchdog|InfoInhibitor"
+      receiver: default-receiver
+      groupBy:
+        - severity
+        - alertname
+      activeTimeIntervals:
+        - officehours
+
+inhibitRules:
+  # Suppress warnings when a critical is already firing in the same namespace
+  - sourceMatch:
+      - name: severity
+        value: critical
+        matchType: "="
+    targetMatch:
+      - name: severity
+        value: warning
+        matchType: "="
+    equal:
+      - namespace
+
+  # Suppress info alerts when a critical or warning is firing in the same namespace
+  - sourceMatch:
+      - name: severity
+        value: "critical|warning"
+        matchType: =~
+    targetMatch:
+      - name: severity
+        value: info
+        matchType: "="
+    equal:
+      - namespace
+
+muteTimeIntervals:
+  - name: officehours
+    timeIntervals:
+      - times:
+          - startTime: "08:30"
+            endTime: "17:00"
+        weekdays:
+          - monday:friday
+
+receivers:
+  - name: "null"
+
+  - name: default-receiver
+    opsgenieConfigs:
+      - sendResolved: true
+        apiKey:
+          name: opsgenie-api-key
+          key: api-key
+        message: >-
+          {{ .Status | toUpper }}{{ if eq .Status "firing" }} [{{.CommonLabels.env}}/{{ .CommonLabels.cluster }}: {{ .CommonLabels.severity | toUpper }}] {{ .Alerts.Firing | len }}{{ end }} {{.CommonLabels.alertname}} alert(s)
+        description: >-
+          {{ if gt (len .Alerts.Firing) 0 -}}
+          Alerts Firing:
+          {{ template "__text_alert_list" .Alerts.Firing }}
+          {{- end }}
+        tags: >-
+          {{- if eq .CommonLabels.env "prod" -}}stfc-production{{- else -}}stfc-development{{- end }}
+        entity: >-
+          {{- if eq .CommonLabels.env "prod" -}}stfc-production{{- else -}}stfc-development{{- end }}
+
+  - name: with-namespace-receiver
+    opsgenieConfigs:
+      - sendResolved: true
+        apiKey:
+          name: opsgenie-api-key
+          key: api-key
+        message: >-
+          {{ .Status | toUpper }}{{ if eq .Status "firing" }} [{{.CommonLabels.env}}/{{ .CommonLabels.cluster }}: {{ .CommonLabels.severity | toUpper }}] {{ .Alerts.Firing | len }}{{ end }} alert(s) for {{.CommonLabels.namespace}}
+        description: >-
+          {{ if gt (len .Alerts.Firing) 0 -}}
+          Alerts Firing:
+          {{ template "__text_alert_list" .Alerts.Firing }}
+          {{- end }}
+        tags: >-
+          {{- if eq .CommonLabels.env "prod" -}}stfc-production{{- else -}}stfc-development{{- end }}
+        entity: >-
+          {{- if eq .CommonLabels.env "prod" -}}stfc-production{{- else -}}stfc-development{{- end }}

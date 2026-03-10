@@ -1,0 +1,41 @@
+{{- if .Values.certificate.transport.enabled -}}
+{{- if not (index .Values "opensearch-cluster" "cluster" "security" "tls" "transport" "generate") -}}
+{{- $clusterName := index .Values "opensearch-cluster" "cluster" "name" -}}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{$clusterName}}-transport-certificate
+  namespace: {{.Release.Namespace}}
+spec:
+  subject:
+    organizationalUnits: [{{$clusterName}}] # OU
+  commonName: {{$clusterName}} # CN
+  secretName: {{$clusterName}}-transport-cert
+  duration: 87600h0m0s # 10yr
+  renewBefore: 8760h0m0s # 1yr
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+  dnsNames:
+  - {{$clusterName}}
+  - {{$clusterName}}-discovery
+  - {{$clusterName}}.{{.Release.Namespace}}
+  - {{$clusterName}}.{{.Release.Namespace}}.svc
+  - {{$clusterName}}.{{.Release.Namespace}}.svc.cluster.local
+  {{- with .Values.certificate.http.additionalHosts }}
+  - {{ . | quote }}
+  {{- end }}
+  usages:
+    - server auth
+    - client auth
+  issuerRef:
+    {{- with .Values.certificate.transport.issuer.group }}
+    group: {{ . | quote }}
+    {{- end }}
+    kind: {{ .Values.certificate.transport.issuer.kind | quote }}
+    name: {{ .Values.certificate.transport.issuer.name | quote }}
+
+{{- end }}
+{{- end }}

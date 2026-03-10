@@ -1,0 +1,35 @@
+{{- if .Values.harbor.internalTLS.enabled }}
+{{- if eq .Values.harbor.internalTLS.certSource "secret" }}
+{{- if .Values.certificate.internal.enabled }}
+
+{{- $services := list "core" "jobservice" "registry" "portal" "trivy" }}
+{{- range $svc := $services }}
+{{- $cfg := index $.Values.harbor.internalTLS $svc }}
+{{- $secret := $cfg.secretName }}
+{{- $serviceName := printf "%s-%s" (include "harbor.fullname" $) $svc }}
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $secret }}-cert
+  namespace: {{ $.Release.Namespace }}
+spec:
+  secretName: {{ $secret }}
+  issuerRef:
+    name: {{ $.Values.certificate.internal.issuer.name | quote }}
+    kind: {{ $.Values.certificate.internal.issuer.kind | quote }}
+    {{- with $.Values.certificate.internal.issuer.group }}
+    group: {{ . | quote }}
+    {{- end }}
+  commonName: harbor-{{ $svc }}
+  dnsNames:
+    - {{ $serviceName }}
+    - {{ $serviceName }}.{{ $.Release.Namespace }}.svc
+    - {{ $serviceName }}.{{ $.Release.Namespace }}.svc.cluster.local
+
+{{- end }}
+
+{{- end }}
+{{- end }}
+{{- end }}

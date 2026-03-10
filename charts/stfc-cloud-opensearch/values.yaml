@@ -1,9 +1,52 @@
+# generate cert-manager certificates to manage certs outside of opensearch
+# opted for this method as opensearch generated tls certs and argocd don't play nice
+certificate:
+  dashboards:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: internal-ca-issuer
+
+  transport:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: internal-ca-issuer
+
+  http:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: internal-ca-issuer
+
+  admin:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: internal-ca-issuer
+
+# to allow internal certs to work with gateway api
+# specify the configmap "internal-bundle" which is managed by "trust-manager"
+backendTLSPolicy:
+  opensearch:
+    enabled: true
+    caBundleName: internal-bundle
+  dashboards:
+    enabled: true
+    caBundleName: internal-bundle
+
 opensearch-operator:
   nameOverride: log-storage
   installCRDs: true
 
 httproute:
   opensearch:
+    annotations:
+      argocd.argoproj.io/sync-wave: "1"
     enabled: true
     hostnames: []
     #  - opensearch.example.com
@@ -11,20 +54,34 @@ httproute:
     #  - name: foo
     #    namespace: envoy-gateway-system
     #    sectionName: internal-https
+    rules:
+      - matches:
+          - path:
+              type: PathPrefix
+              value: /
 
   dashboards:
     enabled: true
+    annotations:
+      argocd.argoproj.io/sync-wave: "1"
     hostnames: []
     #  - opensearch-dashboards.example.com
     parentRefs:
     #  - name: foo
     #    namespace: envoy-gateway-system
     #    sectionName: staging-internal-https
+    rules:
+      - matches:
+          - path:
+              type: PathPrefix
+              value: /
 
 opensearch-cluster:
   cluster:
     # change this to match name of cluster you want
     name: log-storage
+    annotations:
+      argocd.argoproj.io/sync-wave: "0"
 
     # set explicit cert secrets because argocd doesn't play nice with self generated secrets
     # instead explicitly generate self-signed certs using cert-manager and have them managed externally outside of argocd
@@ -41,8 +98,6 @@ opensearch-cluster:
         transport:
           generate: false
           perNode: false
-          caSecret:
-            name: log-storage-ca
           nodesDn: ["CN=log-storage,OU=log-storage"]
           adminDn: ["CN=admin, OU=log-storage"]
           secret:
@@ -53,14 +108,11 @@ opensearch-cluster:
       # e.g. if your cluster name is "log-storage" - change secret to `log-storage-admin-credentials` and `log-storage-securityconfig-secret`
       config:
         adminSecret:
-          name: log-storage-admin-cert
+          name: log-storage-admin-tls
         adminCredentialsSecret:
           name: log-storage-admin-credentials
         securityConfigSecret:
           name: log-storage-securityconfig-secret
-
-    annotations:
-      helm.sh/hook: post-install,post-upgrade
 
     general:
       version: 3.1.0
@@ -116,13 +168,48 @@ adminCredentials:
 # Specified a seried of config files for log-storage
 # It is recommended to add internal_users as secrets as they contain sensitive password hashes
 customSecurityConfigFiles:
-  internal_users: |
-    new_user: 
-      hash: "foobarfobar" # bycrpt hash
-      backend_roles: 
-        - blah
-      description: new user
 
+# use this for demo users
+# OVERRIDE and store as sops secret for production services
+
+#  internal_users.yml: |
+#    _meta:
+#      type: "internalusers"
+#      config_version: 2
+
+# Admin user with full access
+#     admin:
+#       hash: "$2a$12$.GazcpLQXklzDk3gJeMHoOyeOdsXFrQZj/OflLjfjZIKl.Bly6JDe"  # admin
+#       reserved: true
+#       backend_roles:
+#         - "admin"
+#       description: "Admin user with full cluster access"
+
+#     # staging writer
+#     writer-staging:
+#       hash: "$2a$12$9xxOdXJROFqMlGgZuGmuyu9lT2kgHKHtfv8ED1ZU/bQrfV1HgS7fS"  # writerstaging123
+#       reserved: false
+#       backend_roles:
+#         - "writer_staging_role"
+#       description: "Writer access to staging tenant"
+
+#     # production writer
+#     writer-prod:
+#       hash: "$2a$12$O9VRqna2KlJ.cZdf3e3AnOm3/zUldNGMDK6JF.V3Hnbakdi7zd2Bm"  # writerprod123
+#       reserved: false
+#       backend_roles:
+#         - "writer_prod_role"
+#       description: "Writer access to prod tenant"
+
+#     # staging reader
+# #    reader-staging:
+# #      hash: "$2a$12$5tduo.n323SE.MMVvfuHVO4yVe5W4nx4YEZTFSgH3H9kSEAGOSdWe"  # readerstaging123
+# #      reserved: false
+# #      backend_roles:
+# #        - "reader_staging_role"
+# #      description: "Reader access to staging tenant"
+
+# define other parts here - see the include folder for pre-generated files - these values will be merged and take precedence
 #  tenants.yml: |
 #  roles_mapping.yml:
 #  roles.yml
