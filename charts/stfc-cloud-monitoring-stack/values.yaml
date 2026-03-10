@@ -21,8 +21,8 @@ basicAuth:
 oidc:
   grafana:
     enabled: true
-    client_id: client-id
-    client_secret: client-secret
+    clientID: client-id
+    clientSecret: client-secret
 
 kube-prometheus-stack:
   alertmanager:
@@ -81,8 +81,8 @@ kube-prometheus-stack:
         api_url: "https://iris-iam.stfc.ac.uk/userinfo"
         groups_attribute_path: "groups[*]"
         allowed_groups: "stfc-cloud/team,stfc-cloud/admins"
-        client_id: $__file{/etc/secrets/iris_iam_creds/client_id}
-        client_secret: $__file{/etc/secrets/iris_iam_creds/client_secret}
+        client_id: $__file{/etc/secrets/iris_iam_creds/client-id}
+        client_secret: $__file{/etc/secrets/iris_iam_creds/client-secret}
 
   prometheus-operator:
     enabled: true

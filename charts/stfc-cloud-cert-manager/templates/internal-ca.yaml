@@ -51,12 +51,12 @@ spec:
     - useDefaultCAs: true
 
     - secret:
-      name: {{ .Values.internalCA.existingSecret  | default "internal-ca-secret" }}
-      key: tls.crt
+        name: {{ .Values.internalCA.existingSecret  | default "internal-ca-secret" }}
+        key: "tls.crt"
 
   target: 
     configMap: 
-      key: ca.crt
+      key: "ca.crt"
     {{- if .Values.internalCA.trustManager.namespaceSelector }}
     namespaceSelector:
       {{- toYaml .Values.internalCA.trustManager.namespaceSelector | nindent 6 }}
