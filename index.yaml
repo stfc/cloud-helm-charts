@@ -451,6 +451,18 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/rabbit-consumer-chart-1.6.1/rabbit-consumer-chart-1.6.1.tgz
     version: 1.6.1
+  stfc-cloud-argocd:
+  - apiVersion: v2
+    created: "2026-03-10T14:31:02.754387223Z"
+    dependencies:
+    - name: argo-cd
+      repository: https://argoproj.github.io/argo-helm
+      version: 9.4.7
+    digest: df6c2d697e731533879b60d7556b4883db8128ffb1dba8d2d4a40c802c334195
+    name: stfc-cloud-argocd
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-argocd-1.0.0-alpha.07ff22a/stfc-cloud-argocd-1.0.0-alpha.07ff22a.tgz
+    version: 1.0.0-alpha.07ff22a
   stfc-cloud-cert-manager:
   - apiVersion: v2
     created: "2026-03-03T11:32:18.949484705Z"
@@ -2330,4 +2342,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2026-03-10T14:19:33.710846073Z"
+generated: "2026-03-10T14:31:02.754736286Z"
