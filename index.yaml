@@ -1595,6 +1595,20 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-manila-csi-1.0.0/stfc-cloud-manila-csi-1.0.0.tgz
     version: 1.0.0
+  stfc-cloud-monitoring-stack:
+  - apiVersion: v2
+    created: "2026-03-10T14:39:19.548725188Z"
+    dependencies:
+    - name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 82.10.1
+    description: A Helm chart to deploy an opinionated version of kube-prometheus-stack
+    digest: 33b09797b633e0e84a82c993e33ca10f1c1597fb87e9fc5f6bfbc799c19e4566
+    name: stfc-cloud-monitoring-stack
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-monitoring-stack-1.0.0-alpha.07ff22a/stfc-cloud-monitoring-stack-1.0.0-alpha.07ff22a.tgz
+    version: 1.0.0-alpha.07ff22a
   stfc-cloud-opensearch:
   - apiVersion: v2
     created: "2026-03-03T16:56:27.462256376Z"
@@ -2421,4 +2435,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2026-03-10T14:39:01.942566955Z"
+generated: "2026-03-10T14:39:19.549087077Z"
