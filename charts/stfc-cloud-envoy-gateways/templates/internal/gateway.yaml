@@ -1,0 +1,37 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: {{ include "envoy-gateways.name" .}}-internal
+  namespace: {{ include "envoy-gateways.namespace" .}}
+  labels:
+    app.kubernetes.io/component: gateway-internal
+  annotations:
+    # cert-manager creates certs specified for each tls secret in specified listeners 
+    cert-manager.io/cluster-issuer: {{ .Values.internal.clusterIssuerName }}
+spec:
+  gatewayClassName: internal
+  listeners:
+    {{- range .Values.internal.listeners }}
+    - name: {{ .name }}
+      protocol: {{ .protocol }}
+      port: {{ .port }}
+      {{- if .hostname }}
+      hostname: {{ .hostname | quote }}
+      {{- end }}
+      {{- with .tls }}
+      tls:
+        {{- if .secretName }}
+        certificateRefs:
+          - kind: Secret
+            group: ""
+            name: {{ .secretName }}
+        {{- else }}
+        certificateRefs: []   
+        {{- end }}
+        mode: {{ .mode | default "Terminate" }}
+      {{- end }}
+      {{- if .allowedRoutes }}
+      allowedRoutes:
+        {{- toYaml .allowedRoutes | nindent 8 }}
+      {{- end }}
+    {{- end }}

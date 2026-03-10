@@ -1,3 +1,40 @@
+# generate cert-manager certificates for harbor
+# to generate and manage certificates outside of harbor
+certificate:
+  # to generate tls certs for internal traffic between harbor pods
+  internal:
+    enabled: true
+    # issuer
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: internal-ca-issuer
+
+  # to generate tls certs for ingress traffic
+  # gateway API handles this part
+  expose:
+    enabled: false
+    # certificate primary domain
+    domain: ""
+    # harbor.example.com
+
+    additionalHosts: []
+    # default 2160h = 90d if not specified
+    duration: ""
+    # how long before exipiry should cert be renewed
+    # default 360h = 15d if not specified
+    renewBefore:
+    # issuer
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      # change this to le-prod for production services
+      name: self-signed
+
+backendTLSPolicy:
+  enabled: true
+  caBundleName: internal-bundle
+
 harbor:
   fullnameOverride: harbor
 
@@ -5,6 +42,7 @@ harbor:
 
   internalTLS:
     enabled: true
+    # don't change these if you're generating certs above
     certSource: secret
     core:
       secretName: "harbor-core-tls"
@@ -20,23 +58,26 @@ harbor:
   expose:
     type: route
     tls:
-      # keep this disabled for gateway proxy and setup your own tls termination on gateway layer
-      enabled: false
+      enabled: true
+      # handled by gateway api
+      certSource: none
+      secret:
+        secretName: harbor-tls
 
     route:
       enabled: true
       labels: {}
       annotations: {}
       # References to the parent gateways
-      parentRefs: []
-        # - name: envoy-internal
-        #   namespace: networking
-        #   sectionName: https
-        #   group: gateway.networking.k8s.io
-        #   kind: Gateway
+      parentRefs:
+        - name: envoy-internal
+          namespace: networking
+          sectionName: https
+          group: gateway.networking.k8s.io
+          kind: Gateway
       # The hostnames for the HTTPRoute
-      hosts: []
-        # - "harbor.example.com"
+      hosts:
+        - "harbor.example.com"
 
   database:
     type: external
@@ -131,9 +172,6 @@ backup:
     weekly: "2 9 * * 1" # Every Monday @ 9:02
     monthly: "17 16 1 * *" # 1st of month @ 16:17
 
-
-# internal cluster issuer to generate internal certs (default internal-ca)
-# internalCertIssuer: ""
 
 # internal trust-manager bundle, to expose internal CA cert for backendtlspolicy verification (default internal-bundle)
 # caBundleName: ""

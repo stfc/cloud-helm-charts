@@ -29,7 +29,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
       name: {{ template "docker-registry.fullname" . }}-secret
       key: haSharedSecret
 
-{{- if .Values.tlsSecretName }}
+{{- if .Values.internalTLS.enabled }}
 - name: REGISTRY_HTTP_TLS_CERTIFICATE
   value: /etc/ssl/docker/tls.crt
 - name: REGISTRY_HTTP_TLS_KEY
@@ -85,19 +85,19 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 
 {{- define "docker-registry.volumeMounts" -}}
 - name: "{{ template "docker-registry.fullname" . }}-config"
-  mountPath: /etc/docker/registry/
+  mountPath: {{ .Values.configPath }}
 
 {{- if eq .Values.storage "filesystem" }}
 - name: data
   mountPath: /var/lib/registry/
 {{- end }}
-{{- end -}}
 
-{{- if .Values.tlsSecretName }}
-- mountPath: /etc/docker/ssl/
+{{- if .Values.internalTLS.enabled }}
+- mountPath: /etc/ssl/docker
   name: tls-cert
   readOnly: true
 {{- end }}
+{{- end -}}
 
 {{- with .Values.extraVolumeMounts }}
 {{ toYaml . }}
@@ -119,10 +119,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
   {{- end -}}
 {{- end }}
 
-{{- if .Values.tlsSecretName }}
+{{- if .Values.internalTLS.enabled }}
 - name: tls-cert
   secret:
-    secretName: {{ .Values.tlsSecretName }}
+    secretName: {{ .Values.internalTLS.existingSecret | default "docker-registry-tls"}}
 {{- end }}
 
 {{- with .Values.extraVolumes }}

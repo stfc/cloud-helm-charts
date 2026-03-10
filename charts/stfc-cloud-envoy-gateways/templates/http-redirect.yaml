@@ -1,0 +1,49 @@
+{{- if .Values.internal.httpsRedirect.enabled }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "envoy-gateways.name" .}}-internal-redirect
+  namespace: {{ include "envoy-gateways.namespace" .}}
+
+spec:
+  parentRefs:
+    - name: {{ include "envoy-gateways.name" .}}-internal
+      namespace: {{ include "envoy-gateways.namespace" .}}
+      sectionName: http
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301
+{{- end }}
+
+{{- if and .Values.external.enabled .Values.external.httpsRedirect.enabled }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "envoy-gateways.name" .}}-external-redirect
+  namespace: {{ include "envoy-gateways.namespace" .}}
+
+spec:
+  parentRefs:
+    - name: {{ include "envoy-gateways.name" .}}-external
+      namespace: {{ include "envoy-gateways.namespace" .}}
+      sectionName: http
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301
+{{- end }}

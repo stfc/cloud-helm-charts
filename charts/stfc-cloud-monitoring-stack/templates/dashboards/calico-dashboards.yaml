@@ -1,0 +1,16 @@
+{{- if .Values.extraDashboards.enabled }}
+{{- if .Values.extraDashboards.calico.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cni-calico-dashboards
+  namespace: {{ .Release.Namespace }}
+  labels:
+    grafana_dashboard: "1"
+data:
+  cni-calico-felix-dashboard.json: |
+    {{- .Files.Get "grafana-dashboards/cni-calico-felix-dashboard.json" | nindent 4 }}
+  cni-calico-typha-dashboard.json: |
+    {{- .Files.Get "grafana-dashboards/cni-calico-typha-dashboard.json" | nindent 4 }}
+{{- end }}
+{{- end }}

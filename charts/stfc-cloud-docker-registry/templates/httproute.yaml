@@ -1,6 +1,6 @@
-{{- if .Values.httproute.enabled -}}
-{{- $serviceName := printf "%s%s" (include "docker-registry.fullname" .) "-service" -}}
-{{- $servicePort := .Values.service.port -}}
+{{- if .Values.httproute.enabled }}
+{{- $serviceName := printf "%s%s" (include "docker-registry.fullname" .) "-service" }}
+{{- $servicePort := .Values.service.port }}
 
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -46,22 +46,4 @@ spec:
       {{- tpl (toYaml .) $ | nindent 4 }}
     {{- end }}
 ---
-
-apiVersion: gateway.networking.k8s.io/v1alpha3
-kind: BackendTLSPolicy
-metadata:
-  name: {{ $serviceName }}-backend-tls-policy
-  namespace: {{ .Release.Namespace }}
-spec:
-  targetRefs:
-    - group: ""
-      kind: Service
-      name: {{ $serviceName }}
-  validation:
-    caCertificateRefs:
-      - group: ""
-        kind: ConfigMap
-        name: {{ .Values.caBundleName | default "internal-bundle" }}
-    hostname: {{ $serviceName }}.{{ .Release.Namespace }}.svc.cluster.local
-
 {{- end }}
