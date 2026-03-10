@@ -1,0 +1,77 @@
+nameOverride: envoy-gateway
+
+external:
+  # enable external traffic
+  enabled: false
+  # CHANGE THIS FOR PRODUCTION to a letsencrypt-prod clusterissuer
+  clusterIssuerName: self-signed
+  service:
+    annotations:
+      # prevents errors when deleting clusters, leave as true
+      loadbalancer.openstack.org/keep-floatingip: "true"
+      # Set loadbalancing method: ROUND_ROBIN, LEAST_CONNECTIONS, SOURCE_IP, SOURCE_IP_PORT
+      loadbalancer.openstack.org/lb-method: ROUND_ROBIN
+      # Client inactivity timeout in milliseconds
+      loadbalancer.openstack.org/timeout-client-data: "60000"
+      # Set true to enable X-Forwarded-For Headers for HTTP
+      loadbalancer.openstack.org/x-forwarded-for: "false"
+    loadbalancerIP: null
+
+  deployment:
+    replicas: 3
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+
+  listeners:
+    # define separate listeners here for all externally accessible services (by hostname)
+
+internal:
+  clusterIssuerName: self-signed
+  service:
+    annotations:
+      # prevents errors when deleting clusters, leave as true
+      loadbalancer.openstack.org/keep-floatingip: "true"
+      # Set loadbalancing method: ROUND_ROBIN, LEAST_CONNECTIONS, SOURCE_IP, SOURCE_IP_PORT
+      loadbalancer.openstack.org/lb-method: ROUND_ROBIN
+      # Client inactivity timeout in milliseconds
+      loadbalancer.openstack.org/timeout-client-data: "60000"
+      # Set true to enable X-Forwarded-For Headers for HTTP
+      loadbalancer.openstack.org/x-forwarded-for: "false"
+    loadbalancerIP: null
+
+  deployment:
+    replicas: 3
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+
+  listeners:
+    # define separate listeners here for all internally accessible services (by hostname)
+
+# redirect http traffic to https
+# works on both internal and external gateways - applies everywhere.
+# if you want to specify a service on port 80, create another httproute
+# a more specific route will be resolved first
+httpsRedirect:
+  enabled: true
+
+# envoy-gateway helm chart values
+gateway-helm:
+  deployment:
+    replicas: 1
+
+  # enable "Backend" resources to be created
+  # allows insecure TLS connection to backend HTTPS services
+  #config:
+  #  envoyGateway:
+  #    extensionApis:
+  #      enableBackend: true
