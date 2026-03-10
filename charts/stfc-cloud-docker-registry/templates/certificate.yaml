@@ -7,7 +7,7 @@ metadata:
   name: {{template "docker-registry.fullname" .}}-cert
   namespace: {{ .Values.namespace | default .Release.Namespace }}
 spec:
-  secretName: {{ .Values.secretName }}
+  secretName: {{ .Values.internalTLS.secretName }}
   duration: 87600h0m0s # 10yr
   renewBefore: 8760h0m0s # 1yr
   privateKey:
