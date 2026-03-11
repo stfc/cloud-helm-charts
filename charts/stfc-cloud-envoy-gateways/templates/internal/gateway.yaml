@@ -20,11 +20,13 @@ spec:
       {{- end }}
       {{- with .tls }}
       tls:
+        {{- if .secretName }}
         certificateRefs:
           - kind: Secret
             group: ""
             name: {{ .secretName }}
-        mode: {{ .mode }}
+        {{- end }}
+        mode: {{ .mode | default "Terminate" }}
       {{- end }}
       {{- if .allowedRoutes }}
       allowedRoutes:

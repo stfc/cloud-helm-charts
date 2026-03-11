@@ -11,7 +11,27 @@ service:
 
 internalTLS:
   enabled: true
-  secretName: "docker-registry-tls"
+  # use existing secret, if defined, uses this over certificate-generated secret
+  # existingSecret: "my-secret"
+
+  # generate a cert-manager certificate
+  certificate:
+    enabled: true
+    # provide domain name if externally exposing traffic via httproute and tls mode: Passthrough
+    additionalHosts: []
+    #  - dockerhub.example.com
+
+    # default 2160h = 90d if not specified
+    duration: ""
+    # how long before exipiry should cert be renewed
+    # default 360h = 15d if not specified
+    renewBefore:
+    # issuer
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      # change this to le-prod for production services
+      name: self-signed
 
 httproute:
   # Enable HTTPRoute resource for docker-registry (Gateway API)
@@ -60,21 +80,6 @@ httproute:
 
 ingress:
   enabled: false
-  ingressClassName: nginx
-  path: /
-  pathType: Prefix
-  # Used to create an Ingress record.
-  hosts:
-    - dockerhub.example.com
-  annotations:
-    cert-manager.io/cluster-issuer: "self-signed"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      if ($request_uri !~ ^/v2) {
-        return 301 $scheme://$host/v2$request_uri;
-      }
-  tls:
-    - hosts:
-        - dockerhub.example.com
 
 # we'll default to S3
 persistence:

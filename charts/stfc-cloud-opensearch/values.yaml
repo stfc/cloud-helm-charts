@@ -1,3 +1,45 @@
+# generate cert-manager certificates
+# to manage certs outside of opensearch
+# opted for this method as opensearch generated tls certs and argocd don't play nice
+certificate:
+  dashboards:
+    enabled: true
+    # provide domain name if externally exposing traffic via httproute and tls mode: Passthrough
+    additionalHosts: []
+    # - opensearch-dashboards.example.com
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: self-signed
+    backendTLSPolicy:
+      enabled: false
+  transport:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: internal-ca-issuer
+    backendTLSPolicy:
+      enabled: false
+  http:
+    enabled: true
+    # provide domain name if externally exposing traffic via httproute and tls mode: Passthrough
+    additionalHosts: []
+    # - opensearch-dashboards.example.com
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      # change this to le-prod for production services
+      name: self-signed
+    backendTLSPolicy:
+      enabled: false
+  admin:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: internal-ca-issuer
+
 opensearch-operator:
   nameOverride: log-storage
   installCRDs: true
@@ -53,7 +95,7 @@ opensearch-cluster:
       # e.g. if your cluster name is "log-storage" - change secret to `log-storage-admin-credentials` and `log-storage-securityconfig-secret`
       config:
         adminSecret:
-          name: log-storage-admin-cert
+          name: log-storage-admin-tls
         adminCredentialsSecret:
           name: log-storage-admin-credentials
         securityConfigSecret:

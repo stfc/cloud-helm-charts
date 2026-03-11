@@ -1,5 +1,6 @@
 {{- if .Values.harbor.internalTLS.enabled }}
 {{- if eq .Values.harbor.internalTLS.certSource "secret" -}}
+{{- if .Values.certificate.internal.enabled -}}
 
 {{- $services := list "core" "jobservice" "registry" "portal" "trivy" }}
 
@@ -15,16 +16,19 @@ metadata:
 spec:
   secretName: {{ $secret }}
   issuerRef:
-    name: {{ $.Values.internalCertIssuer | default "internal-ca"}}}
-    kind: Issuer
-    group: cert-manager.io
+    name: {{ $.Values.certificate.internal.issuer.name | quote }}
+    kind: {{ $.Values.certificate.internal.issuer.kind | quote }}
+    {{- with $.Values.certificate.internal.issuer.group }}
+    group: {{ . | quote }}
+    {{- end }}
   commonName: harbor-{{ $svc }}
   dnsNames:
     - harbor-{{ $svc }}
     - harbor-{{ $svc }}.{{ $.Release.Namespace }}.svc
     - harbor-{{ $svc }}.{{ $.Release.Namespace }}.svc.cluster.local
-
+---
 {{- end }}
 
+{{- end }}
 {{- end }}
 {{- end }}

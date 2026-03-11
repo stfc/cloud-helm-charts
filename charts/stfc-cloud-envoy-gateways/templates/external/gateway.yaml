@@ -19,13 +19,15 @@ spec:
       {{- if .hostname }}
       hostname: {{ .hostname }}
       {{- end }}
-      {{- if .tlsSecret }}
+      {{- with .tls }}
       tls:
+        {{- if .secretName }}
         certificateRefs:
           - kind: Secret
             group: ""
-            name: {{ .tlsSecret }}
-        mode: {{ .tlsMode }}
+            name: {{ .secretName }}
+        {{- end }}
+        mode: {{ .mode | default "Terminate" }}
       {{- end }}
       {{- if .allowedRoutes }}
       allowedRoutes:

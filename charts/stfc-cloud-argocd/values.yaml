@@ -1,7 +1,5 @@
 argo-cd:
   global:
-    domain:
-
     cm:
       controller.diff.server.side: true
 
@@ -40,12 +38,15 @@ argo-cd:
       enabled: true
       issuer:
         kind: "ClusterIssuer"
-        # Certificate issuer name. Eg. `self-signed`, `le-staging`, or `le-prod``
-        # This is overriden per-cluster in the cluster's argo-values.yaml
+        # We expose this cert to external traffic via gateway api tls mode: Passthrough
+        # If you want to enable letsencrypt, setup a le-prod clusterissuer on the gateway argo is running on and use that
         name: "self-signed"
 
+    # enable this to setup backendTLSPolicy if you wish to terminate at the gateway
+    # you might want to do this if you'd like to setup additional external auth or TLS policies
+    # i.e. if you want to setup letsencrypt
     backendTLSPolicy:
-      enabled: true
+      enabled: false
       targetRefs:
         - group: ""
           kind: Service

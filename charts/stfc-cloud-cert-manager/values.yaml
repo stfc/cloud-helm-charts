@@ -44,6 +44,9 @@ cert-manager:
     enableGatewayAPI: true
 
 trust-manager:
+  image:
+    repository: quay.io/jetstack/trust-manager
+    tag: v0.22.0
   defaultPackageImage:
-    registry: quay.io
-    repository: jetstack/cert-manager-package-debian
+    repository: jetstack/trust-pkg-debian-bookworm
+    tag: 20230311-deb12u1.5

@@ -93,7 +93,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end }}
 {{- end -}}
 
-{{- if .Values.tlsSecretName }}
+{{- if .Values.internalTLS.enabled }}
 - mountPath: /etc/docker/ssl/
   name: tls-cert
   readOnly: true
@@ -119,10 +119,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
   {{- end -}}
 {{- end }}
 
-{{- if .Values.tlsSecretName }}
+{{- if .Values.internalTLS.enabled }}
 - name: tls-cert
   secret:
-    secretName: {{ .Values.tlsSecretName }}
+    secretName: {{ .Values.internalTLS.existingSecret | default "docker-registry-tls"}}
 {{- end }}
 
 {{- with .Values.extraVolumes }}

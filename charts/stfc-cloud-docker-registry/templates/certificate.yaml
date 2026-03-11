@@ -1,25 +1,43 @@
 {{- if .Values.internalTLS.enabled -}}
+{{- if .Values.internalTLS.certificate.enabled -}}
 {{- $serviceName := printf "%s%s" (include "docker-registry.fullname" .) "-service" -}}
-
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: {{template "docker-registry.fullname" .}}-cert
   namespace: {{ .Values.namespace | default .Release.Namespace }}
 spec:
-  secretName: {{ .Values.internalTLS.secretName }}
-  duration: 87600h0m0s # 10yr
-  renewBefore: 8760h0m0s # 1yr
-  privateKey:
-    algorithm: RSA
-    encoding: PKCS8
-    size: 2048
+  secretName: docker-registry-tls
+  commonName: {{ .Values.internalTLS.certificate.domain }}
   dnsNames:
     - {{$serviceName}}
-    - {{$serviceName}}.{{ .Release.Namespace }}.svc
-    - {{$serviceName}}.{{ .Release.Namespace }}.svc.cluster.local
+    - {{$serviceName}}.{{.Release.Namespace}}
+    - {{$serviceName}}.{{.Release.Namespace}}.svc
+    - {{$serviceName}}.{{.Release.Namespace}}.svc.cluster.local
+    {{- range .Values.internalTLS.certificate.additionalHosts }}
+    - {{ . | quote }}
+    {{- end }}
+  {{- with .Values.internalTLS.certificate.duration }}
+  duration: {{ . | quote }}
+  {{- end }}
+  {{- with .Values.internalTLS.certificate.renewBefore }}
+  renewBefore: {{ . | quote }}
+  {{- end }}
   issuerRef:
-    name: {{ .Values.caSecret | default "internal-ca"}}}
-    kind: Issuer
-    group: cert-manager.io
+    {{- with .Values.internalTLS.certificate.issuer.group }}
+    group: {{ . | quote }}
+    {{- end }}
+    kind: {{ .Values.internalTLS.certificate.issuer.kind | quote }}
+    name: {{ .Values.internalTLS.certificate.issuer.name | quote }}
+  {{- with .Values.internalTLS.certificate.privateKey }}
+  privateKey:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.internalTLS.certificate.usages }}
+  usages:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+{{- end }}
 {{- end }}
