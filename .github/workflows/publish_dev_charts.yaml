@@ -1,0 +1,139 @@
+name: Publish Dev Charts (Multiple)
+
+on:
+  workflow_dispatch:
+    inputs:
+      charts:
+        description: "Comma-separated list of charts to release dev versions of (e.g. chart-a,chart-b,chart-c)"
+        type: string
+        required: true
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Build matrix from input
+        id: set-matrix
+        run: |
+          # Convert comma-separated input into a JSON array for the matrix
+          CHARTS_JSON=$(echo "${{ github.event.inputs.charts }}" \
+            | tr ',' '\n' \
+            | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' \
+            | jq -R . \
+            | jq -sc .)
+          echo "matrix={\"chart\":${CHARTS_JSON}}" >> $GITHUB_OUTPUT
+
+  bump-charts:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+      fail-fast: false # Allow other charts to continue if one fails
+    outputs:
+      # Note: with a matrix, only the last job's output is captured here.
+      # Per-chart versions are embedded in branch/tag names used by the publish job.
+      alpha-version: ${{ steps.bump-version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Set alpha chart version
+        id: bump-version
+        run: |
+          CHART_YAML="charts/${{ matrix.chart }}/Chart.yaml"
+
+          # Get current version
+          CURRENT_VERSION=$(yq e '.version' "$CHART_YAML")
+
+          # Split version into major, minor, patch
+          IFS='.' read -r major minor patch _ <<< "$CURRENT_VERSION"
+
+          # Get the latest commit short hash
+          GIT_COMMIT_TAG=$(git rev-parse --short HEAD)
+
+          # Build alpha version string
+          VERSION=${major}.${minor}.$((patch))-alpha.${GIT_COMMIT_TAG}
+
+          # Write new version into Chart.yaml
+          yq e -i ".version = \"$VERSION\"" "$CHART_YAML"
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "chart=${{ matrix.chart }}" >> $GITHUB_OUTPUT
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "bump chart ${{ matrix.chart }} to version: ${{ steps.bump-version.outputs.version }}"
+          branch: br-${{ matrix.chart }}-v${{ steps.bump-version.outputs.version }}
+          tagging_message: ${{ matrix.chart }}-v${{ steps.bump-version.outputs.version }}
+          create_branch: true
+
+  publish:
+    needs: [prepare, bump-charts]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+      fail-fast: false
+    steps:
+      - name: Setup Github Token
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+
+      - name: get branch name
+        id: get-branch
+        run: |
+          CHART_YAML="charts/${{ matrix.chart }}/Chart.yaml"
+          CURRENT_VERSION=$(yq e '.version' "$CHART_YAML")
+          IFS='.' read -r major minor patch _ <<< "$CURRENT_VERSION"
+          GIT_COMMIT_TAG=$(git rev-parse --short HEAD)
+          VERSION=${major}.${minor}.$((patch))-alpha.${GIT_COMMIT_TAG}
+          echo "branch=br-${{ matrix.chart }}-v${VERSION}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Checkout bumped branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.get-branch.outputs.branch }}
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Configure Git
+        run: |
+          git pull
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Update Readme alpha chart warning
+        run: |
+          sed -i '0,/^#/ s/^#.*$/&\n\nThis is an alpha version of this chart/' \
+            charts/${{ matrix.chart }}/README.md
+
+      - name: Commit readme changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "update readme"
+          branch: ${{ steps.get-branch.outputs.branch }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          skip_existing: true
+        env:
+          CR_TOKEN: "${{ steps.app-token.outputs.token }}"
