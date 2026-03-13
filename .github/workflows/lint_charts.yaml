@@ -26,21 +26,10 @@ jobs:
       - name: Create charts-config file
         run: |
           cat << EOF > /tmp/charts-config.yaml
-          "charts/materials-galaxy":
-            values_files: 
-              - values.yaml
-              - secret-values.yaml.template
-            include_clouds_yaml: false
 
           "charts/stfc-cloud-cert-manager":
             values_files: 
               - values.yaml
-            include_clouds_yaml: false
-
-          "charts/stfc-cloud-chatops":
-            values_files: 
-              - values.yaml
-              - secret-values.yaml.template
             include_clouds_yaml: false
 
           "charts/stfc-cloud-harbor":
@@ -79,11 +68,6 @@ jobs:
             values_files: 
               - values.yaml
               - prod-values.yaml
-            include_clouds_yaml: false
-            
-          "charts/stfc-cloud-vm":
-            values_files: 
-              - values.yaml
             include_clouds_yaml: false
 
           "charts/stfc-cloud-docker-registry":
