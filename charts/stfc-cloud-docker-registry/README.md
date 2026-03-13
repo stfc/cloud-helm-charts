@@ -7,8 +7,11 @@ Since 20/11/2020 dockerhub rate limited free users, hence we implemented a regis
 Forked from: https://github.com/twuni/docker-registry.helm
 
 This Helm chart uses official Docker Registry image: https://hub.docker.com/_/registry/
+CNCF Docs: https://distribution.github.io/distribution/about/configuration/
 
-# Prerequsits
+This chart is deployed onto our clusters using argocd using this gitops repo - https://github.com/stfc/cloud-deployed-apps/
+
+# Prerequsites
 
 You will need: 
 
@@ -16,7 +19,10 @@ You will need:
 
 - (optional) for S3 persistent storage: S3 quota on the project
 - (optional) for other storage methods (like manila/cinder/longhorn) setup a storageclass
-- Setup nginx ingress to be accessible outside the cluster and ensure cert issuers are setup and can be accessed (like letsencrypt)
+
+- (DEPRECATED - use gatewayAPI) Setup nginx ingress to be accessible outside the cluster and ensure cert issuers are setup and can be accessed (like letsencrypt)
+  
+- Setup GatewayAPI - we recommend envoy - gateway.envoyproxy.io/docs/install/gateway-helm-api/. Setup a gateway with a listener on 443 - this chart allows you to configure a httproute to expose your dockerhub service to accept ingress traffic
 
 # Installations
 
@@ -46,6 +52,9 @@ helm install harbor cloud-charts/stfc-cloud-docker-registry -n docker-registry -
 ```
 
 # Configuration
+
+## (DEPRECATED - USE GATEWAY API - see values.yaml)
+
 Add host to ingress for DNS name which can be used to access the docker registry. [Cert-manager](https://cert-manager.io/) is used for managing certificates.
 
 ```yaml
@@ -62,4 +71,4 @@ ingress:
 
 Metrics collection will occur automatically if you enable metrics and metrics.serviceMonitor (provided you have prometheus running). 
 
-TODO: No prometheus rules or grafana dashboards are configured be default 
+TODO: No prometheus rules or grafana dashboards are configured by default 
