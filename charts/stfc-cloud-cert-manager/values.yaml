@@ -1,15 +1,49 @@
+# setup cluster issuers to manage certs for externally facing services
 # Various issuers which are available
-self-signed:
+# possible issuer types:
+# - le-staging (letsencrypt staging)
+# - le-prod (letsencrypt prod)
+# - self-signed
+
+clusterIssuers:
+  - name: self-signed
+    type: self-signed
+
+  #- name: external-le-staging
+  #  type: le-staging
+  #  email: cloud-support@stfc.ac.uk
+  #  gateway:
+  #    name: envoy-gateway-external
+  #    namespace: envoy-gateway-system
+
+  #- name: external-le-prod
+  #  type: le-prod
+  #  email: cloud-support@stfc.ac.uk
+  #  gateway:
+  #    name: envoy-gateway-external
+  #    namespace: envoy-gateway-system
+
+# setup a cluster issuer for system certs
+internalCA:
   enabled: true
-
-le-staging:
-  enabled: false
-
-le-prod:
-  enabled: false
-  # Let's Encrypt will use this to contact you about expiring
-  # certificates, and issues related to your account.
-  email: "user@example.com"
+  # provide this secret if you'd like to use an existing CA certificate for TLS
+  existingSecret: ""
+  # this allows us to create a configmap with our internal CA
+  # we can reference this configmap to setup verified TLS encrypted ingress traffic from our gateways to our service
+  trustManager:
+    enabled: true
+    # label selector for namespaces running internal services to scope this down
+    # namespaceSelector:
 
 cert-manager:
   installCRDs: true
+  # enable gateway annotations for cert-manager to create and manage certs for services accessed via gateway-api
+  config:
+    apiVersion: controller.config.cert-manager.io/v1alpha1
+    kind: ControllerConfiguration
+    enableGatewayAPI: true
+
+trust-manager:
+  image:
+    repository: quay.io/jetstack/trust-manager
+    tag: v0.22.0

@@ -1,0 +1,23 @@
+{{- if .Values.backendTLSPolicy.enabled -}}
+{{- $serviceName := printf "%s%s" (include "docker-registry.fullname" .) "-service" -}}
+
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name: {{ $serviceName }}-backend-tls-policy
+  namespace: {{ .Release.Namespace }}
+spec:
+  targetRefs:
+  - group: ""
+    kind: Service
+    name: {{ $serviceName }}
+
+  validation:
+    hostname: {{ $serviceName }}.{{ .Release.Name }}.svc.cluster.local
+
+    caCertificateRefs:
+    - group: ""
+      kind: ConfigMap
+      name: {{ .Values.backendTLSPolicy.caBundleName}}
+
+{{- end -}}

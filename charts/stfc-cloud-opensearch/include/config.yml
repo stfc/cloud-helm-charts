@@ -17,23 +17,19 @@ config:
           challenge: false
         authentication_backend:
           type: intern
-    
-# For IRIS IAM Authentication
-# See https://docs.opensearch.org/latest/security/authentication-backends/openid-connect/#opensearch-dashboards-single-sign-on for how to configure
-# opensearch dashboards to use it
-#
-#      openid_auth_domain:
-#        http_enabled: true
-#        transport_enabled: true
-#        order: 2
-#        http_authenticator:
-#          type: openid
-#          challenge: false
-#          config:
-#            subject_key: preferred_username
-#            roles_key: groups
-#            openid_connect_url: "https://iris-iam.stfc.ac.uk/.well-known/openid-configuration"
-#            enable_ssl: true
-#            verify_hostnames: true
-#        authentication_backend:
-#          type: noop
+
+      openid_auth_domain:
+        http_enabled: true
+        transport_enabled: true
+        order: 2
+        http_authenticator:
+          type: openid
+          challenge: false
+          config:
+            subject_key: preferred_username
+            roles_key: groups
+            openid_connect_url: "https://iris-iam.stfc.ac.uk/.well-known/openid-configuration"
+            enable_ssl: true
+            verify_hostnames: true
+        authentication_backend:
+          type: noop

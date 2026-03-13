@@ -1,118 +1,216 @@
+# generate cert-manager certificates to manage certs outside of opensearch
+# opted for this method as opensearch generated tls certs and argocd don't play nice
+certificate:
+  dashboards:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: internal-ca-issuer
+
+  transport:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: internal-ca-issuer
+
+  http:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: internal-ca-issuer
+
+  admin:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: internal-ca-issuer
+
+# to allow internal certs to work with gateway api
+# specify the configmap "internal-bundle" which is managed by "trust-manager"
+backendTLSPolicy:
+  opensearch:
+    enabled: true
+    caBundleName: internal-bundle
+  dashboards:
+    enabled: true
+    caBundleName: internal-bundle
+
 opensearch-operator:
-  nameOverride: op
+  nameOverride: log-storage
   installCRDs: true
+
+httproute:
+  opensearch:
+    annotations:
+      argocd.argoproj.io/sync-wave: "1"
+    enabled: true
+    hostnames: []
+    #  - opensearch.example.com
+    parentRefs: []
+    #  - name: foo
+    #    namespace: envoy-gateway-system
+    #    sectionName: internal-https
+    rules:
+      - matches:
+          - path:
+              type: PathPrefix
+              value: /
+
+  dashboards:
+    enabled: true
+    annotations:
+      argocd.argoproj.io/sync-wave: "1"
+    hostnames: []
+    #  - opensearch-dashboards.example.com
+    parentRefs:
+    #  - name: foo
+    #    namespace: envoy-gateway-system
+    #    sectionName: staging-internal-https
+    rules:
+      - matches:
+          - path:
+              type: PathPrefix
+              value: /
 
 opensearch-cluster:
   cluster:
     # change this to match name of cluster you want
-    name: "opensearch-cluster"
+    name: log-storage
+    annotations:
+      argocd.argoproj.io/sync-wave: "0"
 
-    annotations: 
-      helm.sh/hook: post-install,post-upgrade
-
-    # -- Opensearch nodes configuration
-    nodePools:
-      - component: nodes
-        diskSize: "30Gi"
-        replicas: 3
-        roles:
-          - "master"
-          - "data"
-        resources:
-          requests:
-            memory: "2Gi"
-            cpu: "500m"
-          limits:
-            memory: "2Gi"
-            cpu: "500m"
-        persistence:
-          pvc:
-            storageClass: csi-cinder
-            accessModes: 
-              - ReadWriteOnce
-
-    general:
-      # disable for now whilst testing
-      monitoring:
-        enable: false
-      
-      # setup snapshotting onto S3 
-      snapshotRepositories: []
-    
-    dashboards:
-
-      enable: true
-      tls: 
-        enable: true
-        generate: true
-
-      additionalConfig: 
-        opensearch_security.multitenancy.enabled: "true"
-        opensearch_security.cookie.secure: "true"
-
-        # enable this if you want iris-iam authentication, you'll need to modify config.yml as well 
-        
-        # opensearch_security.auth.type: ["basicauth", "openid"]
-        # opensearch_security.auth.multiple_auth_enabled: "true"
-        # opensearch_security.openid.connect_url: "https://iris-iam.stfc.ac.uk/.well-known/openid-configuration"
-        # opensearch_security.openid.scope: "openid profile email preferred_username groups"
-        # opensearch_security.openid.base_redirect_url: https://opensearch.example.com
-
-    ingress:
-      opensearch:
-        annotations:
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-          ingress.kubernetes.io/proxy-body-size: "0"
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-        className: nginx
-        hosts:
-          - host: opensearch.example.com
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - secretName: opensearch-tls
-            hosts:
-              - opensearch.example.com
-      
-      # change the secret references to match the name of your cluster - under "opensearch-cluster.cluster.name" 
-      # e.g. if your cluster name is "log-storage" - change secret to `log-storage-admin-credentials`
-      # TODO: introduce a "kibanaserver" user which has more locked down permissions for dashboards to use
-      dashboards:
-        opensearchCredentialsSecret:
-          name: opensearch-admin-credentials
-        annotations:
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-          ingress.kubernetes.io/proxy-body-size: "0"
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-        className: nginx
-        hosts:
-          - host: opensearch-dashboards.example.com
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - secretName: opensearch-tls
-            hosts:
-              - opensearch-dashboards.example.com
-        
-    # change the secret references to match the name of your cluster - under "opensearch-cluster.cluster.name" 
+    # set explicit cert secrets because argocd doesn't play nice with self generated secrets
+    # instead explicitly generate self-signed certs using cert-manager and have them managed externally outside of argocd
+    # change the secret references to match the name of your cluster - under "opensearch-cluster.cluster.name"
     # e.g. if your cluster name is "log-storage" - change secret to `log-storage-admin-credentials` and `log-storage-securityconfig-secret`
     security:
-      config: 
-        adminCredentialsSecret: 
-          name: opensearch-admin-credentials
+      tls:
+        http:
+          adminDn: ["CN=admin,OU=log-storage"]
+          generate: false
+          secret:
+            name: log-storage-http-cert
+
+        transport:
+          generate: false
+          perNode: false
+          nodesDn: ["CN=log-storage,OU=log-storage"]
+          adminDn: ["CN=admin, OU=log-storage"]
+          secret:
+            name: log-storage-transport-cert
+          #enableHotReload: false
+
+      # change the secret references to match the name of your cluster - under "opensearch-cluster.cluster.name"
+      # e.g. if your cluster name is "log-storage" - change secret to `log-storage-admin-credentials` and `log-storage-securityconfig-secret`
+      config:
+        adminSecret:
+          name: log-storage-admin-tls
+        adminCredentialsSecret:
+          name: log-storage-admin-credentials
         securityConfigSecret:
-          name: opensearch-securityconfig-secret
-  
-# Its recommended not to use the opensearch CRDs at the moment due to various incompatibility issues with securityconfig secret. 
+          name: log-storage-securityconfig-secret
+
+    general:
+      version: 3.1.0
+      monitoring:
+        enable: true
+
+      # setup snapshotting onto S3
+      snapshotRepositories: []
+
+    dashboards:
+      enable: true
+      tls:
+        generate: false
+        secret:
+          name: log-storage-dashboards-cert
+
+      additionalConfig:
+        opensearch.requestHeadersAllowlist: "['Authorization', 'securitytenant', 'x-forwarded-for', 'x-forwarded-by']"
+        opensearch_security.auth.multiple_auth_enabled: "true"
+        opensearch_security.auth.type: |
+          '["basicauth", "openid"]'
+        opensearch_security.openid.connect_url: "https://iris-iam.stfc.ac.uk/.well-known/openid-configuration"
+        opensearch_security.openid.scope: "openid profile email preferred_username groups"
+        opensearch_security.openid.base_redirect_url: https://opensearch-dashboards.staging-worker.nubes.stfc.ac.uk
+
+        # OVERRIDE using SOPS secrets for iris-iam
+        # opensearch_security.openid.client_id: iris-iam-id
+        # opensearch_security.openid.client_secret: iris-iam-secret
+
+      opensearchCredentialsSecret:
+        name: log-storage-admin-credentials
+      version: 3.1.0
+
+# Provide username and password for the initial admin user - used to configure and manage the cluster
+# You must provide the password in plaintext and as a bycrpt hash
+# ENCRYPT THESE WITH SOPS
+adminCredentials:
+  username: admin
+  password: admin
+
+# Its recommended not to use the opensearch CRDs at the moment due to various incompatibility issues with securityconfig secret.
 # We have found that using CRs for user management tends to be inconsistent and error-prone thus we have opted not to use it.
 
 # Instead you can define custom security config files directly here:
-# see https://docs.opensearch.org/latest/security/configuration/yaml/ 
+# see https://docs.opensearch.org/latest/security/configuration/yaml/
 
 # customSecurityConfigFiles:
 #   config.yml: |
 #     # see https://docs.opensearch.org/latest/security/configuration/configuration/
-#   roles.yml: | 
+#   roles.yml: |
 #     ...
+
+# Specified a seried of config files for log-storage
+# It is recommended to add internal_users as secrets as they contain sensitive password hashes
+customSecurityConfigFiles:
+
+# use this for demo users
+# OVERRIDE and store as sops secret for production services
+
+#  internal_users.yml: |
+#    _meta:
+#      type: "internalusers"
+#      config_version: 2
+
+# Admin user with full access
+#     admin:
+#       hash: "$2a$12$.GazcpLQXklzDk3gJeMHoOyeOdsXFrQZj/OflLjfjZIKl.Bly6JDe"  # admin
+#       reserved: true
+#       backend_roles:
+#         - "admin"
+#       description: "Admin user with full cluster access"
+
+#     # staging writer
+#     writer-staging:
+#       hash: "$2a$12$9xxOdXJROFqMlGgZuGmuyu9lT2kgHKHtfv8ED1ZU/bQrfV1HgS7fS"  # writerstaging123
+#       reserved: false
+#       backend_roles:
+#         - "writer_staging_role"
+#       description: "Writer access to staging tenant"
+
+#     # production writer
+#     writer-prod:
+#       hash: "$2a$12$O9VRqna2KlJ.cZdf3e3AnOm3/zUldNGMDK6JF.V3Hnbakdi7zd2Bm"  # writerprod123
+#       reserved: false
+#       backend_roles:
+#         - "writer_prod_role"
+#       description: "Writer access to prod tenant"
+
+#     # staging reader
+# #    reader-staging:
+# #      hash: "$2a$12$5tduo.n323SE.MMVvfuHVO4yVe5W4nx4YEZTFSgH3H9kSEAGOSdWe"  # readerstaging123
+# #      reserved: false
+# #      backend_roles:
+# #        - "reader_staging_role"
+# #      description: "Reader access to staging tenant"
+
+# define other parts here - see the include folder for pre-generated files - these values will be merged and take precedence
+#  tenants.yml: |
+#  roles_mapping.yml:
+#  roles.yml
+#  internal_users.yml

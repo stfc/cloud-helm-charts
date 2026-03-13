@@ -1,0 +1,65 @@
+# bootstrap-issuer.yaml
+{{- if .Values.internalCA.enabled }}
+
+
+{{- if not .Values.internalCA.existingSecret }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: internal-bootstrap
+spec:
+  selfSigned: {}
+
+---
+ 
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: internal-ca
+  namespace: cert-manager
+spec:
+  isCA: true
+  commonName: internal-ca
+  secretName: internal-ca-secret
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: internal-bootstrap
+    kind: ClusterIssuer
+    group: cert-manager.io
+
+---
+{{- end }}
+
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: internal-ca-issuer
+spec:
+  ca:
+    secretName: {{ .Values.internalCA.existingSecret  | default "internal-ca-secret" }}
+
+---
+{{- if  .Values.internalCA.trustManager.enabled }}
+apiVersion: trust.cert-manager.io/v1alpha1
+kind: Bundle
+metadata:
+  name: {{ .Values.internalCA.trustManager.bundleName | default "internal-bundle"}}
+spec:
+  sources: 
+    - useDefaultCAs: true
+
+    - secret:
+        name: {{ .Values.internalCA.existingSecret  | default "internal-ca-secret" }}
+        key: "tls.crt"
+
+  target: 
+    configMap: 
+      key: "ca.crt"
+    {{- if .Values.internalCA.trustManager.namespaceSelector }}
+    namespaceSelector:
+      {{- toYaml .Values.internalCA.trustManager.namespaceSelector | nindent 6 }}
+    {{- end }}
+{{- end }}
+{{- end }}

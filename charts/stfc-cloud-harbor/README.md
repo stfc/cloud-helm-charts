@@ -1,59 +1,32 @@
-# Harbor
+# STFC Cloud Harbor
 
-Harbor is an open-source cloud registry that allows developers to securely store, distribute, and manage container images.
-It provides a centralised environment ensuring only trusted images are used in deployments. See https://goharbor.io/
+This chart configures an opinionated release of the Harbor helm chart - https://github.com/goharbor/harbor-helm
 
-This Helm chart deploys a Harbor cluster - it uses the [Harbor chart](https://github.com/goharbor/harbor-helm) with custom configuration.
+Harbor is an open-source cloud registry that allows developers to securely store, distribute, and manage container images. It provides a centralised environment ensuring only trusted images are used in deployments. See https://goharbor.io/
 
-# Prerequisites
-You will need S3 Quota allocated to your project.
+We use this chart to set global shared values between staging and prod STFC Cloud Harbor services
+   
+This chart pins the version of the harbor subchart along with our values so we can easily rollback and upgrade this chart on our clusters by pointing to a different version 
 
-## Storage
-Harbor use S3 as storage backend, and an external database for users and logging.
+This chart is deployed onto our clusters using argocd using this gitops repo - https://github.com/stfc/cloud-deployed-apps/
 
-## Ingress
-It uses nginx ingress to be accessible outside the cluster - make sure it is enabled.
+In this chart, we deploy the harbor service 
 
-# Installation
+We also setup the following: 
 
-## Setup Secrets
+1. A cronjob to backup s3 bucket we use for storing harbor image data on a monthly/weekly/daily basis
 
-To use this chart, you need to provide secret values. Follow these steps:
+2. A set of cert-manager managed TLS certificates for each harbor pod to enable encrypted east-west traffic 
+    - this is more compatible with argocd than using auto-generated one via the harbor helm chart
 
-1. Copy the template file:
+3. A backendTLSpolicy to rencrypt backend ingress traffic from gatewayAPI to enable fully encrypted ingress traffic 
 
-```bash
-git clone https://github.com/stfc/cloud-helm-charts.git
-cd cloud-helm-charts/charts/stfc-cloud-harbor/
-cp secret-values.yaml.template /tmp/secret-values.yaml
-```
+4. A set of basic prometheus rules for alerting on service health
 
-2. Edit secret-values.yaml with your actual secret values
+5. A grafana dashboard taken and modified from -  https://grafana.com/grafana/dashboards/15792-harbor/
 
-Note: secret-values.yaml is git-ignored for security. Never commit actual secrets.
-
-## Deployment
-
-```bash
-helm repo add cloud-charts https://stfc.github.io/cloud-helm-charts/
-helm repo update
-helm install harbor cloud-charts/stfc-cloud-harbor -n harbor --create-namespace -f values -f /tmp/secret-values.yaml
-```
 
 # Configuration
-Add host to ingress for DNS name which can be used to access harbor. [Cert-manager](https://cert-manager.io/) is used for managing certificates.
-
-```yaml
-# Access to harbor service
-harbor:
-  externalURL: "https://harbor.example.com"
-  expose:
-    ingress:
-      hosts:
-        core: "harbor.example.com"
-      annotations:
-        cert-manager.io/cluster-issuer: self-signed # le-staging, le-prod for let's encrypt
-```
 
 ```yaml
 # Add An external postresql database host

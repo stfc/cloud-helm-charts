@@ -4,8 +4,15 @@
 # custom flag if we include our prometheus rules
 includePrometheusRules: true
 
-fluent-operator:  
+# Here, you can fill in credentials for outputting to an OpenSearch instance
+# They are loaded into a Secret resource, "opensearch-credentials", which can be referenced in values.yaml
+# OVERRIDE and ENCRYPT with sops keys
+# or alternatively, mount an existing secret
+opensearchCredentials:
+  username: admin
+  password: admin
 
+fluent-operator:
   operator:
     resources:
     limits:
@@ -14,7 +21,7 @@ fluent-operator:
     requests:
       cpu: 100m
       memory: 20Mi
-    disableComponentControllers: "fluentd"
+    disableComponentControllers: fluentd
 
   fluentbit:
     resources:
@@ -65,7 +72,7 @@ fluent-operator:
       # You should disable/comment out this section if you have disabled lokiStack in your openstack-cluster config
       # It is disabled by default in our opinionated config, but we recommend you enable it when setting up FluentOperator to replace Promtail.
       loki:
-        enable: true
+        enable: false
         host: loki-stack
         port: 3100
         tenantID: ""
@@ -86,7 +93,7 @@ fluent-operator:
           port: 2020
           addLabels:
             app: "fluentbit"
-      
+
       # Additional outputs (elasticsearch/kafka...) can be added below, see:
       # https://github.com/fluent/fluent-operator/tree/master/charts/fluent-operator/templates
 
@@ -95,7 +102,7 @@ fluent-operator:
         enable: true
         labels: true
         annotations: false
-    
+
     serviceMonitor:
       enable: true
 
@@ -106,4 +113,5 @@ fluent-operator:
         tag: "fb.metrics"
 
   fluentd:
+    crdsEnable: false
     enable: false
