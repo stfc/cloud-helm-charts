@@ -1,60 +1,27 @@
-# Cert-manager
+# STFC Cloud Cert Manager
 
-Cert-manager is a tool to manage certs.
+This chart configures cert-manager (as subchart) and trust-manager (as subchart) and includes pre-configured issuers - which can be self-signed, or signed by staging/production letsencrypt using HTTP01 challenge via gateway API. 
 
-Our chart configures cert-manager (as subchart) and includes pre-configured issuers including staging and production letsencrypt - to enable you to setup verified HTTPS certs for your web-apps
+It also configures a ClusterIssuer for manageing internal (east-west) traffic TLS certs. Trust-manager is used to create a pre-configured "Bundle" resource that gateway API BackendTLSPolicy resources can use to verify internal TLS certs  
 
-# Installation
+cert-manager: https://github.com/cert-manager/cert-manager/tree/master/deploy/charts/cert-manager
+trust-manager: https://github.com/cert-manager/trust-manager/tree/main/deploy/charts/trust-manager
 
-```bash
-helm repo add cloud-charts https://stfc.github.io/cloud-helm-charts/
-helm repo update
-helm install cert-manager cloud-charts/stfc-cloud-cert-manager -n cert-manager --create-namespace
-```
+This chart pins the version of the envoy subchart along with our values so we can easily rollback and upgrade this chart on our clusters by pointing to a different version
 
-# Configuration
+This chart is deployed onto our clusters using argocd using this gitops repo - https://github.com/stfc/cloud-deployed-apps/
 
-## Enabling letsencrypt issuers 
+In this chart, we deploy cert-manager and trust-manager along with their CRDs 
 
-To enable letsecrypt issuers, you need to add:
+We also setup the following: 
 
-```yaml  
-  # for testing your networing - PLEASE USE THIS TO TEST FIRST! 
-  # this will prevent the ENTIRE department getting rate-limited!
-  le-staging:  
-    enabled: true
+1. ability to create clusterIssuers for each gatewayAPI gateway - either signed by letsencrypt or self-signed - intended for creating TLS certs for ingress traffic
 
-  # prod issuer
-  le-prod:
-    enabled: true
-```
+2. setup an internal clusterIssuer for internal TLS certs - encrypt traffic between pods (east-west) traffic
+- This can either be self-signed (by default) or use an pre-configured existing secret  
 
-
-## Using letsencrypt ingress 
-
-To enable letsencrypt issuer - you need to add an annotation to ingress resources and enable tls
-
-> [!CAUTION]
-> This is just an example - read the documentation on the helm chart your trying to install to see how to configure nginx ingress. 
-> You might need to make your own - see [Ingress Controller Docs](https://kubernetes.io/docs/concepts/services-networking/ingress/) 
-
-```yaml
-ingress:
-  annotations:
-    # add the annotation
-    cert-manager.io/cluster-issuer: "letsencrypt-prod" # or letsencrypt-staging or self-signed
-    hosts:
-      - name: myservice.example.com
-        path: /
-        port: http
-    # specify tls and secret name
-    tls:
-      - secretName: my-le-cert
-        hosts:
-          - myservice.example.com
-```
-
-
+3. setup a "Bundle" resource (managed by trust-manager) which creates a set of trusted root-certificates (with internal clusterIssuer CA bundled in) to be used by gatwayAPI backendTLSPolicy resources to connect to and verify internal HTTPS services - enabling full ingress encryption for httproutes
+ 
 ## Troubleshooting
 
 if you're having issues installing this chart, it may be because cert-manager is already installed onto the cluster (and is not helm managed) you can force helm to take ownership of existing cert-manager resources by passing `--take-ownwership` flag when running `helm install`

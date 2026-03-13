@@ -3,8 +3,6 @@ argo-cd:
 
   configs:
     cm:
-      controller.diff.server.side: false
-
       helm.valuesFileSchemes: >-
         secrets+age-import, secrets+age-import-kubernetes,
         secrets,secrets+literal,
