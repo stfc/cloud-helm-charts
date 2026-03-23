@@ -32,6 +32,9 @@ internalCA:
   # we can reference this configmap to setup verified TLS encrypted ingress traffic from our gateways to our service
   trustManager:
     enabled: true
+    # change this if you want to change the name of the bundle.
+    # bundleName: "internal-bundle"
+
     # label selector for namespaces running internal services to scope this down
     # namespaceSelector:
 
