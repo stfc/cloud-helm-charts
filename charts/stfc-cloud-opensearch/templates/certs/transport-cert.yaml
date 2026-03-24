@@ -12,8 +12,6 @@ spec:
     organizationalUnits: [{{$clusterName}}] # OU
   commonName: {{$clusterName}} # CN
   secretName: {{$clusterName}}-transport-cert
-  duration: 87600h0m0s # 10yr
-  renewBefore: 8760h0m0s # 1yr
   privateKey:
     algorithm: RSA
     encoding: PKCS8
