@@ -72,6 +72,10 @@ kube-prometheus-stack:
         #    group: gateway.networking.k8s.io
         #    kind: Gateway
 
+    # here we reference a secret that contains oidc credentials:
+    # has client_id and client_secret keys
+    # this is created by providing oidc.grafana.clientID, oidc.grafana.clientSecret
+    # use SOPS to encrypt those helm values when using argocd
     extraSecretMounts:
       - name: iris-iam-creds
         secretName: grafana-oidc-secret
@@ -89,6 +93,8 @@ kube-prometheus-stack:
         api_url: "https://iris-iam.stfc.ac.uk/userinfo"
         groups_attribute_path: "groups[*]"
         allowed_groups: "stfc-cloud/team,stfc-cloud/admins"
+
+        # these are mounted as extra secrets - see extraSecretMounts above
         client_id: $__file{/etc/secrets/iris_iam_creds/client-id}
         client_secret: $__file{/etc/secrets/iris_iam_creds/client-secret}
 
