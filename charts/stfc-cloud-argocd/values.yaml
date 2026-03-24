@@ -22,8 +22,6 @@ argo-cd:
           groups:
             essential: true
 
-      oidc.skip.insecure.verify: true
-
     rbac:
       policy.csv: |
         g, stfc-cloud/team, role:readonly
