@@ -1,0 +1,9 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: global-alertmanager-config
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- toYaml .Values.alertmanagerConfigLabel | nindent 4 }}
+spec:  
+  {{- .Files.Get "include/alertmanager-config.yaml" | fromYaml | toYaml | nindent 2 }}

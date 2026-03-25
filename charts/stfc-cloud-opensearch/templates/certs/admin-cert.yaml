@@ -1,0 +1,27 @@
+
+{{- if .Values.certificate.admin.enabled -}}
+{{- $clusterName := index .Values "opensearch-cluster" "cluster" "name" -}}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{$clusterName}}-admin-cert
+  namespace: {{.Release.Namespace}}
+spec:
+  subject:
+    organizationalUnits: [{{ $clusterName }}] # OU
+  commonName: admin # CN
+  secretName: {{$clusterName}}-admin-tls
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+  issuerRef:
+    {{- with .Values.certificate.admin.issuer.group }}
+    group: {{ . | quote }}
+    {{- end }}
+    kind: {{ .Values.certificate.admin.issuer.kind | quote }}
+    name: {{ .Values.certificate.admin.issuer.name | quote }}
+{{- end }}
+
+

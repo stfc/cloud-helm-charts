@@ -1,0 +1,53 @@
+{{- range .Values.clusterIssuers }}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ required "ClusterIssuer name is required" .name }}
+spec:
+
+{{- if not .type }}
+  {{- fail (printf "ClusterIssuer '%s': type must be set to one of [selfsigned, le-staging, le-prod]" .name) }}
+{{- end }}
+
+{{- if and (ne .type "self-signed") (ne .type "le-staging") (ne .type "le-prod") }}
+  {{- fail (printf "ClusterIssuer '%s': invalid type '%s'. Must be one of [self-signed, le-staging, le-prod]" .name .type) }}
+{{- end }}
+
+{{- if eq .type "self-signed" }}
+
+  selfSigned: {}
+
+{{- else }}
+
+  {{- if not .email }}
+    {{- fail (printf "ClusterIssuer '%s': email is required for type '%s'" .name .type) }}
+  {{- end }}
+
+  {{- if not .gateway }}
+    {{- fail (printf "ClusterIssuer '%s': gateway config required for type '%s'" .name .type) }}
+  {{- end }}
+
+  acme:
+    email: {{ .email }}
+
+    {{- if eq .type "le-prod" }}
+    server: https://acme-v02.api.letsencrypt.org/directory
+    {{- else if eq .type "le-staging" }}
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    {{- end }}
+
+    privateKeySecretRef:
+      name: {{ .name }}-private-key
+
+    solvers:
+      - http01:
+          gatewayHTTPRoute:
+            parentRefs:
+              - name: {{ required (printf "ClusterIssuer '%s': gateway.name required" .name) .gateway.name }}
+                namespace: {{ required (printf "ClusterIssuer '%s': gateway.namespace required" .name) .gateway.namespace }}
+                kind: Gateway
+                group: gateway.networking.k8s.io
+
+{{- end }}
+{{- end }}

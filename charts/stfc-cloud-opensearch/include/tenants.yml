@@ -2,15 +2,25 @@ _meta:
   type: "tenants"
   config_version: 2
 
-# Production tenant
-prod:
+# Cloud production tenant
+cloud:
   reserved: false
-  description: "Production environment tenant for production workloads and dashboards"
+  description: "Cloud production environment tenant"
 
-# Development tenant  
-dev:
+# Cloud staging tenant
+cloud-staging:
   reserved: false
-  description: "Development environment tenant for testing and development"
+  description: "Cloud staging environment tenant"
+
+# Azimuth production tenant
+azimuth:
+  reserved: false
+  description: "Azimuth production environment tenant"
+
+# Azimuth staging tenant
+azimuth-staging:
+  reserved: false
+  description: "Azimuth staging environment tenant"
 
 # Admin tenant (reserved)
 admin_tenant:

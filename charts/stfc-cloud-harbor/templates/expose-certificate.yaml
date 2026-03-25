@@ -1,0 +1,41 @@
+{{- if .Values.harbor.expose.tls.enabled -}}
+{{- if eq .Values.harbor.expose.tls.certSource "secret" -}}
+{{- if .Values.certificate.expose.enabled -}}
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: harbor-tls-cert
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  secretName: harbor-tls
+  commonName: {{ .Values.certificate.expose.domain }}
+  dnsNames:
+    - {{ .Values.certificate.expose.domain }}
+    {{- range .Values.certificate.expose.additionalHosts }}
+    - {{ . | quote }}
+    {{- end }}
+  {{- with .Values.certificate.expose.duration }}
+  duration: {{ . | quote }}
+  {{- end }}
+  {{- with .Values.certificate.expose.renewBefore }}
+  renewBefore: {{ . | quote }}
+  {{- end }}
+  issuerRef:
+    {{- with .Values.certificate.expose.issuer.group }}
+    group: {{ . | quote }}
+    {{- end }}
+    kind: {{ .Values.certificate.expose.issuer.kind | quote }}
+    name: {{ .Values.certificate.expose.issuer.name | quote }}
+  {{- with .Values.certificate.expose.privateKey }}
+  privateKey:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.certificate.expose.usages }}
+  usages:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+{{- end }}
+{{- end }}
+{{- end }}
