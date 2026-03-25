@@ -453,6 +453,17 @@ entries:
     version: 1.6.1
   stfc-cloud-argocd:
   - apiVersion: v2
+    created: "2026-03-25T17:35:40.964150096Z"
+    dependencies:
+    - name: argo-cd
+      repository: https://argoproj.github.io/argo-helm
+      version: 9.4.7
+    digest: 3f8fc587988bb00fc6c3e391238e1495d6f511276f2ba55caf5115e6a3980145
+    name: stfc-cloud-argocd
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-argocd-1.0.0/stfc-cloud-argocd-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
     created: "2026-03-11T14:37:34.098006032Z"
     dependencies:
     - name: argo-cd
@@ -475,6 +486,23 @@ entries:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-argocd-1.0.0-alpha.07ff22a/stfc-cloud-argocd-1.0.0-alpha.07ff22a.tgz
     version: 1.0.0-alpha.07ff22a
   stfc-cloud-cert-manager:
+  - apiVersion: v2
+    created: "2026-03-25T17:35:41.1488081Z"
+    dependencies:
+    - name: cert-manager
+      repository: oci://quay.io/jetstack/charts
+      version: v1.19.4
+    - name: trust-manager
+      repository: oci://quay.io/jetstack/charts
+      version: v0.21.1
+    description: A Helm chart to deploy opinionated instance of cert-manager for the
+      STFC Cloud
+    digest: 2363c560d017e802dba4f462bf1e47560a024cabcba474dc2e97f48be2fa2aa4
+    name: stfc-cloud-cert-manager
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-cert-manager-2.0.0/stfc-cloud-cert-manager-2.0.0.tgz
+    version: 2.0.0
   - apiVersion: v2
     created: "2026-03-10T16:40:43.784117222Z"
     dependencies:
@@ -766,6 +794,13 @@ entries:
     version: 0.1.0
   stfc-cloud-docker-registry:
   - apiVersion: v2
+    created: "2026-03-25T17:35:41.344331557Z"
+    digest: d4b99abb04e0c4b790d70fe2c51e040bda579d9c968bc2caddc718cd44ffc6a2
+    name: stfc-cloud-docker-registry
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-docker-registry-3.0.0/stfc-cloud-docker-registry-3.0.0.tgz
+    version: 3.0.0
+  - apiVersion: v2
     created: "2026-03-10T17:19:32.087766727Z"
     digest: 8fe24e165dbaa4b7eefa71fce4f4bcdd9ce956687e7e987355690432ebd84084
     name: stfc-cloud-docker-registry
@@ -829,15 +864,15 @@ entries:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-docker-registry-2.1.0/stfc-cloud-docker-registry-2.1.0.tgz
     version: 2.1.0
   - apiVersion: v2
-    created: "2026-01-20T16:57:22.909798936Z"
-    digest: e1d43a010d14fbcb14a9412da3315250f46c3bf982096332495eeae278ef553b
+    created: "2026-01-20T15:56:05.250418425Z"
+    digest: 7aee4d83731bfc86c4a0118c7f5824e7e09cc051091880b7a470409f1838fea6
     name: stfc-cloud-docker-registry
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-docker-registry-2.1.0-alpha.f082a2d/stfc-cloud-docker-registry-2.1.0-alpha.f082a2d.tgz
     version: 2.1.0-alpha.f082a2d
   - apiVersion: v2
-    created: "2026-01-20T15:56:05.250418425Z"
-    digest: 7aee4d83731bfc86c4a0118c7f5824e7e09cc051091880b7a470409f1838fea6
+    created: "2026-01-20T16:57:22.909798936Z"
+    digest: e1d43a010d14fbcb14a9412da3315250f46c3bf982096332495eeae278ef553b
     name: stfc-cloud-docker-registry
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-docker-registry-2.1.0-alpha.f082a2d/stfc-cloud-docker-registry-2.1.0-alpha.f082a2d.tgz
@@ -900,6 +935,19 @@ entries:
     version: 1.0.1
   stfc-cloud-envoy-gateways:
   - apiVersion: v2
+    created: "2026-03-25T17:35:41.563567843Z"
+    dependencies:
+    - name: gateway-helm
+      repository: oci://docker.io/envoyproxy
+      version: 1.7.0
+    description: Deploy internal & external Envoy Gateways with optional OAuth2 and
+      Basic Auth
+    digest: d8433873e9df142deb3a1085b9b96b771f7251db230f7a483bd5b753c129f00f
+    name: stfc-cloud-envoy-gateways
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-envoy-gateways-1.0.0/stfc-cloud-envoy-gateways-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
     appVersion: 1.0.0
     created: "2026-03-10T14:37:41.231653864Z"
     dependencies:
@@ -914,6 +962,17 @@ entries:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-envoy-gateways-0.1.0-alpha.07ff22a/stfc-cloud-envoy-gateways-0.1.0-alpha.07ff22a.tgz
     version: 0.1.0-alpha.07ff22a
   stfc-cloud-harbor:
+  - apiVersion: v2
+    created: "2026-03-25T17:35:42.126678113Z"
+    dependencies:
+    - name: harbor
+      repository: https://helm.goharbor.io
+      version: 1.18.3
+    digest: 34d70a410b17043a9c1d900e2086c4dd5a8135320cc283db01f2fd23fe37c841
+    name: stfc-cloud-harbor
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-harbor-2.0.0/stfc-cloud-harbor-2.0.0.tgz
+    version: 2.0.0
   - apiVersion: v2
     created: "2026-03-11T14:31:39.821545108Z"
     dependencies:
@@ -1323,6 +1382,17 @@ entries:
     version: 1.0.0
   stfc-cloud-logging:
   - apiVersion: v2
+    created: "2026-03-25T17:35:42.359560732Z"
+    dependencies:
+    - name: fluent-operator
+      repository: https://fluent.github.io/helm-charts
+      version: 3.5.0
+    digest: eb63793ca6f26628d9cfc45fd561a08373f2f6c46afc7348b028f04a43240afe
+    name: stfc-cloud-logging
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-logging-1.3.1/stfc-cloud-logging-1.3.1.tgz
+    version: 1.3.1
+  - apiVersion: v2
     created: "2026-03-10T14:38:44.06446311Z"
     dependencies:
     - name: fluent-operator
@@ -1477,6 +1547,17 @@ entries:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-logging-1.0.0/stfc-cloud-logging-1.0.0.tgz
     version: 1.0.0
   stfc-cloud-longhorn:
+  - apiVersion: v2
+    created: "2026-03-25T17:35:42.571077402Z"
+    dependencies:
+    - name: longhorn
+      repository: https://charts.longhorn.io
+      version: 1.11.0
+    digest: a5b60d16ff426eeecc217205c0d20d0ed8f062d4b8f4ba8ce74afb0229a37c77
+    name: stfc-cloud-longhorn
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-longhorn-2.0.0/stfc-cloud-longhorn-2.0.0.tgz
+    version: 2.0.0
   - apiVersion: v2
     created: "2026-03-03T11:33:42.990279134Z"
     dependencies:
@@ -1716,6 +1797,19 @@ entries:
     version: 1.0.0
   stfc-cloud-monitoring-stack:
   - apiVersion: v2
+    created: "2026-03-25T17:35:42.817660355Z"
+    dependencies:
+    - name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 82.10.1
+    description: A Helm chart to deploy an opinionated version of kube-prometheus-stack
+    digest: 42f04704c0ff01cd4074ea7965e7459927e46eb2efc8648e21d32588a8891db9
+    name: stfc-cloud-monitoring-stack
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-monitoring-stack-1.0.0/stfc-cloud-monitoring-stack-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
     created: "2026-03-10T14:39:19.548725188Z"
     dependencies:
     - name: kube-prometheus-stack
@@ -1729,6 +1823,23 @@ entries:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-monitoring-stack-1.0.0-alpha.07ff22a/stfc-cloud-monitoring-stack-1.0.0-alpha.07ff22a.tgz
     version: 1.0.0-alpha.07ff22a
   stfc-cloud-opensearch:
+  - apiVersion: v2
+    created: "2026-03-25T17:35:43.047590712Z"
+    dependencies:
+    - name: opensearch-operator
+      repository: https://opensearch-project.github.io/opensearch-k8s-operator/
+      version: 2.8.0
+    - name: opensearch-cluster
+      repository: https://opensearch-project.github.io/opensearch-k8s-operator/
+      version: 3.1.0
+    description: A Helm chart to deploy an opinionated opensearch cluster with IRIS-IAM
+      integration
+    digest: 8db0752e1415b0c1948ec9cf742a4e94180b329d407f0fbbe93a3fe182d655fa
+    name: stfc-cloud-opensearch
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-opensearch-4.0.0/stfc-cloud-opensearch-4.0.0.tgz
+    version: 4.0.0
   - apiVersion: v2
     created: "2026-03-11T14:32:02.093017729Z"
     dependencies:
@@ -2571,4 +2682,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2026-03-24T09:53:42.946983824Z"
+generated: "2026-03-25T17:35:43.258448271Z"
