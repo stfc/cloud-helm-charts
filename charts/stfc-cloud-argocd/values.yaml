@@ -22,6 +22,9 @@ argo-cd:
           groups:
             essential: true
 
+      params:
+        controller.diff.server.side: "true"
+
     rbac:
       policy.csv: |
         g, stfc-cloud/team, role:readonly
