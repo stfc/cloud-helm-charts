@@ -38,3 +38,4 @@ longhorn:
     defaultClassReplicaCount: 3
     defaultDataLocality: disabled
     migratable: "true"
+    defaultClass: false
