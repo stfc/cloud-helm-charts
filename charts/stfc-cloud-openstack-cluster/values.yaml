@@ -99,11 +99,8 @@ openstack-cluster:
     # https://github.com/stackhpc/capi-helm-charts/blob/main/charts/cluster-addons/README.md#monitoring-and-logging
     # and includes Loki which is required for central logging as per UKRI policy
     monitoring:
-      enabled: true
-      # disable loki-stack by default
-      # we'll setup our own log collection
-      lokiStack:
-        enabled: false
+      enabled: false
+
     # set availabilty zone as upstream uses nova by default
     openstack:
       csiCinder:
