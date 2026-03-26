@@ -73,7 +73,7 @@ jobs:
           echo "chart=${{ matrix.chart }}" >> $GITHUB_OUTPUT
 
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "bump chart ${{ matrix.chart }} to version: ${{ steps.bump-version.outputs.version }}"
           branch: br-${{ matrix.chart }}-v${{ steps.bump-version.outputs.version }}
@@ -123,7 +123,7 @@ jobs:
             charts/${{ matrix.chart }}/README.md
 
       - name: Commit readme changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "update readme"
           branch: ${{ steps.get-branch.outputs.branch }}
