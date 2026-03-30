@@ -4,6 +4,7 @@ route:
   receiver: "null"
   groupWait: 30s
   groupInterval: 5m
+  group_by: ["..."]
   repeatInterval: 2h
   routes:
     # Route 0: Silence Watchdog and InfoInhibitor — clears up the alert queue
@@ -20,7 +21,7 @@ route:
           matchType: =~
           value: ".+"
         - name: alertname
-          matchType: "!="
+          matchType: "!~"
           value: "Watchdog|InfoInhibitor"
       receiver: with-namespace-receiver
       groupBy:
