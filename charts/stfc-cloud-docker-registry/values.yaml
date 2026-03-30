@@ -74,7 +74,7 @@ httproute:
           requestRedirect:
             path:
               type: ReplacePrefixMatch
-              replacePrefixMatch: /v2
+              replacePrefixMatch: /v2/
             statusCode: 301
 
 ingress:
