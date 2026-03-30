@@ -1699,6 +1699,20 @@ entries:
     version: 1.0.1
   stfc-cloud-manila-csi:
   - apiVersion: v2
+    created: "2026-03-30T12:25:30.345047033Z"
+    dependencies:
+    - name: openstack-manila-csi
+      repository: https://kubernetes.github.io/cloud-provider-openstack
+      version: 2.35.0
+    - name: ceph-csi-cephfs
+      repository: https://ceph.github.io/csi-charts
+      version: 3.16.2
+    digest: 9772883d1a68be4ac2e03304d0278bb2d26a3a6f2230d5313d92d4d27d39e1aa
+    name: stfc-cloud-manila-csi
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-manila-csi-1.1.8/stfc-cloud-manila-csi-1.1.8.tgz
+    version: 1.1.8
+  - apiVersion: v2
     created: "2026-02-11T11:37:39.751513056Z"
     dependencies:
     - name: openstack-manila-csi
@@ -2765,4 +2779,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2026-03-30T12:23:51.958927374Z"
+generated: "2026-03-30T12:25:30.345548737Z"
