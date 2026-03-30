@@ -37,7 +37,7 @@ jobs:
       alpha-version: ${{ steps.bump-version.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -106,7 +106,7 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Checkout bumped branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ steps.get-branch.outputs.branch }}
           token: ${{ steps.app-token.outputs.token }}
