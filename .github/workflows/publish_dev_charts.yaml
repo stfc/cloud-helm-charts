@@ -47,7 +47,7 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Install Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@v5
 
       - name: Set alpha chart version
         id: bump-version
@@ -129,7 +129,7 @@ jobs:
           branch: ${{ steps.get-branch.outputs.branch }}
 
       - name: Install Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@v5
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
