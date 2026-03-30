@@ -28,6 +28,9 @@ oidc:
 kube-prometheus-stack:
   alertmanager:
     alertmanagerSpec:
+      # Do NOT add the namespace matcher to routes from AlertmanagerConfig resources
+      alertmanagerConfigMatcherStrategy:
+        type: None
       storage:
         volumeClaimTemplate:
           spec:
