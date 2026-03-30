@@ -118,6 +118,8 @@ opensearch-cluster:
       version: 3.1.0
       monitoring:
         enable: true
+        tlsConfig:
+          insecureSkipVerify: true
 
       # setup snapshotting onto S3
       snapshotRepositories: []
