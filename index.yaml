@@ -1601,6 +1601,17 @@ entries:
     version: 1.0.0
   stfc-cloud-longhorn:
   - apiVersion: v2
+    created: "2026-03-30T12:46:18.563776253Z"
+    dependencies:
+    - name: longhorn
+      repository: https://charts.longhorn.io
+      version: 1.11.1
+    digest: 090ae71cfcd0e6b8e98a2dd8137aa2d600ff6f4d75e9b8b3807ba5e0ffd5bf38
+    name: stfc-cloud-longhorn
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-longhorn-2.1.1/stfc-cloud-longhorn-2.1.1.tgz
+    version: 2.1.1
+  - apiVersion: v2
     created: "2026-03-26T11:27:36.294305832Z"
     dependencies:
     - name: longhorn
@@ -2827,4 +2838,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2026-03-30T12:38:31.426026909Z"
+generated: "2026-03-30T12:46:18.564958382Z"
