@@ -844,6 +844,13 @@ entries:
     version: 0.1.0
   stfc-cloud-docker-registry:
   - apiVersion: v2
+    created: "2026-03-31T11:00:14.5644709Z"
+    digest: 18ddd193da79aee2ff74838f18da279f87150d973e3a991e25e74dad646e4ca5
+    name: stfc-cloud-docker-registry
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-docker-registry-4.0.0/stfc-cloud-docker-registry-4.0.0.tgz
+    version: 4.0.0
+  - apiVersion: v2
     created: "2026-03-30T10:47:09.450158014Z"
     digest: bd39fef1efe9a852739276a5e593f5dcab42572300430217ef117820750b6c35
     name: stfc-cloud-docker-registry
@@ -921,15 +928,15 @@ entries:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-docker-registry-2.1.0/stfc-cloud-docker-registry-2.1.0.tgz
     version: 2.1.0
   - apiVersion: v2
-    created: "2026-01-20T15:56:05.250418425Z"
-    digest: 7aee4d83731bfc86c4a0118c7f5824e7e09cc051091880b7a470409f1838fea6
+    created: "2026-01-20T16:57:22.909798936Z"
+    digest: e1d43a010d14fbcb14a9412da3315250f46c3bf982096332495eeae278ef553b
     name: stfc-cloud-docker-registry
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-docker-registry-2.1.0-alpha.f082a2d/stfc-cloud-docker-registry-2.1.0-alpha.f082a2d.tgz
     version: 2.1.0-alpha.f082a2d
   - apiVersion: v2
-    created: "2026-01-20T16:57:22.909798936Z"
-    digest: e1d43a010d14fbcb14a9412da3315250f46c3bf982096332495eeae278ef553b
+    created: "2026-01-20T15:56:05.250418425Z"
+    digest: 7aee4d83731bfc86c4a0118c7f5824e7e09cc051091880b7a470409f1838fea6
     name: stfc-cloud-docker-registry
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-docker-registry-2.1.0-alpha.f082a2d/stfc-cloud-docker-registry-2.1.0-alpha.f082a2d.tgz
@@ -2872,4 +2879,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2026-03-30T13:35:44.357298995Z"
+generated: "2026-03-31T11:00:14.565518976Z"
