@@ -97,7 +97,7 @@ s3:
   regionEndpoint: s3.example.com
   encrypt: false
   secure: true
-  region: us-east-1
+  region: RegionOne
 
 ## Pass extra environment variables to the Docker Registry container.
 extraEnvVars:
