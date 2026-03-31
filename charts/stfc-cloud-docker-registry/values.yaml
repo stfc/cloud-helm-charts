@@ -3,7 +3,7 @@ nameOverride: docker-registry
 
 image:
   repository: registry
-  tag: 2.7.1
+  tag: 3.0.0
 
 service:
   name: registry
