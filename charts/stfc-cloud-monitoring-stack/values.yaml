@@ -28,6 +28,8 @@ oidc:
 kube-prometheus-stack:
   alertmanager:
     alertmanagerSpec:
+      # By default, retain 7 days of data
+      retention: 168h
       # Do NOT add the namespace matcher to routes from AlertmanagerConfig resources
       alertmanagerConfigMatcherStrategy:
         type: None
@@ -75,14 +77,14 @@ kube-prometheus-stack:
         #    group: gateway.networking.k8s.io
         #    kind: Gateway
 
-    # here we reference a secret that contains oidc credentials:
-    # has client_id and client_secret keys
-    # this is created by providing oidc.grafana.clientID, oidc.grafana.clientSecret
-    # use SOPS to encrypt those helm values when using argocd
+        # here we reference a secret that contains oidc credentials:
+        # has client_id and client_secret keys
+        # this is created by providing oidc.grafana.clientID, oidc.grafana.clientSecret
+        # use SOPS to encrypt those helm values when using argocd
     extraSecretMounts:
       - name: iris-iam-creds
         secretName: grafana-oidc-secret
-        defaultMode: 0440
+        defaultMode: "0440"
         mountPath: /etc/secrets/iris_iam_creds
         readOnly: true
 
@@ -107,6 +109,9 @@ kube-prometheus-stack:
   prometheus:
     enabled: true
     prometheusSpec:
+      # The amount of data that is retained will be 90 days or 95% of the size of the
+      # persistent volume, whichever is reached first
+      retention: 90d
       # Tell Prometheus to pick up all monitors and alerting rules, regardless of labels
       podMonitorSelectorNilUsesHelmValues: false
       serviceMonitorSelectorNilUsesHelmValues: false
