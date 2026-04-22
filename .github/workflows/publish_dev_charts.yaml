@@ -37,7 +37,7 @@ jobs:
       alpha-version: ${{ steps.bump-version.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           fetch-depth: 0
 
@@ -47,7 +47,7 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Install Helm
-        uses: azure/setup-helm@v5
+        uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2
 
       - name: Set alpha chart version
         id: bump-version
@@ -73,7 +73,7 @@ jobs:
           echo "chart=${{ matrix.chart }}" >> $GITHUB_OUTPUT
 
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v7
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9
         with:
           commit_message: "bump chart ${{ matrix.chart }} to version: ${{ steps.bump-version.outputs.version }}"
           branch: br-${{ matrix.chart }}-v${{ steps.bump-version.outputs.version }}
@@ -88,7 +88,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Setup Github Token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3
         id: app-token
         with:
           app-id: ${{ vars.APP_ID }}
@@ -106,7 +106,7 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Checkout bumped branch
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ steps.get-branch.outputs.branch }}
           token: ${{ steps.app-token.outputs.token }}
@@ -123,16 +123,16 @@ jobs:
             charts/${{ matrix.chart }}/README.md
 
       - name: Commit readme changes
-        uses: stefanzweifel/git-auto-commit-action@v7
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9
         with:
           commit_message: "update readme"
           branch: ${{ steps.get-branch.outputs.branch }}
 
       - name: Install Helm
-        uses: azure/setup-helm@v5
+        uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.7.0
+        uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f
         with:
           skip_existing: true
         env:
