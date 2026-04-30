@@ -131,23 +131,23 @@ harbor:
 
   persistence:
     resourcePolicy: ""
-    persistentVolumeClaim: # If external Redis is used, the following settings for Redis will
-
-    # be ignored
-    redis:
-      existingClaim: ""
-      storageClass: ""
-      subPath: ""
-      accessMode: ReadWriteOnce
-      size: 5Gi
-      annotations: {}
-    trivy:
-      existingClaim: ""
-      storageClass: ""
-      subPath: ""
-      accessMode: ReadWriteOnce
-      size: 10Gi
-      annotations: {}
+    persistentVolumeClaim:
+      # If external Redis is used, the following settings for Redis will
+      # be ignored
+      redis:
+        existingClaim: ""
+        storageClass: ""
+        subPath: ""
+        accessMode: ReadWriteOnce
+        size: 5Gi
+        annotations: {}
+      trivy:
+        existingClaim: ""
+        storageClass: ""
+        subPath: ""
+        accessMode: ReadWriteOnce
+        size: 10Gi
+        annotations: {}
 
     imageChartStorage:
       type: s3
