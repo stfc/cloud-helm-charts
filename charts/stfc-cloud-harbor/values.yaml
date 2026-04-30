@@ -23,8 +23,8 @@ certificate:
     duration: ""
     # how long before exipiry should cert be renewed
     # default 360h = 15d if not specified
-    renewBefore:
-    # issuer
+    renewBefore: # issuer
+
     issuer:
       group: cert-manager.io
       kind: ClusterIssuer
@@ -131,6 +131,24 @@ harbor:
 
   persistence:
     resourcePolicy: ""
+    persistentVolumeClaim: # If external Redis is used, the following settings for Redis will
+
+    # be ignored
+    redis:
+      existingClaim: ""
+      storageClass: ""
+      subPath: ""
+      accessMode: ReadWriteOnce
+      size: 5Gi
+      annotations: {}
+    trivy:
+      existingClaim: ""
+      storageClass: ""
+      subPath: ""
+      accessMode: ReadWriteOnce
+      size: 10Gi
+      annotations: {}
+
     imageChartStorage:
       type: s3
       s3:
@@ -171,7 +189,6 @@ backup:
     daily: "12 12 * * *" # Every day @ 12:12 (add smear)
     weekly: "2 9 * * 1" # Every Monday @ 9:02
     monthly: "17 16 1 * *" # 1st of month @ 16:17
-
 
 # internal trust-manager bundle, to expose internal CA cert for backendtlspolicy verification (default internal-bundle)
 # caBundleName: ""
