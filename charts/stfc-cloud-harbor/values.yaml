@@ -136,14 +136,14 @@ harbor:
       # be ignored
       redis:
         existingClaim: ""
-        storageClass: ""
+        storageClass: "longhorn"
         subPath: ""
         accessMode: ReadWriteOnce
         size: 5Gi
         annotations: {}
       trivy:
         existingClaim: ""
-        storageClass: ""
+        storageClass: "longhorn"
         subPath: ""
         accessMode: ReadWriteOnce
         size: 10Gi
