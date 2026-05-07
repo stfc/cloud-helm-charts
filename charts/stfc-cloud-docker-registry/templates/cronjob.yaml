@@ -19,6 +19,7 @@ spec:
     spec:
       template:
         spec:
+          restartPolicy: OnFailure
           securityContext:
             fsGroup: 1000
             runAsUser: 1000
