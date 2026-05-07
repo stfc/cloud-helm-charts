@@ -1,0 +1,41 @@
+{{- if .Values.garbageCollect.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ template "docker-registry.fullname" . }}-garbage-collector
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+  labels:
+    app: {{ template "docker-registry.name" . }}
+
+spec:
+  schedule: {{ .Values.garbageCollect.schedule | quote }}
+  jobTemplate:
+    metadata:
+      labels:
+        app: {{ template "docker-registry.name" . }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+    spec:
+      template:
+        spec:
+          securityContext:
+            fsGroup: 1000
+            runAsUser: 1000
+          containers:
+            - name: {{ .Chart.Name }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: IfNotPresent
+              command:
+              - /bin/registry
+              - garbage-collect
+              - --delete-untagged={{ .Values.garbageCollect.deleteUntagged }}
+              - {{ .Values.configPath }}/config.yml
+              {{- if .Values.garbageCollect.resources }}
+              resources:
+              {{- toYaml .Values.garbageCollect.resources | nindent 16 }}
+              {{- end }}
+              env: {{ include "docker-registry.envs" . | nindent 16 }}
+              volumeMounts: {{ include "docker-registry.volumeMounts" . | nindent 16 }}
+          volumes: {{ include "docker-registry.volumes" . | nindent 12 }}
+{{- end }}
