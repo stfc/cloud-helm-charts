@@ -100,8 +100,8 @@ s3:
   region: RegionOne
 
 ## Pass extra environment variables to the Docker Registry container.
-extraEnvVars:
-# - name: EXTRA_VAR_1
+extraEnvVars: # - name: EXTRA_VAR_1
+
 #  value: extra-var-value-1
 # - name: EXTRA_VAR_2
 #   value: extra-var-value-2
@@ -132,7 +132,7 @@ configData:
   http:
     addr: :5000
     headers:
-      X-Content-Type-Options: [nosniff]
+      X-Content-Type-Options: [ nosniff ]
     tls:
       certificate: /etc/ssl/docker/tls.crt
       key: /etc/ssl/docker/tls.key
@@ -161,3 +161,8 @@ secrets:
   s3:
     accessKey: awsaccesskey
     secretKey: awssecretkey
+
+garbageCollect:
+  enabled: true
+  deleteUntagged: true
+  schedule: "0 9 * * FRI"
