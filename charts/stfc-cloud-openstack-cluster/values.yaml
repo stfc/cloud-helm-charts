@@ -7,9 +7,9 @@ openstack-cluster:
   # This should match the version of kubelet and kubeadm in the image
   # and will be automatically updated by us
   # we aim to keep n-1 of latest K8s version
-  kubernetesVersion: "1.34.3"
+  kubernetesVersion: "1.34.6"
   # The name of the image to use for cluster machines
-  machineImage: "capi-ubuntu-2204-kube-v1.34.3"
+  machineImage: "capi-ubuntu-2204-kube-v1.34.6"
 
   # Values for the Kubernetes cluster network
   kubeNetwork:
@@ -30,7 +30,7 @@ openstack-cluster:
       nodeCidr: 192.168.128.0/17
 
   # Settings for registry mirrors
-  registryMirrors: { docker.io: ["https://dockerhub.stfc.ac.uk/v2/"] }
+  registryMirrors: { docker.io: [ "https://dockerhub.stfc.ac.uk/v2/" ] }
 
   # Settings for the Kubernetes API server
   apiServer:
