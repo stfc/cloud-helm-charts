@@ -63,6 +63,8 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
   value: {{ .Values.s3.encrypt | quote }}
 - name: REGISTRY_STORAGE_S3_SECURE
   value: {{ .Values.s3.secure | quote }}
+- name: REGISTRY_STORAGE_S3_FORCEPATHSTYLE
+  value: {{ .Values.s3.forcepathstyle | quote }}
 - name: REGISTRY_STORAGE_S3_SKIPVERIFY
   value: {{ .Values.s3.skipverify | quote }}
 - name: REGISTRY_PROXY_REMOTEURL
