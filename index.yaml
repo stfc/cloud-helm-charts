@@ -453,6 +453,17 @@ entries:
     version: 1.6.1
   stfc-cloud-argocd:
   - apiVersion: v2
+    created: "2026-05-26T09:17:07.801061294Z"
+    dependencies:
+    - name: argo-cd
+      repository: https://argoproj.github.io/argo-helm
+      version: 9.5.15
+    digest: b6d931bd1bce33c20ee6d7acfff4f5dac075ecc900b89e1eea3b177dfffe8ff6
+    name: stfc-cloud-argocd
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-argocd-2.2.1/stfc-cloud-argocd-2.2.1.tgz
+    version: 2.2.1
+  - apiVersion: v2
     created: "2026-05-07T15:32:01.243222745Z"
     dependencies:
     - name: argo-cd
@@ -3173,4 +3184,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2026-05-26T09:16:50.698637702Z"
+generated: "2026-05-26T09:17:07.801805776Z"
