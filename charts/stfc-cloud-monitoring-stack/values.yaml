@@ -112,6 +112,8 @@ kube-prometheus-stack:
       # The amount of data that is retained will be 90 days or 95% of the size of the
       # persistent volume, whichever is reached first
       retention: 90d
+      retentionSize: 48GiB
+
       # Tell Prometheus to pick up all monitors and alerting rules, regardless of labels
       podMonitorSelectorNilUsesHelmValues: false
       serviceMonitorSelectorNilUsesHelmValues: false
