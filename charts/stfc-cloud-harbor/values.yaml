@@ -120,6 +120,15 @@ harbor:
   trivy:
     replicas: 2
 
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2
+        memory: 2Gi
+    timeout: 15m0s
+
   exporter:
     replicas: 2
 
@@ -189,6 +198,7 @@ backup:
     daily: "12 12 * * *" # Every day @ 12:12 (add smear)
     weekly: "2 9 * * 1" # Every Monday @ 9:02
     monthly: "17 16 1 * *" # 1st of month @ 16:17
+
 
 # internal trust-manager bundle, to expose internal CA cert for backendtlspolicy verification (default internal-bundle)
 # caBundleName: ""
