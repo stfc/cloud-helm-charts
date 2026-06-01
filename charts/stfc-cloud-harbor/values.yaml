@@ -155,7 +155,7 @@ harbor:
         storageClass: ""
         subPath: ""
         accessMode: ReadWriteOnce
-        size: 10Gi
+        size: 15Gi
         annotations: {}
 
     imageChartStorage:
