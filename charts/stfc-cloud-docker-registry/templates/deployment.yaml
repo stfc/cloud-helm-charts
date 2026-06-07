@@ -20,6 +20,10 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+
     spec:
       securityContext:
         fsGroup: 1000
@@ -41,5 +45,5 @@ spec:
               protocol: TCP
             {{- end }}
           env: {{ include "docker-registry.envs" . | nindent 12 }}
-          volumeMounts: {{ include "docker-registry.volumeMounts" . | nindent 12 }} 
+          volumeMounts: {{ include "docker-registry.volumeMounts" . | nindent 12 }}
       volumes: {{ include "docker-registry.volumes" . | nindent 8 }}
