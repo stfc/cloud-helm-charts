@@ -586,6 +586,26 @@ entries:
     version: 1.0.0-alpha.07ff22a
   stfc-cloud-cert-manager:
   - apiVersion: v2
+    created: "2026-06-12T09:29:18.271923101Z"
+    dependencies:
+    - name: cert-manager
+      repository: oci://quay.io/jetstack/charts
+      version: 1.20.2
+    - name: trust-manager
+      repository: oci://quay.io/jetstack/charts
+      version: v0.23.0
+    - name: reloader
+      repository: https://stakater.github.io/stakater-charts
+      version: v2.2.12
+    description: A Helm chart to deploy opinionated instance of cert-manager for the
+      STFC Cloud
+    digest: 5f148e60c422c9c8fd04ab0ca3e6473e8408dd0228ab60b303d5e3f4ec2cb501
+    name: stfc-cloud-cert-manager
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-cert-manager-2.2.1/stfc-cloud-cert-manager-2.2.1.tgz
+    version: 2.2.1
+  - apiVersion: v2
     created: "2026-06-12T08:56:53.898392717Z"
     dependencies:
     - name: cert-manager
@@ -944,6 +964,13 @@ entries:
     version: 0.1.0
   stfc-cloud-docker-registry:
   - apiVersion: v2
+    created: "2026-06-12T09:29:18.433928141Z"
+    digest: c86b5379fe57a993e3b0267805c43e166088dbf8e78d94f78a79953fe76caa8f
+    name: stfc-cloud-docker-registry
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-docker-registry-4.2.3/stfc-cloud-docker-registry-4.2.3.tgz
+    version: 4.2.3
+  - apiVersion: v2
     created: "2026-05-12T07:54:07.011724945Z"
     digest: 4c5ada6d58c15f5e8059824e95052bdb26a645047e85c7bd90c0efb855f71530
     name: stfc-cloud-docker-registry
@@ -1213,6 +1240,17 @@ entries:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-envoy-gateways-0.1.0-alpha.07ff22a/stfc-cloud-envoy-gateways-0.1.0-alpha.07ff22a.tgz
     version: 0.1.0-alpha.07ff22a
   stfc-cloud-harbor:
+  - apiVersion: v2
+    created: "2026-06-12T09:29:18.649648758Z"
+    dependencies:
+    - name: harbor
+      repository: https://helm.goharbor.io
+      version: 1.19.1
+    digest: e7ebf8c4e1d6df91bf2b9f9b7fbdaff442632eb8b85c05ae70b2420cde0f9c16
+    name: stfc-cloud-harbor
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-harbor-2.1.3/stfc-cloud-harbor-2.1.3.tgz
+    version: 2.1.3
   - apiVersion: v2
     created: "2026-06-04T09:25:05.96427984Z"
     dependencies:
@@ -3347,4 +3385,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2026-06-12T09:01:36.057608347Z"
+generated: "2026-06-12T09:29:18.825587096Z"
