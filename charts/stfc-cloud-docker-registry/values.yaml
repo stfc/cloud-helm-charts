@@ -1,6 +1,9 @@
 replicaCount: 3
 nameOverride: docker-registry
 
+podAnnotations:
+  secret.reloader.stakater.com/reload: "docker-registry-tls"
+
 image:
   repository: registry
   tag: 3.1.1

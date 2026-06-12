@@ -111,14 +111,20 @@ harbor:
 
   jobservice:
     replicas: 2
+    podAnnotations:
+      secret.reloader.stakater.com/reload: "harbor-jobservice-tls"
     jobLoggers:
       - database
 
   registry:
     replicas: 2
+    podAnnotations:
+      secret.reloader.stakater.com/reload: "harbor-registry-tls"
 
   trivy:
     replicas: 2
+    podAnnotations:
+      secret.reloader.stakater.com/reload: "harbor-trivy-tls"
 
     resources:
       requests:
@@ -134,9 +140,13 @@ harbor:
 
   portal:
     replicas: 2
+    podAnnotations:
+      secret.reloader.stakater.com/reload: "harbor-portal-tls"
 
   core:
     replicas: 2
+    podAnnotations:
+      secret.reloader.stakater.com/reload: "harbor-core-tls"
 
   persistence:
     resourcePolicy: ""
