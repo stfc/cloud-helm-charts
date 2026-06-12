@@ -61,7 +61,10 @@ longhorn:
     enabled: false
   service:
     ui:
-        # -- Service type for Longhorn UI. (Options: "ClusterIP", "NodePort", "LoadBalancer", "Rancher-Proxy")
-        type: Loadbalancer
-        loadBalancerIP: 130.246.x.x
+      type: LoadBalancer
+      loadBalancerIP: "{{ longhorn_ip }}"
+      annotations:
+        # Don't delete the floating ip when deleting loadbalancers
+        # prevents errors when deleting clusters, leave as true
+        loadbalancer.openstack.org/keep-floatingip: "true"
 ```

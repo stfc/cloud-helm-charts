@@ -6,7 +6,10 @@ dependencies:
   - name: trust-manager
     repository: oci://quay.io/jetstack/charts
     version: v0.23.0
+  - name: reloader
+    repository: https://stakater.github.io/stakater-charts
+    version: v2.2.12
 description: A Helm chart to deploy opinionated instance of cert-manager for the STFC Cloud
 name: stfc-cloud-cert-manager
 type: application
-version: 2.2.0
+version: 2.2.1

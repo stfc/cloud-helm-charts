@@ -50,3 +50,8 @@ trust-manager:
   image:
     repository: quay.io/jetstack/trust-manager
     tag: v0.22.0
+
+reloader:
+  reloader:
+    watchGlobally: true
+    logLevel: info
