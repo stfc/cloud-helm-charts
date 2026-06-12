@@ -5,8 +5,8 @@ dependencies:
     version: 1.20.2
   - name: trust-manager
     repository: oci://quay.io/jetstack/charts
-    version: v0.22.1
+    version: v0.23.0
 description: A Helm chart to deploy opinionated instance of cert-manager for the STFC Cloud
 name: stfc-cloud-cert-manager
 type: application
-version: 2.1.1
+version: 2.2.0
