@@ -105,6 +105,7 @@ fluent-operator:
 
     serviceMonitor:
       enable: true
+      path: /metrics
 
     input:
       fluentBitMetrics:
