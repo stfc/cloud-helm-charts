@@ -3,6 +3,6 @@ name: stfc-cloud-envoy-gateways
 description: Deploy internal & external Envoy Gateways with optional OAuth2 and Basic Auth
 dependencies:
   - name: gateway-helm
-    version: v1.8.1
+    version: v1.8.2
     repository: oci://docker.io/envoyproxy
-version: 1.1.1
+version: 1.1.2
