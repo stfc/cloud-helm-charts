@@ -619,6 +619,26 @@ entries:
     version: 1.0.0-alpha.07ff22a
   stfc-cloud-cert-manager:
   - apiVersion: v2
+    created: "2026-07-30T09:28:53.85516998Z"
+    dependencies:
+    - name: cert-manager
+      repository: oci://quay.io/jetstack/charts
+      version: v1.21.0
+    - name: trust-manager
+      repository: oci://quay.io/jetstack/charts
+      version: 0.24.0
+    - name: reloader
+      repository: https://stakater.github.io/stakater-charts
+      version: 2.2.14
+    description: A Helm chart to deploy opinionated instance of cert-manager for the
+      STFC Cloud
+    digest: 66865b5bdb390aa4d36c6b61e26f15fd2e30fda903255bb4a8297dab8a3d6155
+    name: stfc-cloud-cert-manager
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-cert-manager-2.3.0/stfc-cloud-cert-manager-2.3.0.tgz
+    version: 2.3.0
+  - apiVersion: v2
     created: "2026-07-27T11:34:51.001774522Z"
     dependencies:
     - name: cert-manager
@@ -3529,4 +3549,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2026-07-29T14:18:39.046468523Z"
+generated: "2026-07-30T09:28:53.855833252Z"
