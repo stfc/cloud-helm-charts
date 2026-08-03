@@ -2,6 +2,6 @@ apiVersion: v2
 dependencies:
   - name: harbor
     repository: https://helm.goharbor.io
-    version: 1.19.1
+    version: 1.19.2
 name: stfc-cloud-harbor
-version: 2.1.3
+version: 2.1.4
