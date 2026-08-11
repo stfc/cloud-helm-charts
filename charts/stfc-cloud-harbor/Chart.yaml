@@ -4,4 +4,4 @@ dependencies:
     repository: https://helm.goharbor.io
     version: 1.19.2
 name: stfc-cloud-harbor
-version: 2.1.4
+version: 2.1.5
