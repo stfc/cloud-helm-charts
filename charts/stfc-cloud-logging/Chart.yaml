@@ -2,6 +2,6 @@ apiVersion: v2
 dependencies:
   - name: fluent-operator
     repository: https://fluent.github.io/helm-charts
-    version: 4.2.0
+    version: 4.3.0
 name: stfc-cloud-logging
-version: 2.0.1
+version: 2.1.0
