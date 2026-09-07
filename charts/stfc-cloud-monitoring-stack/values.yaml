@@ -112,7 +112,7 @@ kube-prometheus-stack:
       # The amount of data that is retained will be 90 days or 95% of the size of the
       # persistent volume, whichever is reached first
       retention: 90d
-      retentionSize: 48GiB
+      retentionSize: 150GiB
 
       # Tell Prometheus to pick up all monitors and alerting rules, regardless of labels
       podMonitorSelectorNilUsesHelmValues: false
@@ -125,7 +125,7 @@ kube-prometheus-stack:
             storageClassName: csi-cinder
             resources:
               requests:
-                storage: 50Gi
+                storage: 170Gi
       externalLabels:
         cluster: not-set
         env: not-set

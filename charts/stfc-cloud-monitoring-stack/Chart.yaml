@@ -6,4 +6,4 @@ dependencies:
     version: 90.0.0
 description: A Helm chart to deploy an opinionated version of kube-prometheus-stack
 type: application
-version: 8.0.0
+version: 8.1.0
