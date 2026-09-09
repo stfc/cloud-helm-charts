@@ -1,5 +1,7 @@
 # Rabbit Consumers
 
+This is an alpha version of this chart
+
 This Chart deploys code to monitor rabbit and automatically register machines in aquilon - a configuration management tool
 
 See rabbit-consumer container and source code here - https://github.com/stfc/cloud-docker-images/
