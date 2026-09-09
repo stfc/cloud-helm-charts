@@ -3720,6 +3720,16 @@ entries:
     version: 1.3.0
   stfc-cloud-rabbit-consumer:
   - apiVersion: v2
+    appVersion: v3.3.0
+    created: "2026-09-09T09:33:26.905333008Z"
+    description: A Helm chart for STFC Cloud Rabbit Consumers
+    digest: 2384f96ccf6fe8b7134c0c9eba96e91d974f91520907ef82f5d221d6b90284f4
+    name: stfc-cloud-rabbit-consumer
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-rabbit-consumer-1.10.0-alpha.9e1554d/stfc-cloud-rabbit-consumer-1.10.0-alpha.9e1554d.tgz
+    version: 1.10.0-alpha.9e1554d
+  - apiVersion: v2
     appVersion: v3.2.2
     created: "2025-08-05T09:40:19.978422281Z"
     description: A Helm chart for STFC Cloud Rabbit Consumers
@@ -3903,4 +3913,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2026-09-08T16:13:11.272246495Z"
+generated: "2026-09-09T09:33:26.906388253Z"
