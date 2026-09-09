@@ -89,8 +89,6 @@ spec:
             - name: kerberos-conf-files
               mountPath: /etc/krb5.conf
               subPath: krb5.conf
-            - name: trusted-certs
-              mountPath: /etc/grid-security/certificates
         {{- end }}
 
       hostAliases:
@@ -107,9 +105,6 @@ spec:
         - name: kerberos-conf-files
           configMap:
             name: {{ .Release.Name }}-kerberos-files
-        - name: trusted-certs
-          configMap:
-            name: {{ .Release.Name }}-trusted-certs
         - name: kerberos-keytab
           secret:
             secretName: {{ .Values.kerberosSidecar.keytabSecretRef }}
