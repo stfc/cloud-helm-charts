@@ -35,6 +35,7 @@ jobs:
       # Note: with a matrix, only the last job's output is captured here.
       # Per-chart versions are embedded in branch/tag names used by the publish job.
       alpha-version: ${{ steps.bump-version.outputs.version }}
+      branch: ${{ steps.bump-version.outputs.branch }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -71,12 +72,13 @@ jobs:
 
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "chart=${{ matrix.chart }}" >> $GITHUB_OUTPUT
+          echo "branch=br-${{ matrix.chart }}-v$VERSION" >> $GITHUB_OUTPUT
 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d
         with:
           commit_message: "bump chart ${{ matrix.chart }} to version: ${{ steps.bump-version.outputs.version }}"
-          branch: br-${{ matrix.chart }}-v${{ steps.bump-version.outputs.version }}
+          branch: ${{ steps.bump-version.outputs.branch }}
           tagging_message: ${{ matrix.chart }}-v${{ steps.bump-version.outputs.version }}
           create_branch: true
 
@@ -94,22 +96,22 @@ jobs:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.PRIVATE_KEY }}
 
-      - name: get branch name
-        id: get-branch
-        run: |
-          CHART_YAML="charts/${{ matrix.chart }}/Chart.yaml"
-          CURRENT_VERSION=$(yq e '.version' "$CHART_YAML")
-          IFS='.' read -r major minor patch _ <<< "$CURRENT_VERSION"
-          GIT_COMMIT_TAG=$(git rev-parse --short HEAD)
-          VERSION=${major}.${minor}.$((patch))-alpha.${GIT_COMMIT_TAG}
-          echo "branch=br-${{ matrix.chart }}-v${VERSION}" >> $GITHUB_OUTPUT
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-
       - name: Checkout bumped branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: ${{ steps.get-branch.outputs.branch }}
+          ref: ${{ needs.bump-charts.outputs.branch }}
           token: ${{ steps.app-token.outputs.token }}
+
+      # - name: get branch name
+      #   id: get-branch
+      #   run: |
+      #     CHART_YAML="charts/${{ matrix.chart }}/Chart.yaml"
+      #     CURRENT_VERSION=$(yq e '.version' "$CHART_YAML")
+      #     IFS='.' read -r major minor patch _ <<< "$CURRENT_VERSION"
+      #     GIT_COMMIT_TAG=$(git rev-parse --short HEAD)
+      #     VERSION=${major}.${minor}.$((patch))-alpha.${GIT_COMMIT_TAG}
+      #     echo "branch=br-${{ matrix.chart }}-v${VERSION}" >> $GITHUB_OUTPUT
+      #     echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Configure Git
         run: |
