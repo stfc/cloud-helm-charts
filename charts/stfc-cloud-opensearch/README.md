@@ -1,5 +1,7 @@
 # STFC Cloud Opensearch
 
+This is an alpha version of this chart
+
 This chart sets up an opinionated release of Opensearch that we use for storing K8s cluster logs
 
 OpenSearch is an open-source search and observability suite for storing unstructured data. 
