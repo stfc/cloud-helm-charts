@@ -30,6 +30,7 @@ writer_staging_role:
         - "trivy_staging*"
         - "kube_logs_azimuth-stfc-staging*"
         - "trivy_azimuth-stfc-staging*"
+        - "st2_audit_staging*"
       allowed_actions:
         - "indices:data/write/index"
         - "indices:data/write/update"
@@ -50,6 +51,7 @@ writer_prod_role:
         - "trivy_prod*"
         - "kube_logs_azimuth-stfc-prod*"
         - "trivy_azimuth-stfc-prod*"
+        - "st2_audit_prod*"
       allowed_actions:
         - "indices:data/write/index"
         - "indices:data/write/update"
@@ -73,6 +75,7 @@ reader_staging_role:
         - "kube_logs_azimuth-stfc-staging*"
         - "trivy_azimuth-stfc-staging*"
         - "kube_logs_azimuth_staging_user_cluster*"
+        - "st2_audit_staging*"
       allowed_actions:
         - "read"
         - "indices_monitor"
