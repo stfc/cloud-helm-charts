@@ -3,6 +3,6 @@ name: stfc-cloud-argocd
 dependencies:
   # https://github.com/argoproj/argo-helm/releases
   - name: argo-cd
-    version: 10.8.2
+    version: 10.9.0
     repository: https://argoproj.github.io/argo-helm
-version: 3.3.0
+version: 3.4.0
