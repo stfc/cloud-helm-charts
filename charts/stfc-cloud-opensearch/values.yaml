@@ -42,6 +42,13 @@ backendTLSPolicy:
 opensearch-operator:
   nameOverride: log-storage
   installCRDs: true
+  podAnnotations:
+    secret.reloader.stakater.com/reload: "log-storage-admin-tls"
+    secret.reloader.stakater.com/reload: "log-storage-dashboards-cert"
+    secret.reloader.stakater.com/reload: "log-storage-http-cert"
+    secret.reloader.stakater.com/reload: "log-storage-transport-cert"
+    secret.reloader.stakater.com/reload: "opensearch-log-storage-webhook-server-cert"
+
 
 httproute:
   opensearch:
