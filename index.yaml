@@ -453,6 +453,17 @@ entries:
     version: 1.6.1
   stfc-cloud-argocd:
   - apiVersion: v2
+    created: "2026-09-15T13:32:54.147302625Z"
+    dependencies:
+    - name: argo-cd
+      repository: https://argoproj.github.io/argo-helm
+      version: 10.8.2
+    digest: d71693a4381060025e8fb5b50d745a35066b959987a06c57ff1a18a641c97941
+    name: stfc-cloud-argocd
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-argocd-3.3.1/stfc-cloud-argocd-3.3.1.tgz
+    version: 3.3.1
+  - apiVersion: v2
     created: "2026-09-07T10:45:52.436853992Z"
     dependencies:
     - name: argo-cd
@@ -2815,6 +2826,23 @@ entries:
     version: 1.0.0-alpha.07ff22a
   stfc-cloud-opensearch:
   - apiVersion: v2
+    created: "2026-09-15T13:32:54.415412Z"
+    dependencies:
+    - name: opensearch-operator
+      repository: https://opensearch-project.github.io/opensearch-k8s-operator/
+      version: 3.0.2
+    - name: opensearch-cluster
+      repository: https://opensearch-project.github.io/opensearch-k8s-operator/
+      version: 3.3.0
+    description: A Helm chart to deploy an opinionated opensearch cluster with IRIS-IAM
+      integration
+    digest: d64bbaa695e67f40e5bbf89e445fc8f47a921307f506cf682c7a07feb04b7e73
+    name: stfc-cloud-opensearch
+    type: application
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-opensearch-5.0.2/stfc-cloud-opensearch-5.0.2.tgz
+    version: 5.0.2
+  - apiVersion: v2
     created: "2026-09-15T09:36:03.165631623Z"
     dependencies:
     - name: opensearch-operator
@@ -3957,4 +3985,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2026-09-15T09:36:03.16615877Z"
+generated: "2026-09-15T13:32:54.416645779Z"
