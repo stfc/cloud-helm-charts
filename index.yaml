@@ -1340,6 +1340,19 @@ entries:
     version: 1.0.1
   stfc-cloud-envoy-gateways:
   - apiVersion: v2
+    created: "2026-10-06T08:36:03.929471277Z"
+    dependencies:
+    - name: gateway-helm
+      repository: oci://docker.io/envoyproxy
+      version: v1.9.2
+    description: Deploy internal & external Envoy Gateways with optional OAuth2 and
+      Basic Auth
+    digest: d7565b4d2572ba57b6e479510ea639a59d91ea319c2129a51c1695d888169c2f
+    name: stfc-cloud-envoy-gateways
+    urls:
+    - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-envoy-gateways-1.2.2/stfc-cloud-envoy-gateways-1.2.2.tgz
+    version: 1.2.2
+  - apiVersion: v2
     created: "2026-09-03T15:46:06.054531786Z"
     dependencies:
     - name: gateway-helm
@@ -4002,4 +4015,4 @@ entries:
     urls:
     - https://github.com/stfc/cloud-helm-charts/releases/download/stfc-cloud-vm-1.0.0/stfc-cloud-vm-1.0.0.tgz
     version: 1.0.0
-generated: "2026-09-16T16:22:37.913251948Z"
+generated: "2026-10-06T08:36:03.930160104Z"
