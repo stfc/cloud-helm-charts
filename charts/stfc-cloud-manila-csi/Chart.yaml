@@ -2,9 +2,9 @@ apiVersion: v2
 dependencies:
   - name: openstack-manila-csi
     repository: https://kubernetes.github.io/cloud-provider-openstack
-    version: 2.37.0
+    version: 2.37.1
   - name: ceph-csi-cephfs
     repository: https://ceph.github.io/csi-charts
     version: 3.18.1
 name: stfc-cloud-manila-csi
-version: 1.5.0
+version: 1.5.1
