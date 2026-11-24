@@ -8,8 +8,8 @@ dependencies:
     version: v0.26.0
   - name: reloader
     repository: https://stakater.github.io/stakater-charts
-    version: 2.2.20
+    version: 2.2.21
 description: A Helm chart to deploy opinionated instance of cert-manager for the STFC Cloud
 name: stfc-cloud-cert-manager
 type: application
-version: 2.5.0
+version: 2.5.1
